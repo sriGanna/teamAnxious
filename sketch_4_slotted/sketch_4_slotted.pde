@@ -76,6 +76,8 @@ float             edgeBottomRightY                    = worldHeight;
 FBox              wall;
 float wallW = 0.6;
 
+FCircle           circle2;
+
 
 /* Initialization of virtual tool */
 HVirtualCoupling  s;
@@ -103,7 +105,7 @@ void setup(){
    *      linux:        haplyBoard = new Board(this, "/dev/ttyUSB0", 0);
    *      mac:          haplyBoard = new Board(this, "/dev/cu.usbmodem1411", 0);
    */ 
-  haplyBoard          = new Board(this, "COM4", 0);
+  haplyBoard          = new Board(this, "COM3", 0);
   widgetOne           = new Device(widgetOneID, haplyBoard);
   pantograph          = new Pantograph();
   
@@ -136,18 +138,32 @@ void setup(){
   world.add(wall);
   
     wall                   = new FBox(1, wallW);
-  wall.setPosition(13.8, 5.9);
+  wall.setPosition(18.8, 5.9);
+  wall.setStatic(true);
+  wall.setFill(0, 0, 0);
+  world.add(wall);
+  
+    
+    wall                   = new FBox(1, wallW);
+  wall.setPosition(18.8, 6.9);
+  wall.setStatic(true);
+  wall.setFill(0, 0, 0);
+  world.add(wall);
+  
+    
+    wall                   = new FBox(1, wallW);
+  wall.setPosition(18.8, 7.9);
   wall.setStatic(true);
   wall.setFill(0, 0, 0);
   world.add(wall);
   
      wall                   = new FBox(1, wallW);
-  wall.setPosition(13.8, 4);
+  wall.setPosition(18.8, 4);
   wall.setStatic(true);
   wall.setFill(0, 0, 0);
   world.add(wall);
    wall                   = new FBox(1, wallW);
-  wall.setPosition(13.8, 4.9);
+  wall.setPosition(18.8, 4.9);
   wall.setStatic(true);
   wall.setFill(0, 0, 0);
   world.add(wall);
@@ -157,6 +173,20 @@ void setup(){
   wall.setStatic(true);
   wall.setFill(0, 0, 0);
   world.add(wall);
+  
+      wall                   = new FBox(1, wallW);
+  wall.setPosition(11.18, 6.9);
+  wall.setStatic(true);
+  wall.setFill(0, 0, 0);
+  world.add(wall);
+  
+  
+      wall                   = new FBox(1, wallW);
+  wall.setPosition(11.18, 7.9);
+  wall.setStatic(true);
+  wall.setFill(0, 0, 0);
+  world.add(wall);
+  
   
   
   /* creation of wall */
@@ -185,33 +215,99 @@ wall                   = new FBox(wallW, 1);
   wall.setFill(0, 0, 0);
   world.add(wall);
   
+    wall                   = new FBox(wallW, 1);
+  wall.setPosition(15, 3);
+  wall.setStatic(true);
+  wall.setFill(0, 0, 0);
+  world.add(wall);
+  
+    wall                   = new FBox(wallW, 1);
+  wall.setPosition(16, 3);
+  wall.setStatic(true);
+  wall.setFill(0, 0, 0);
+  world.add(wall);
+  
+    wall                   = new FBox(wallW, 1);
+  wall.setPosition(17, 3);
+  wall.setStatic(true);
+  wall.setFill(0, 0, 0);
+  world.add(wall);
+  
+    wall                   = new FBox(wallW, 1);
+  wall.setPosition(18, 3);
+  wall.setStatic(true);
+  wall.setFill(0, 0, 0);
+  world.add(wall);
+  
+    wall                   = new FBox(wallW, 1);
+  wall.setPosition(19, 3);
+  wall.setStatic(true);
+  wall.setFill(0, 0, 0);
+  world.add(wall);
   
   
   wall                   = new FBox(wallW, 1);
-  wall.setPosition(11, 7);
+  wall.setPosition(11, 9);
   wall.setStatic(true);
   wall.setFill(0, 0, 0);
   world.add(wall);
   
 wall                   = new FBox(wallW,1);
-  wall.setPosition(12, 7);
+  wall.setPosition(12, 9);
   wall.setStatic(true);
   wall.setFill(0, 0, 0);
   world.add(wall);
   
 wall                   = new FBox(wallW, 1);
-  wall.setPosition(13, 7);
+  wall.setPosition(13, 9);
   wall.setStatic(true);
   wall.setFill(0, 0, 0);
   world.add(wall);
 
 //main right 
   wall                   = new FBox(wallW, 1);
-  wall.setPosition(14, 7);
+  wall.setPosition(14, 9);
+  wall.setStatic(true);
+  wall.setFill(0, 0, 0);
+  world.add(wall);
+  
+  
+    wall                   = new FBox(wallW, 1);
+  wall.setPosition(15, 9);
+  wall.setStatic(true);
+  wall.setFill(0, 0, 0);
+  world.add(wall);
+  
+    wall                   = new FBox(wallW, 1);
+  wall.setPosition(16, 9);
+  wall.setStatic(true);
+  wall.setFill(0, 0, 0);
+  world.add(wall);
+  
+    wall                   = new FBox(wallW, 1);
+  wall.setPosition(17, 9);
+  wall.setStatic(true);
+  wall.setFill(0, 0, 0);
+  world.add(wall);
+  
+    wall                   = new FBox(wallW, 1);
+  wall.setPosition(18, 9);
+  wall.setStatic(true);
+  wall.setFill(0, 0, 0);
+  world.add(wall);
+  
+    wall                   = new FBox(wallW, 1);
+  wall.setPosition(19, 9);
   wall.setStatic(true);
   wall.setFill(0, 0, 0);
   world.add(wall);
 //right most
+
+  circle2                   = new FCircle(1);
+  circle2.setPosition(12,7);
+  circle2.setStatic(false);
+  circle2.setFill(255, 0, 0);
+  world.add(circle2);
 
  
   
@@ -224,7 +320,7 @@ wall                   = new FBox(wallW, 1);
   /* Haptic Tool Initialization */
   s                   = new HVirtualCoupling((1)); 
   s.h_avatar.setDensity(4);  
-  s.init(world, edgeTopLeftX+worldWidth/2, edgeTopLeftY+2); 
+  s.init(world, edgeTopLeftX+worldWidth/2, edgeTopLeftY+5); 
  
   
   /* If you are developing on a Mac users must update the path below 
