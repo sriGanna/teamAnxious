@@ -109,8 +109,6 @@ float smoothing = 0.80;
 
 float xr = 0;
 float yr = 0;
-float ax = 0;
-float ay = 0;
 long currentMillis = millis();
 long previousMillis = 0;
 float interval = 1000;
