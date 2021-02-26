@@ -287,25 +287,43 @@ public void ResetDevice(int theValue) {
 
 void keyPressed() {
   if (key == 'q') {
-    P += 0.01;
+    P += 0.005;
+    cp5.getController("P").setValue(P);
   } else if (key == 'a') {
-    P -= 0.01;
-  } else if (key == 'w') {
-    I += 0.00001;
-  } else if (key == 's') {
-    I -= 0.00001;
-  } else if (key == 'e') {
+    P -= 0.005;
+    cp5.getController("P").setValue(P);
+  }
+  else if (key == 'w') {
+    I += 0.01;
+    cp5.getController("I").setValue(I);
+  }
+  else if (key == 's') {
+    I -= 0.01;
+    cp5.getController("I").setValue(I);
+  }
+  else if (key == 'e') {
     D += 0.1;
-  } else if (key == 'd') {
+    cp5.getController("D").setValue(D);
+  }
+  else if (key == 'd') {
     D -= 0.1;
-  } else if (key == 'r') {
+    cp5.getController("D").setValue(D);
+  }
+  else if (key == 'r') {
     looptime += 100;
-  } else if (key == 'f') {
+    cp5.getController("looptime").setValue(looptime);
+  }
+  else if (key == 'f') {
     looptime -= 100;
-  } else if (key == 't') {
+    cp5.getController("looptime").setValue(looptime);
+  }
+    else if (key == 't') {
     smoothing += 0.01;
-  } else if (key == 'g') {
+    cp5.getController("smoothing").setValue(smoothing);
+  }
+  else if (key == 'g') {
     smoothing -= 0.01;
+    cp5.getController("smoothing").setValue(smoothing);
   } else if (key == ' ') {
     cumerrorx= 0;
     cumerrory= 0;
