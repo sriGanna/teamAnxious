@@ -119,7 +119,7 @@ long timetaken= 0;
 
 // set loop time in usec (note from Antoine, 500 is about the limit of my computer max CPU usage)
 int looptime = 500;
-
+boolean randLoop = false;
 
 /* graphical elements */
 PShape pGraph, joint, endEffector;
@@ -312,10 +312,12 @@ void keyPressed() {
   else if (key == 'r') {
     looptime += 100;
     cp5.getController("looptime").setValue(looptime);
+    randLoop = true;
   }
   else if (key == 'f') {
     looptime -= 100;
     cp5.getController("looptime").setValue(looptime);
+    randLoop = false;
   }
     else if (key == 't') {
     smoothing += 0.01;
@@ -423,6 +425,10 @@ public void SimulationThread() {
         //}
         i++;
         previousMillis = currentMillis; 
+         if(randLoop){
+          looptime = int(random(300, 2000));
+          cp5.getController("looptime").setValue(looptime);
+          }
         }
         x_m = xr*300; 
         y_m = yr*300+350;//mouseY;
