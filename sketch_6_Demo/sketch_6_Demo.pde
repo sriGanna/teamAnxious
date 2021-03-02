@@ -82,8 +82,8 @@ final int         worldPixelHeight                    = 650;
 
 /* World boundaries */
 FWorld            world;
-float             worldWidth                          = 25.0;  
-float             worldHeight                         = 10.0; 
+float             worldWidth                          = 32.0;  
+float             worldHeight                         = 20.0; 
 
 float             edgeTopLeftX                        = 0.0; 
 float             edgeTopLeftY                        = 0.0; 
@@ -112,7 +112,7 @@ FCircle           c3;
 
 
 /* define game start */
-boolean           gameStart                           = false;
+boolean           gameStart                           =false;
 int               mode                                =0;
 
 /* text font */
@@ -127,7 +127,7 @@ void setup(){
   /* put setup code here, run once: */
   
   /* screen size definition */
-  size(1000, 400);
+  size(1280, 760);
   
   /* set font type and size */
   f                   = createFont("Arial", 16, true);
@@ -144,7 +144,7 @@ void setup(){
    *      linux:        haplyBoard = new Board(this, "/dev/ttyUSB0", 0);
    *      mac:          haplyBoard = new Board(this, "/dev/cu.usbmodem1411", 0);
    */
-  haplyBoard          = new Board(this, "COM4", 0);
+  haplyBoard          = new Board(this, "COM3", 0);
   widgetOne           = new Device(widgetOneID, haplyBoard);
   pantograph          = new Pantograph();
   
@@ -328,6 +328,7 @@ void draw(){
   /* put graphical code here, runs repeatedly at defined framerate in setup, else default at 60fps: */
   if(renderingForce == false){
     background(255);
+    
     textFont(f, 22);
  
     if(mode ==1){
@@ -336,33 +337,30 @@ void draw(){
       text("Touch a coloured circle to switch modes", width/2, 90);
       // mode 1 drawings visible 
       for(int i=0;i<28;i++){
-       walls[i].setFill(0);
+       walls[i].setFill(0,0,0);
       }
       circle2.setFill(255,0,0);
-       circle2.setPosition(12,7);
-      // all other mode drawings invisible
-      for(int i=0;i<28;i++){
-        walls[i].setFill(255,0,255);
-      }
-    
-  
-    }
+      //circle2.setPosition(12,7);
+      // all other mode drawings invisib
+        }
     else if(mode ==2){
+      shape(wall);
+      for(int i=0;i<28;i++){
+        walls[i].setNoFill();
+      }
+      circle2.setNoFill();
     }
     else if(mode ==3){
+      for(int i=0;i<28;i++){
+        walls[i].setNoFill();
+      }
+      circle2.setNoFill(); 
     }
     else{
-      fill(128, 128, 128);
-      textAlign(CENTER);
-      text("Touch a coloured circle to switch modes", width/2, 60);
-      
       for(int i=0;i<28;i++){
-        walls[i].setFill(255,0,255);
+        walls[i].setNoFill();
       }
-      circle2.setFill(255);
-    
-      
-      
+      circle2.setNoFill(); 
     }
   
     world.draw();
@@ -387,8 +385,10 @@ class SimulationThread implements Runnable{
       angles.set(widgetOne.get_device_angles()); 
       posEE.set(widgetOne.get_device_position(angles.array()));
       posEE.set(posEE.copy().mult(200));  
-      /* haptic wall force calculation */
-      fWall.set(0, 0);
+     
+      if(mode ==2){
+         /* haptic wall force calculation */
+        fWall.set(0, 0);
       
       penWall.set(0, (posWall.y - (posEE.y + rEE)));
       
@@ -399,6 +399,8 @@ class SimulationThread implements Runnable{
       fEE = (fWall.copy()).mult(-1);
       fEE.set(graphics_to_device(fEE));
       /* end haptic wall force calculation */
+        
+      }
     }
     
     s.setToolPosition(edgeTopLeftX+worldWidth/2-(posEE).x, edgeTopLeftY+(posEE).y-7); 
