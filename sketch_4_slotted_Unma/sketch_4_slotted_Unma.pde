@@ -133,81 +133,93 @@ void setup(){
    wall                   = new FBox(1, wallW+0.2);
   wall.setPosition(7.18, 4);
   wall.setStatic(true);
-  wall.setFill(120, 0, 0);
+  wall.setFill(255, 255, 255);
+  wall.setNoStroke();
   world.add(wall);  
   
    wall                   = new FBox(1, wallW+0.2);
   wall.setPosition(7.18, 5.4);
   wall.setStatic(true);
-  wall.setFill(200, 0, 0);
+  wall.setFill(255, 255, 255);
+  wall.setNoStroke();
   world.add(wall);
   
    wall                   = new FBox(1, wallW+0.2);
   wall.setPosition(7.18, 6.8);
   wall.setStatic(true);
-  wall.setFill(200, 0, 0);
+  wall.setFill(255, 255, 255);
+  wall.setNoStroke();
   world.add(wall);
   
    wall                   = new FBox(1, wallW+0.2);
   wall.setPosition(7.18, 8.2);
   wall.setStatic(true);
-  wall.setFill(200, 0, 0);
+  wall.setFill(255, 255, 255);
+  wall.setNoStroke();
   world.add(wall);
   
   //spacing 1.2 then 1, norm
    wall                   = new FBox(1, wallW);
   wall.setPosition(7.18, 9.4);
   wall.setStatic(true);
-  wall.setFill(200, 0, 0);
+  wall.setFill(255, 255, 255);
+  wall.setNoStroke();
   world.add(wall);  
   
    wall                   = new FBox(1, wallW);
   wall.setPosition(7.18, 10.4);
   wall.setStatic(true);
-  wall.setFill(200, 0, 0);
+  wall.setFill(255, 255, 255);
+  wall.setNoStroke();
   world.add(wall);
   
    wall                   = new FBox(1, wallW);
   wall.setPosition(7.18, 11.4);
   wall.setStatic(true);
-  wall.setFill(200, 0, 0);
+  wall.setFill(255, 255, 255);
+  wall.setNoStroke();
   world.add(wall);
   
    wall                   = new FBox(1, wallW);
   wall.setPosition(7.18, 12.4);
   wall.setStatic(true);
-  wall.setFill(200, 0, 0);
+  wall.setFill(255, 255, 255);
+  wall.setNoStroke();
   world.add(wall);
   
   //spacing 0.8, -0.2
    wall                   = new FBox(1, wallW-0.2);
   wall.setPosition(7.18, 13.2);
   wall.setStatic(true);
-  wall.setFill(200, 0, 0);
+  wall.setFill(255, 255, 255);
+  wall.setNoStroke();
   world.add(wall);  
     
    wall                   = new FBox(1, wallW-0.2);
   wall.setPosition(7.18, 14);
   wall.setStatic(true);
-  wall.setFill(0, 0, 0);
+  wall.setFill(255, 255, 255);
+  wall.setNoStroke();
   world.add(wall);
       
    wall                   = new FBox(1, wallW-0.2);
   wall.setPosition(7.18, 14.8);
   wall.setStatic(true);
-  wall.setFill(200, 0, 0);
+  wall.setFill(255, 255, 255);
+  wall.setNoStroke();
   world.add(wall);  
   
    wall                   = new FBox(1, wallW-0.2);
   wall.setPosition(7.18, 15.6);
   wall.setStatic(true);
-  wall.setFill(200, 0, 0);
+  wall.setFill(255, 255, 255);
+  wall.setNoStroke();
   world.add(wall);  
     
    wall                   = new FBox(1, wallW-0.2);
   wall.setPosition(7.18, 16.4);
   wall.setStatic(true);
-  wall.setFill(0, 10, 0);
+  wall.setFill(255, 255, 255);
   world.add(wall);
   
   
@@ -216,81 +228,81 @@ void setup(){
    wall                   = new FBox(wallW+0.2, 1);
   wall.setPosition(8.2, 3);
   wall.setStatic(true);
-  wall.setFill(0, 0, 0);
+  wall.setFill(255, 255, 255);
   world.add(wall);
   
 wall                   = new FBox(wallW+0.2,1);
   wall.setPosition(9.6, 3);
   wall.setStatic(true);
-  wall.setFill(0, 0, 0);
+  wall.setFill(255, 255, 255);
   world.add(wall);
   
 wall                   = new FBox(wallW+0.2, 1);
   wall.setPosition(11, 3);
   wall.setStatic(true);
-  wall.setFill(0, 0, 0);
+  wall.setFill(255, 255, 255);
   world.add(wall);
 
   wall                   = new FBox(wallW+0.2, 1);
   wall.setPosition(12.4, 3);
   wall.setStatic(true);
-  wall.setFill(0, 0, 0);
+  wall.setFill(255, 255, 255);
   world.add(wall);  
   
   //spacing 1.2 then 1, norm  
     wall                   = new FBox(wallW, 1);
   wall.setPosition(13.6, 3);
   wall.setStatic(true);
-  wall.setFill(0, 0, 0);
+  wall.setFill(255, 255, 255);
   world.add(wall);
   
     wall                   = new FBox(wallW, 1);
   wall.setPosition(14.6, 3);
   wall.setStatic(true);
-  wall.setFill(0, 0, 0);
+  wall.setFill(255, 255, 255);
   world.add(wall);
   
     wall                   = new FBox(wallW, 1);
   wall.setPosition(15.6, 3);
   wall.setStatic(true);
-  wall.setFill(0, 0, 0);
+  wall.setFill(255, 255, 255);
   world.add(wall);
   
     wall                   = new FBox(wallW, 1);
   wall.setPosition(16.6, 3);
   wall.setStatic(true);
-  wall.setFill(0, 0, 0);
+  wall.setFill(255, 255, 255);
   world.add(wall);  
   
   //spacing 0.8, -0.2
     wall                   = new FBox(wallW-0.2, 1);
   wall.setPosition(17.4, 3);
   wall.setStatic(true);
-  wall.setFill(0, 0, 0);
+  wall.setFill(255, 255, 255);
   world.add(wall);  
   
   wall                   = new FBox(wallW-0.2, 1);
   wall.setPosition(18.2, 3);
   wall.setStatic(true);
-  wall.setFill(0, 0, 0);
+  wall.setFill(255, 255, 255);
   world.add(wall);
   
 wall                   = new FBox(wallW-0.2,1);
   wall.setPosition(19, 3);
   wall.setStatic(true);
-  wall.setFill(0, 0, 0);
+  wall.setFill(255, 255, 255);
   world.add(wall);
   
 wall                   = new FBox(wallW-0.2, 1);
   wall.setPosition(19.8, 3);
   wall.setStatic(true);
-  wall.setFill(0, 0, 0);
+  wall.setFill(255, 255, 255);
   world.add(wall);
 
   wall                   = new FBox(wallW-0.2, 1);
   wall.setPosition(20.6, 3);
   wall.setStatic(true);
-  wall.setFill(0, 0, 0);
+  wall.setFill(255, 255, 255);
   world.add(wall);
   
   
@@ -305,69 +317,69 @@ wall                   = new FBox(wallW-0.2, 1);
    wall                   = new FBox(1, wallW+0.2);
   wall.setPosition(21.5, 5.4);
   wall.setStatic(true);
-  wall.setFill(200, 0, 0);
+  wall.setFill(255, 255, 255);
   world.add(wall);
   
    wall                   = new FBox(1, wallW+0.2);
   wall.setPosition(21.5, 6.8);
   wall.setStatic(true);
-  wall.setFill(200, 0, 0);
+  wall.setFill(255, 255, 255);
   world.add(wall);
   
    wall                   = new FBox(1, wallW+0.2);
   wall.setPosition(21.5, 8.2);
   wall.setStatic(true);
-  wall.setFill(200, 0, 0);
+  wall.setFill(255, 255, 255);
   world.add(wall);
   
   //spacing 1.2 then 1, norm
    wall                   = new FBox(1, wallW);
   wall.setPosition(21.5, 9.4);
   wall.setStatic(true);
-  wall.setFill(200, 0, 0);
+  wall.setFill(255, 255, 255);
   world.add(wall);  
   
    wall                   = new FBox(1, wallW);
   wall.setPosition(21.5, 10.4);
   wall.setStatic(true);
-  wall.setFill(200, 0, 0);
+  wall.setFill(255, 255, 255);
   world.add(wall);
   
    wall                   = new FBox(1, wallW);
   wall.setPosition(21.5, 11.4);
   wall.setStatic(true);
-  wall.setFill(200, 0, 0);
+  wall.setFill(255, 255, 255);
   world.add(wall);
   
    wall                   = new FBox(1, wallW);
   wall.setPosition(21.5, 12.4);
   wall.setStatic(true);
-  wall.setFill(200, 0, 0);
+  wall.setFill(255, 255, 255);
   world.add(wall);
   
   //spacing 0.8, -0.2
    wall                   = new FBox(1, wallW-0.2);
   wall.setPosition(21.5, 13.2);
   wall.setStatic(true);
-  wall.setFill(200, 0, 0);
+  wall.setFill(255, 255, 255);
   world.add(wall);  
     
    wall                   = new FBox(1, wallW-0.2);
   wall.setPosition(21.5, 14);
   wall.setStatic(true);
-  wall.setFill(0, 0, 0);
+  wall.setFill(255, 255, 255);
   world.add(wall);  
     
    wall                   = new FBox(1, wallW-0.2);
   wall.setPosition(21.5, 14.8);
   wall.setStatic(true);
-  wall.setFill(200, 0, 0);
+  wall.setFill(255, 255, 255);
   world.add(wall);  
   
    wall                   = new FBox(1, wallW-0.2);
   wall.setPosition(21.5, 15.6);
   wall.setStatic(true);
-  wall.setFill(200, 0, 0);
+  wall.setFill(255, 255, 255);
   world.add(wall);  
     
    wall                   = new FBox(1, wallW-0.2);
@@ -383,81 +395,94 @@ wall                   = new FBox(wallW-0.2, 1);
   wall                   = new FBox(wallW+0.2, 1);
   wall.setPosition(8.2, 17.2);
   wall.setStatic(true);
-  wall.setFill(0, 0, 0);
+  wall.setFill(255, 255, 255);
+  wall.setNoStroke();
   world.add(wall);
   
   wall                   = new FBox(wallW+0.2,1);
   wall.setPosition(9.6, 17.2);
   wall.setStatic(true);
-  wall.setFill(0, 0, 0);
+  wall.setFill(255, 255, 255);
+  wall.setNoStroke();
   world.add(wall);
   
   wall                   = new FBox(wallW+0.2, 1);
   wall.setPosition(11, 17.2);
   wall.setStatic(true);
-  wall.setFill(0, 0, 0);
+  wall.setFill(255, 255, 255);
+  wall.setNoStroke();
   world.add(wall);
 
   wall                   = new FBox(wallW+0.2, 1);
   wall.setPosition(12.4, 17.2);
   wall.setStatic(true);
-  wall.setFill(0, 0, 0);
+  wall.setFill(255, 255, 255);
+  wall.setNoStroke();
   world.add(wall);
     
   //spacing 1.2 then 1, norm  
     wall                   = new FBox(wallW, 1);
   wall.setPosition(13.6, 17.2);
   wall.setStatic(true);
-  wall.setFill(0, 0, 0);
+  wall.setFill(255, 255, 255);
+  wall.setNoStroke();
   world.add(wall);
   
     wall                   = new FBox(wallW, 1);
   wall.setPosition(14.6, 17.2);
   wall.setStatic(true);
-  wall.setFill(0, 0, 0);
+  wall.setFill(255, 255, 255);
+  wall.setNoStroke();
   world.add(wall);
   
     wall                   = new FBox(wallW, 1);
   wall.setPosition(15.6, 17.2);
   wall.setStatic(true);
-  wall.setFill(0, 0, 0);
+  wall.setFill(255, 255, 255);
+  wall.setNoStroke();
   world.add(wall);
   
     wall                   = new FBox(wallW, 1);
   wall.setPosition(16.6, 17.2);
   wall.setStatic(true);
-  wall.setFill(0, 0, 0);
+  wall.setFill(255, 255, 255);
+  wall.setNoStroke();
   world.add(wall);  
   
   //spacing 0.8, -0.2
     wall                   = new FBox(wallW-0.2, 1);
   wall.setPosition(17.4, 17.2);
   wall.setStatic(true);
-  wall.setFill(0, 0, 0);
+  wall.setFill(255, 255, 255);
+  wall.setNoStroke();
   world.add(wall);  
   
   wall                   = new FBox(wallW-0.2, 1);
   wall.setPosition(18.2, 17.2);
   wall.setStatic(true);
-  wall.setFill(0, 0, 0);
+  wall.setFill(255, 255, 255);
+  wall.setNoStroke();
   world.add(wall);
   
 wall                   = new FBox(wallW-0.2,1);
   wall.setPosition(19, 17.2);
   wall.setStatic(true);
-  wall.setFill(0, 0, 0);
+  wall.setFill(255, 255, 255);
+  wall.setNoStroke();
   world.add(wall);
   
 wall                   = new FBox(wallW-0.2, 1);
   wall.setPosition(19.8, 17.2);
   wall.setStatic(true);
-  wall.setFill(0, 0, 0);
+  wall.setFill(255, 255, 255);
+  wall.setNoStroke();
   world.add(wall);
 
   wall                   = new FBox(wallW-0.2, 1);
   wall.setPosition(20.6, 17.2);
   wall.setStatic(true);
-  wall.setFill(0, 0, 0);
+  wall.setFill(255, 255, 255);
+  wall.setNoStroke();
   world.add(wall);
   
   
