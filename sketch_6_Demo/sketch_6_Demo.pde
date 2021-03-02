@@ -101,6 +101,7 @@ FBox[] walls = new FBox[28];
 PShape wall;
 
 float wallW = 0.6;
+FCircle           circle2;
 
 
 /* define start and stop button */
@@ -239,6 +240,15 @@ void setup(){
   walls[26].setPosition(18, 9);
 
   walls[27].setPosition(19, 9);
+  
+    //circle
+  circle2                   = new FCircle(1);
+  circle2.setPosition(12,7);
+  circle2.setStatic(false);
+  circle2.setFill(255, 0, 0);
+   circle2.setNoStroke();
+  world.add(circle2);
+
 
    /* End of Mode 1 Drawings */ 
    
@@ -261,7 +271,7 @@ void setup(){
   c1.setPosition(edgeTopLeftX+1.5, edgeTopLeftY+worldHeight/2.0-3);
   c1.setFill(0, 255, 0);
   c1.setStaticBody(true);
-  c2.setSensor(true);
+  c1.setSensor(true);
   world.add(c1);
   
   /* Mode 2 Button */
@@ -328,6 +338,8 @@ void draw(){
       for(int i=0;i<28;i++){
        walls[i].setFill(0);
       }
+      circle2.setFill(255,0,0);
+       circle2.setPosition(12,7);
       // all other mode drawings invisible
       for(int i=0;i<28;i++){
         walls[i].setFill(255,0,255);
@@ -347,6 +359,7 @@ void draw(){
       for(int i=0;i<28;i++){
         walls[i].setFill(255,0,255);
       }
+      circle2.setFill(255);
     
       
       
