@@ -261,6 +261,7 @@ void setup(){
   c1.setPosition(edgeTopLeftX+1.5, edgeTopLeftY+worldHeight/2.0-3);
   c1.setFill(0, 255, 0);
   c1.setStaticBody(true);
+  c2.setSensor(true);
   world.add(c1);
   
   /* Mode 2 Button */
@@ -373,6 +374,18 @@ class SimulationThread implements Runnable{
       angles.set(widgetOne.get_device_angles()); 
       posEE.set(widgetOne.get_device_position(angles.array()));
       posEE.set(posEE.copy().mult(200));  
+      /* haptic wall force calculation */
+      fWall.set(0, 0);
+      
+      penWall.set(0, (posWall.y - (posEE.y + rEE)));
+      
+      if(penWall.y < 0){
+        fWall = fWall.add(penWall.mult(-kWall));  
+      }
+      
+      fEE = (fWall.copy()).mult(-1);
+      fEE.set(graphics_to_device(fEE));
+      /* end haptic wall force calculation */
     }
     
     s.setToolPosition(edgeTopLeftX+worldWidth/2-(posEE).x, edgeTopLeftY+(posEE).y-7); 
@@ -406,6 +419,15 @@ class SimulationThread implements Runnable{
   }
 }
 /* end simulation section **********************************************************************************************/
+/* helper functions section, place helper functions here ***************************************************************/
+PVector device_to_graphics(PVector deviceFrame){
+  return deviceFrame.set(-deviceFrame.x, deviceFrame.y);
+}
+
+PVector graphics_to_device(PVector graphicsFrame){
+  return graphicsFrame.set(-graphicsFrame.x, graphicsFrame.y);
+}
+
 PShape create_wall(float x1, float y1, float x2, float y2){
   x1 = pixelsPerMeter * x1;
   y1 = pixelsPerMeter * y1;
@@ -414,3 +436,4 @@ PShape create_wall(float x1, float y1, float x2, float y2){
   
   return createShape(LINE, deviceOrigin.x + x1, deviceOrigin.y + y1, deviceOrigin.x + x2, deviceOrigin.y+y2);
 }
+/* end helper functions section ****************************************************************************************/
