@@ -144,7 +144,7 @@ void setup(){
    *      linux:        haplyBoard = new Board(this, "/dev/ttyUSB0", 0);
    *      mac:          haplyBoard = new Board(this, "/dev/cu.usbmodem1411", 0);
    */
-  haplyBoard          = new Board(this, "COM3", 0);
+  haplyBoard          = new Board(this, "COM4", 0);
   widgetOne           = new Device(widgetOneID, haplyBoard);
   pantograph          = new Pantograph();
   
@@ -385,7 +385,6 @@ class SimulationThread implements Runnable{
       angles.set(widgetOne.get_device_angles()); 
       posEE.set(widgetOne.get_device_position(angles.array()));
       posEE.set(posEE.copy().mult(200));  
-     
       if(mode ==2){
          /* haptic wall force calculation */
         fWall.set(0, 0);
@@ -406,9 +405,13 @@ class SimulationThread implements Runnable{
     s.setToolPosition(edgeTopLeftX+worldWidth/2-(posEE).x, edgeTopLeftY+(posEE).y-7); 
     s.updateCouplingForce();
  
- 
-    fEE.set(-s.getVirtualCouplingForceX(), s.getVirtualCouplingForceY());
+    if (mode != 2){
+      fEE.set(-s.getVirtualCouplingForceX(), s.getVirtualCouplingForceY());
     fEE.div(100000); //dynes to newtons
+      
+    }
+    
+    
     
     torques.set(widgetOne.set_device_torques(fEE.array()));
     widgetOne.device_write_torques();
