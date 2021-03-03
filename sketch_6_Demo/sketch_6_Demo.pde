@@ -338,6 +338,7 @@ void draw(){
       // mode 1 drawings visible 
       for(int i=0;i<28;i++){
        walls[i].setFill(0,0,0);
+       walls[i].setSensor(false);
       }
       circle2.setFill(255,0,0);
       //circle2.setPosition(12,7);
@@ -347,12 +348,14 @@ void draw(){
       shape(wall);
       for(int i=0;i<28;i++){
         walls[i].setNoFill();
+         walls[i].setSensor(true);
       }
       circle2.setNoFill();
     }
     else if(mode ==3){
       for(int i=0;i<28;i++){
         walls[i].setNoFill();
+         walls[i].setSensor(true);
       }
       circle2.setNoFill(); 
     }
