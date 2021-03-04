@@ -18,6 +18,8 @@
 import processing.serial.*;
 import static java.util.concurrent.TimeUnit.*;
 import java.util.concurrent.*;
+import processing.sound.*;
+SoundFile file;
 /* end library imports *************************************************************************************************/
 
 
@@ -108,12 +110,15 @@ float w2=10.2;
 float w3=15;
 
 FCircle           circle2;
+FBlob             f;
+FBox              supWall, supWall2,supWall3,supWall4;
 
 
 /* define start and stop button */
 FCircle           c1;
 FCircle           c2;
 FCircle           c3;
+FCircle           c4;
 
 
 
@@ -123,7 +128,7 @@ boolean           reset                               =false;
 int               mode                                =0;
 
 /* text font */
-PFont             f;
+PFont             font;
 
 /* end elements definition *********************************************************************************************/
 
@@ -132,12 +137,12 @@ PFont             f;
 /* setup section *******************************************************************************************************/
 void setup() {
   /* put setup code here, run once: */
-
+  file = new SoundFile(this, "squish.mp3");
   /* screen size definition */
   size(1280, 820);
 
   /* set font type and size */
-  f                   = createFont("Arial", 16, true);
+  font                   = createFont("Arial", 16, true);
 
 
   /* device setup */
@@ -254,6 +259,51 @@ void setup() {
   /* Insert Drawings for Mode 3 Here */
 
   /* End of Mode 3 Drawings */
+   /* Insert Drawings for Mode 4 Here */
+     f                   = new FBlob();
+  f.setAsCircle(50);
+  //f.setStroke(0);
+  //file.play();
+  f.setPosition(200,200);
+  //f.setStrokeWeight(2);
+  f.setNoFill();
+  f.setNoStroke();
+  f.setStatic(false);
+  f.setFriction(15);
+  f.setDensity(1);
+  //f.setDensity(30);
+  //f.setFill(random(255), random(255), random(255));
+  world.add(f);
+  
+    supWall2                 = new FBox(20, 1);
+    supWall2 .setStatic(true);
+    supWall2 .setNoFill();
+    supWall2 .setNoStroke();
+    supWall2.setPosition(10,13);
+    world.add(supWall2);
+    
+      supWall                 = new FBox(5, 1);
+    supWall .setStatic(true);
+    supWall .setNoFill();
+    supWall .setNoStroke();
+    supWall.setPosition(10,5);
+    world.add(supWall);
+    
+         supWall3                 = new FBox(5, 1);
+    supWall3 .setStatic(true);
+    supWall3 .setNoFill();
+    supWall3 .setNoStroke();
+    supWall3.setPosition(10,0);
+    world.add(supWall3);
+    
+         supWall4                 = new FBox(5, 1);
+    supWall4 .setStatic(true);
+    supWall4 .setNoFill();
+    supWall4 .setNoStroke();
+    supWall4.setPosition(10,7);
+    world.add(supWall4);
+  /* End of Mode 4 Drawings */
+  
 
 
 
@@ -280,6 +330,14 @@ void setup() {
   c3.setStaticBody(true);
   c3.setSensor(true);
   world.add(c3);
+  
+    /* Mode 4 Button */
+  c4                  = new FCircle(1.0);
+  c4.setPosition(edgeTopLeftX+2, edgeTopLeftY+worldHeight/2.0-2);
+  c4.setFill(100, 50, 150);
+  c4.setStaticBody(true);
+  c4.setSensor(true);
+  world.add(c4);
 
 
 
@@ -319,7 +377,7 @@ void draw() {
   if (renderingForce == false) {
     background(255);
 
-    textFont(f, 22);
+    textFont(font, 22);
 
     if (mode ==1) {
       fill(0, 0, 0);
@@ -368,6 +426,7 @@ void draw() {
         walls[i].setSensor(true);
       }
       circle2.setNoFill();
+      f.setNoFill();
       
     } else if (mode ==3) {
       for (int i=0; i<4; i++)
@@ -387,13 +446,39 @@ void draw() {
         walls[i].setSensor(true);
       }
       circle2.setFill(255,0,0);
+      f.setNoFill();
       // if (reset){
       //
       //circle2.setPosition(12, 7);
       //reset = false;
       //}
       
-    } else {
+    }  else if (mode ==4) {
+      for (int i=0; i<4; i++)
+      {
+        for (int j=0; j<12; j++)
+        {
+          if (i ==0 && j==2) {
+            j++;
+          }
+
+          spacedWalls[i][j].setNoFill();
+          spacedWalls[i][j].setSensor(true);
+        }
+      }  
+      for (int i=0; i<28; i++) {
+        walls[i].setNoFill();
+        walls[i].setSensor(true);
+      }
+      circle2.setNoFill();
+      f.setFill(255,0,255);
+      // if (reset){
+      //
+      //circle2.setPosition(12, 7);
+      //reset = false;
+      //}
+      
+    }else {
       for (int i=0; i<4; i++)
       {
         for (int j=0; j<12; j++)
@@ -409,6 +494,7 @@ void draw() {
         walls[i].setNoFill();
       }
       circle2.setNoFill();
+      f.setNoFill();
     }
 
     world.draw();
@@ -433,7 +519,7 @@ class SimulationThread implements Runnable {
       angles.set(widgetOne.get_device_angles()); 
       posEE.set(widgetOne.get_device_position(angles.array()));
       posEE.set(posEE.copy().mult(200));  
-      if (mode ==2) {
+      if (mode ==2 || mode==4) {
         /* haptic wall force calculation */
         fWall.set(0, 0);
 
@@ -456,8 +542,11 @@ class SimulationThread implements Runnable {
       fEE.set(-s.getVirtualCouplingForceX(), s.getVirtualCouplingForceY());
       fEE.div(100000); //dynes to newtons
     }
-
-
+   if (mode == 4){
+   if (s.h_avatar.isTouchingBody(supWall3) || s.h_avatar.isTouchingBody(supWall2) && !file.isPlaying()){
+      file.play();
+   }
+   }
 
     torques.set(widgetOne.set_device_torques(fEE.array()));
     widgetOne.device_write_torques();
@@ -479,6 +568,11 @@ class SimulationThread implements Runnable {
       mode =3;
       s.h_avatar.setSensor(false);
       circle2.setPosition(12,7);
+    } else if (s.h_avatar.isTouchingBody(c4)) {
+      reset = true;
+
+      mode =4;
+      s.h_avatar.setSensor(false);
     }
     world.step(1.0f/1000.0f);
 
