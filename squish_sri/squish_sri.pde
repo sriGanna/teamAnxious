@@ -108,6 +108,8 @@ PVector           deviceOrigin                        = new PVector(0, 0);
 final int         worldPixelWidth                     = 1280;
 final int         worldPixelHeight                    = 1300;
 
+FBox supWall;
+
 /* end elements definition *********************************************************************************************/ 
 
 
@@ -193,7 +195,7 @@ void setup(){
   
   /* creation of blob shape, warning may slow down simulation */
   f                   = new FBlob();
-  f.setAsCircle(10,10,20);
+  f.setAsCircle(10,10,5);
   f.setStroke(0);
   file.play();
   f.setPosition(1000,1500);
@@ -205,6 +207,13 @@ void setup(){
   //f.setDensity(30);
   f.setFill(random(255), random(255), random(255));
   world.add(f);
+  
+  supWall                 = new FBox(11, 1);
+    supWall .setStatic(true);
+    supWall .setFill(255);
+    supWall .setNoStroke();
+    supWall.setPosition(10,12);
+    world.add(supWall);
   
   /*Create wall */
     deviceOrigin.add(worldPixelWidth/2, 0);
