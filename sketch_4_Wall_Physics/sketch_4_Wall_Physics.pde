@@ -133,8 +133,6 @@ void setup(){
   hAPI_Fisica.setScale(pixelsPerCentimeter); 
   world               = new FWorld();
   
-  
-
   wall4                   = new FBox(0.4, 1.4);
   wall4.setPosition(edgeTopLeftX+7.7, 9.2);
   wall4.setStatic(true);
@@ -156,35 +154,12 @@ void setup(){
   wall7.setNoStroke();
   world.add(wall7);
   
-  //wall8                   = new FBox(0.5, 2);
-  //wall8.setPosition(edgeTopLeftX+4, 2);
-  //wall8.setStatic(true);
-  //wall8.setFill(0,255,255);
-  //  wall8.setNoStroke();
-  //world.add(wall8); 
-  
-  
-  //wall9                   = new FBox(2, 8);
-  //wall9.setPosition(5, 15);
-  //wall9.setStatic(true);
-  //wall9.setFill(0,255,255);
-  //  wall9.setNoStroke();
-  //world.add(wall9);
-  
-    
-  //wall10                   = new FBox(3, 2);
-  //wall10.setPosition(11, 8);
-  //wall10.setStatic(true);
-  //wall10.setFill(255,0,255);
-  //  wall10.setNoStroke();
-  //  world.add(wall10); 
-    
-    
-  //circle1                   = new FCircle(4);
-  //circle1.setPosition(15, 15);
-  //circle1.setStatic(true);
-  //circle1.setFill(0, 0, 0);
-  //world.add(circle1);
+  circle1                   = new FCircle(3);
+  circle1.setPosition(13, 5);
+  circle1.setStatic(true);
+  circle1.setFill(255, 255, 255);
+  circle1.setNoStroke();
+  world.add(circle1);
   
       
   circle2                   = new FCircle(1.7);
@@ -193,15 +168,7 @@ void setup(){
   circle2.setFill(0, 0, 0);
   circle2.setNoStroke();
   world.add(circle2);
-  
-  //FBlob blob1 = new FBlob();
-  //blob1.setAsCircle(13);
-  ////blob1.setPosition(7, 15);
-  //blob1.setStatic(false);
-  //blob1.setDensity(1);
-  //blob1.setFriction(15);
-  //blob1.setFill(128, 255, 0);
-  //world.add(blob1);
+
   
   /* Haptic Tool Initialization */
   s                   = new HVirtualCoupling((1)); 
@@ -212,13 +179,10 @@ void setup(){
   /* If you are developing on a Mac users must update the path below 
    * from "../img/Haply_avatar.png" to "./img/Haply_avatar.png" 
    */
-  haplyAvatar = loadImage("../img/pac3.png"); 
-  haplyAvatar.resize((int)(hAPI_Fisica.worldToScreen(1)), (int)(hAPI_Fisica.worldToScreen(1)));
+  haplyAvatar = loadImage("../img/tack.png"); 
+  haplyAvatar.resize((int)(hAPI_Fisica.worldToScreen(1.5)), (int)(hAPI_Fisica.worldToScreen(1.5)));
   s.h_avatar.attachImage(haplyAvatar); 
 
-  //pac2 = loadImage("../img/pac2.png"); 
-  //pac2.resize((int)(hAPI_Fisica.worldToScreen(1)), (int)(hAPI_Fisica.worldToScreen(1)));
-  //wall7.attachImage(pac2); 
 
   /* world conditions setup */
   world.setGravity((0.0), (6000.0)); //1000 cm/(s^2)
@@ -303,8 +267,10 @@ class SimulationThread implements Runnable{
       //delay(10);
       circle2.setNoFill();
     }
-    else {
-      //circle2.setFill(0,0,0);
+    else if (s.h_avatar.isTouchingBody(circle1)){
+      circle2.setFill(0,0,0);
+      circle2.setPosition(10, 8);
+      done=false;
     }
     
   
