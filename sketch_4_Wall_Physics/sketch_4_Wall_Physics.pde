@@ -18,6 +18,8 @@
 import processing.serial.*;
 import static java.util.concurrent.TimeUnit.*;
 import java.util.concurrent.*;
+import processing.sound.*;
+SoundFile file;
 /* end library imports *************************************************************************************************/  
 
 
@@ -89,6 +91,8 @@ PImage            haplyAvatar,pac2;
 /* setup section *******************************************************************************************************/
 void setup(){
   /* put setup code here, run once: */
+  file = new SoundFile(this, "pop.mp3");
+  //file.play();
   
   /* screen size definition */
   size(800, 800);
@@ -126,58 +130,26 @@ void setup(){
   world               = new FWorld();
   
   
-  /* creation of wall */
-  //wall                   = new FBox(10.0, 0.5);
-  //wall.setPosition(edgeTopLeftX+worldWidth/6.0, edgeTopLeftY+2*worldHeight/3.0);
-  //wall.setStatic(true);
-  //wall.setFill(255,255,255);
-  //world.add(wall);
-  //wall.setNoStroke();
-  //System.out.println(edgeTopLeftX+worldWidth); 
-  //System.out.println(edgeTopLeftY+2*worldHeight); 
-  
-  //wall2                   = new FBox(4, 3);
-  //wall2.setPosition(edgeTopLeftX+4, 6);
-  //wall2.setStatic(true);
-  //wall2.setFill(255,255,255);
-  //  wall2.setNoStroke();
-  //world.add(wall2);
 
-  //wall3                   = new FBox(1, 0.8);
-  //wall3.setPosition(13, 5);
-  //wall3.setStatic(true);
-  //wall3.setFill(255,255,255);
-  //  wall3.setNoStroke();
-  //world.add(wall3);
-  
-  wall4                   = new FBox(4, 8);
-  wall4.setPosition(edgeTopLeftX+10, 15);
+  wall4                   = new FBox(0.4, 1.4);
+  wall4.setPosition(edgeTopLeftX+7.7, 9.2);
   wall4.setStatic(true);
   wall4.setFill(255,255,255);
-    wall4.setNoStroke();
+  wall4.setNoStroke();
   world.add(wall4);
   
-  //GOAL
-  wall5                   = new FBox(0.8, 0.8);
-  wall5.setPosition(edgeTopLeftX+1.5, 18);
-  wall5.setStatic(true);
-  wall5.setFriction(100);
-  wall5.setFill(255,255,255);
-    wall5.setNoStroke();
-  world.add(wall5);
+  wall6                   = new FBox(5, 0.5);
+  wall6.setPosition(edgeTopLeftX+10, 10);
+  wall6.setStatic(true);
+  wall6.setFill(255,255,255);
+  wall6.setNoStroke();
+  world.add(wall6);
   
-  //wall6                   = new FBox(0.5, 8);
-  //wall6.setPosition(edgeTopLeftX+8, 5);
-  //wall6.setStatic(true);
-  //wall6.setFill(0,255,255);
-  //  wall6.setNoStroke();
-  //world.add(wall6);
-  
-  wall7                   = new FBox(2, 8);
-  wall7.setPosition(edgeTopLeftX+18, 15);
+  wall7                   = new FBox(0.4, 1.4);
+  wall7.setPosition(edgeTopLeftX+12.2, 9.2);
   wall7.setStatic(true);
   wall7.setFill(255,255,255);
-    wall7.setNoStroke();
+  wall7.setNoStroke();
   world.add(wall7);
   
   //wall8                   = new FBox(0.5, 2);
@@ -211,10 +183,10 @@ void setup(){
   //world.add(circle1);
   
       
-  circle2                   = new FCircle(2);
-  circle2.setPosition(13, 8);
+  circle2                   = new FCircle(1.7);
+  circle2.setPosition(10, 7);
   circle2.setStatic(false);
-  circle2.setFill(255, 255, 255);
+  circle2.setFill(0, 0, 0);
   circle2.setNoStroke();
   world.add(circle2);
   
@@ -240,9 +212,9 @@ void setup(){
   haplyAvatar.resize((int)(hAPI_Fisica.worldToScreen(1)), (int)(hAPI_Fisica.worldToScreen(1)));
   s.h_avatar.attachImage(haplyAvatar); 
 
-  pac2 = loadImage("../img/pac2.png"); 
-  pac2.resize((int)(hAPI_Fisica.worldToScreen(1)), (int)(hAPI_Fisica.worldToScreen(1)));
-  wall5.attachImage(pac2); 
+  //pac2 = loadImage("../img/pac2.png"); 
+  //pac2.resize((int)(hAPI_Fisica.worldToScreen(1)), (int)(hAPI_Fisica.worldToScreen(1)));
+  //wall7.attachImage(pac2); 
 
   /* world conditions setup */
   world.setGravity((0.0), (6000.0)); //1000 cm/(s^2)
@@ -285,6 +257,7 @@ class SimulationThread implements Runnable{
     /* put haptic simulation code here, runs repeatedly at 1kHz as defined in setup */
     
     renderingForce = true;
+    //file.play();
     
     if(haplyBoard.data_available()){
       /* GET END-EFFECTOR STATE (TASK SPACE) */
@@ -306,6 +279,16 @@ class SimulationThread implements Runnable{
     widgetOne.device_write_torques();
   
     world.step(1.0f/1000.0f);
+    
+    
+    if (s.h_avatar.isTouchingBody(wall4) || s.h_avatar.isTouchingBody(wall7) || s.h_avatar.isTouchingBody(wall6) && !file.isPlaying()){
+      file.play();
+      circle2.setNoFill();
+    }
+    else {
+      //circle2.setFill(0,0,0);
+    }
+    
   
     renderingForce = false;
   }
