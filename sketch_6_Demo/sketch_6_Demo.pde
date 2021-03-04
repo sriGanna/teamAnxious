@@ -150,7 +150,7 @@ void setup() {
    *      linux:        haplyBoard = new Board(this, "/dev/ttyUSB0", 0);
    *      mac:          haplyBoard = new Board(this, "/dev/cu.usbmodem1411", 0);
    */
-  haplyBoard          = new Board(this, "COM3", 0);
+  haplyBoard          = new Board(this, "COM4", 0);
   widgetOne           = new Device(widgetOneID, haplyBoard);
   pantograph          = new Pantograph();
 
@@ -343,7 +343,7 @@ void draw() {
           spacedWalls[i][j].setSensor(true);
         }
       }   
-      //circle2.setPosition(12,7);
+      circle2.setPosition(12,7);
       // all other mode drawings invisib
     } else if (mode ==2) {
       shape(wall);
@@ -375,6 +375,7 @@ void draw() {
           }
 
           spacedWalls[i][j].setFill(0, 0, 0);
+          spacedWalls[i][j].setSensor(false);
         }
       }  
       for (int i=0; i<28; i++) {
@@ -382,6 +383,7 @@ void draw() {
         walls[i].setSensor(true);
       }
       circle2.setFill(255,0,0);
+      circle2.setPosition(12, 7);
     } else {
       for (int i=0; i<4; i++)
       {
