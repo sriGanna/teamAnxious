@@ -19,6 +19,10 @@ import processing.serial.*;
 import static java.util.concurrent.TimeUnit.*;
 import java.util.concurrent.*;
 import processing.sound.*;
+import ddf.minim.*;
+
+Minim minim;
+AudioPlayer song;
 SoundFile file;
 /* end library imports *************************************************************************************************/  
 
@@ -91,7 +95,7 @@ boolean done=false;
 /* setup section *******************************************************************************************************/
 void setup(){
   /* put setup code here, run once: */
-  file = new SoundFile(this, "pop.mp3");
+  file = new SoundFile(this, "pop1.wav");
   //file.play();
   
   /* screen size definition */
@@ -249,6 +253,17 @@ void draw(){
 /* end draw section ****************************************************************************************************/
 
 
+ //void contactResult(FContactResult result) {
+ //  // Draw an ellipse where the contact took place and as big as the normal impulse of the contact
+ //  ellipse(result.getX(), result.getY(), result.getNormalImpulse(), result.getNormalImpulse());
+
+ //  // Trigger your sound here
+ //  // ...
+ //  playAudio();
+ //  done=true;
+ //}
+
+
 
 /* simulation section **************************************************************************************************/
 class SimulationThread implements Runnable{
@@ -285,6 +300,7 @@ class SimulationThread implements Runnable{
       //file.play();
       playAudio();
       done=true;
+      //delay(10);
       circle2.setNoFill();
     }
     else {
