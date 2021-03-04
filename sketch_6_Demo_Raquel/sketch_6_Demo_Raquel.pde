@@ -261,10 +261,10 @@ void setup() {
   /* End of Mode 3 Drawings */
    /* Insert Drawings for Mode 4 Here */
      f                   = new FBlob();
-  f.setAsCircle(50);
+  f.setAsCircle(30,0, 50);
   //f.setStroke(0);
   //file.play();
-  f.setPosition(200,200);
+  //f.setPosition(50,500);
   //f.setStrokeWeight(2);
   f.setNoFill();
   f.setNoStroke();
@@ -279,28 +279,28 @@ void setup() {
     supWall2 .setStatic(true);
     supWall2 .setNoFill();
     supWall2 .setNoStroke();
-    supWall2.setPosition(10,13);
+    supWall2.setPosition(30,13);
     world.add(supWall2);
     
       supWall                 = new FBox(5, 1);
     supWall .setStatic(true);
     supWall .setNoFill();
     supWall .setNoStroke();
-    supWall.setPosition(10,5);
+    supWall.setPosition(25,5);
     world.add(supWall);
     
          supWall3                 = new FBox(5, 1);
     supWall3 .setStatic(true);
     supWall3 .setNoFill();
     supWall3 .setNoStroke();
-    supWall3.setPosition(10,0);
+    supWall3.setPosition(25,0);
     world.add(supWall3);
     
          supWall4                 = new FBox(5, 1);
     supWall4 .setStatic(true);
     supWall4 .setNoFill();
     supWall4 .setNoStroke();
-    supWall4.setPosition(10,7);
+    supWall4.setPosition(20,7);
     world.add(supWall4);
   /* End of Mode 4 Drawings */
   
@@ -407,6 +407,11 @@ void draw() {
       //reset = false;
       //}
       // all other mode drawings invisib
+      f.setNoFill();
+      supWall.setNoFill();
+      supWall2.setNoFill();
+      supWall3.setNoFill();
+      supWall4.setNoFill();
     } else if (mode ==2) {
       shape(wall);
       for (int i=0; i<4; i++)
@@ -427,6 +432,10 @@ void draw() {
       }
       circle2.setNoFill();
       f.setNoFill();
+      supWall.setNoFill();
+      supWall2.setNoFill();
+      supWall3.setNoFill();
+      supWall4.setNoFill();
       
     } else if (mode ==3) {
       for (int i=0; i<4; i++)
@@ -447,6 +456,10 @@ void draw() {
       }
       circle2.setFill(255,0,0);
       f.setNoFill();
+      supWall.setNoFill();
+      supWall2.setNoFill();
+      supWall3.setNoFill();
+      supWall4.setNoFill();
       // if (reset){
       //
       //circle2.setPosition(12, 7);
@@ -472,6 +485,10 @@ void draw() {
       }
       circle2.setNoFill();
       f.setFill(255,0,255);
+      supWall.setFill(0,0,0);
+      supWall2.setFill(0,0,0);
+      supWall3.setFill(0,0,0);
+      supWall4.setFill(0,0,0);
       // if (reset){
       //
       //circle2.setPosition(12, 7);
@@ -495,6 +512,10 @@ void draw() {
       }
       circle2.setNoFill();
       f.setNoFill();
+      supWall.setNoFill();
+      supWall2.setNoFill();
+      supWall3.setNoFill();
+      supWall4.setNoFill();
     }
 
     world.draw();
@@ -543,7 +564,7 @@ class SimulationThread implements Runnable {
       fEE.div(100000); //dynes to newtons
     }
    if (mode == 4){
-   if (s.h_avatar.isTouchingBody(supWall3) || s.h_avatar.isTouchingBody(supWall2) && !file.isPlaying()){
+   if ((s.h_avatar.isTouchingBody(supWall) || s.h_avatar.isTouchingBody(supWall2) || s.h_avatar.isTouchingBody(supWall3) || s.h_avatar.isTouchingBody(supWall4)) && !file.isPlaying()){
       file.play();
    }
    }
