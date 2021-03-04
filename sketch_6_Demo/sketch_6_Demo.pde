@@ -18,6 +18,12 @@
 import processing.serial.*;
 import static java.util.concurrent.TimeUnit.*;
 import java.util.concurrent.*;
+import processing.sound.*;
+import ddf.minim.*;
+
+Minim minim;
+AudioPlayer song;
+SoundFile file;
 /* end library imports *************************************************************************************************/
 
 
@@ -95,8 +101,6 @@ float             gravityAcceleration                 = 980; //cm/s2
 HVirtualCoupling  s;
 
 /* define maze blocks */
-
-
 FBox[] walls = new FBox[28];
 PShape wall;
 
@@ -107,23 +111,37 @@ float w1=4;
 float w2=9.4;
 float w3=13.2;
 
+/*Define circles*/
 FCircle           circle2;
-
+FCircle           bubble;
 
 /* define start and stop button */
-FCircle           c1;
-FCircle           c2;
-FCircle           c3;
+FCircle           c1,c2,c3,c4,c5;
+
+
+/* Define Blob Variables*/
+FBlob             f;
+FBox              supWall, supWall2, supWall3, supWall4;
+
+/*Bubble Pop Variables*/
+FBox[] popWall = new FBox[3];
+PImage            haplyAvatar,bubbleImg;
+boolean done=false;
+
+/* Timer variables */
+long currentMillis = millis();
+long previousMillis = 0;
+float interval = 10;
 
 
 
 /* define game start */
 boolean           gameStart                           =false;
 boolean           reset                               =false;
-int               mode                                =0;
+int               mode                                =4;
 
 /* text font */
-PFont             f;
+PFont             F;
 
 /* end elements definition *********************************************************************************************/
 
@@ -132,12 +150,12 @@ PFont             f;
 /* setup section *******************************************************************************************************/
 void setup() {
   /* put setup code here, run once: */
-
+  file = new SoundFile(this, ".../sound/pop1.wav");
   /* screen size definition */
   size(1280, 820);
 
   /* set font type and size */
-  f                   = createFont("Arial", 16, true);
+  F                   = createFont("Arial", 16, true);
 
 
   /* device setup */
@@ -204,6 +222,30 @@ void setup() {
       walls[i].setPosition(i-8, 9);
     }
   }
+
+
+  //circle
+  circle2                   = new FCircle(1);
+  circle2.setPosition(12, 7);
+  circle2.setStatic(false);
+  circle2.setFill(255, 0, 0);
+  circle2.setNoStroke();
+  world.add(circle2);
+
+
+  /* End of Mode 1 Drawings */
+
+  /* Insert Drawings for Mode 2 Here */
+  deviceOrigin.add(worldPixelWidth/2, 0);
+
+  /* create pantagraph graphics */
+  wall = create_wall(posWall.x-0.2, posWall.y+rEE, posWall.x+0.2, posWall.y+rEE);
+  wall.setStroke(color(0));
+  /* End of Mode 2 Drawings */
+
+  /* Insert Drawings for Mode 3 Here */
+
+  /* End of Mode 3 Drawings */
   float wx1=7.18;
   float wx2=21.4;
   float wy1=3;
@@ -230,32 +272,83 @@ void setup() {
       spacedWalls[i][j].setForce(0, 0);
       world.add(spacedWalls[i][j]);
     }
-  }   
+  }  
+  /* Insert Drawings for Mode 4 Here */
+  f                   = new FBlob();
+  f.setAsCircle(30, 0, 50);
+  f.setNoFill();
+  f.setNoStroke();
+  f.setStatic(false);
+  f.setFriction(15);
+  f.setDensity(1);
 
-  //circle
-  circle2                   = new FCircle(1);
-  circle2.setPosition(12, 7);
-  circle2.setStatic(false);
-  circle2.setFill(255, 0, 0);
-  circle2.setNoStroke();
-  world.add(circle2);
+  world.add(f);
+
+  supWall2                 = new FBox(20, 1);
+  supWall2 .setStatic(true);
+  supWall2 .setNoFill();
+  supWall2 .setNoStroke();
+  supWall2.setPosition(30, 13);
+  world.add(supWall2);
+
+  supWall                 = new FBox(5, 1);
+  supWall .setStatic(true);
+  supWall .setNoFill();
+  supWall .setNoStroke();
+  supWall.setPosition(25, 5);
+  world.add(supWall);
+
+  supWall3                 = new FBox(5, 1);
+  supWall3 .setStatic(true);
+  supWall3 .setNoFill();
+  supWall3 .setNoStroke();
+  supWall3.setPosition(25, 0);
+  world.add(supWall3);
+
+  supWall4                 = new FBox(5, 1);
+  supWall4 .setStatic(true);
+  supWall4 .setNoFill();
+  supWall4 .setNoStroke();
+  supWall4.setPosition(20, 7);
+  world.add(supWall4);
+  /* End of Mode 4 Drawings */
+
+  /* Mode 5 Drawings */
+  //for (int i=0; i<3; i++) {
+  //  if (i == 0) {
+  //    popWall[i]                   = new FBox(0.4, 1.4);
+  //    popWall[i].setPosition(edgeTopLeftX+7.7, 9.2);
+  //  } else if (i==1) {
+  //    popWall[i]                   = new FBox(5, 0.5);
+  //    popWall[i].setPosition(edgeTopLeftX+10, 10);
+  //  } else {
+  //    popWall[i]                   = new FBox(0.4, 1.4);
+  //    popWall[i].setPosition(edgeTopLeftX+10, 10);
+  //  }
+  //  popWall[i].setStatic(true);
+  //  popWall[i].setFill(255);
+  //  popWall[i].setNoStroke();
+  //  world.add(popWall[i]);
+  //  popWall[i].setSensor(true);
+    
+  //}
+
+  //popWall[1].setPosition(edgeTopLeftX+10, 10);
+  //popWall[2].setPosition(edgeTopLeftX+12.2, 9.2);
+
+  bubble                   = new FCircle(1.7);
+  bubble.setPosition(10, 7);
+  bubble.setStatic(true);
+  bubble.setFill(255);
+  bubble.setNoStroke();
+  world.add(bubble);
+bubble.setSensor(true);
+  //bubbleImg = loadImage("../img/bubble.png"); 
+  //bubbleImg.resize((int)(hAPI_Fisica.worldToScreen(2)), (int)(hAPI_Fisica.worldToScreen(2)));
+  //bubble.attachImage(bubbleImg); 
 
 
-  /* End of Mode 1 Drawings */
-
-  /* Insert Drawings for Mode 2 Here */
-  deviceOrigin.add(worldPixelWidth/2, 0);
-
-  /* create pantagraph graphics */
-  wall = create_wall(posWall.x-0.2, posWall.y+rEE, posWall.x+0.2, posWall.y+rEE);
-  wall.setStroke(color(0));
-  /* End of Mode 2 Drawings */
-
-  /* Insert Drawings for Mode 3 Here */
-
-  /* End of Mode 3 Drawings */
-
-
+  /* end of mode 5 drawings */
 
   /* Mode 1 Button */
   c1                  = new FCircle(1.0); // diameter is 2
@@ -280,8 +373,22 @@ void setup() {
   c3.setStaticBody(true);
   c3.setSensor(true);
   world.add(c3);
-
-
+  
+    /* Mode 4 Button */
+  c4                  = new FCircle(1.0);
+  c4.setPosition(edgeTopLeftX+2, edgeTopLeftY+worldHeight/2.0-2);
+  c4.setFill(100, 50, 150);
+  c4.setStaticBody(true);
+  c4.setSensor(true);
+  world.add(c4);
+  
+    /* Mode 5 Button */
+  c5                  = new FCircle(1.0);
+  c5.setPosition(edgeTopLeftX+2, edgeTopLeftY+worldHeight/2.0);
+  c5.setFill(50, 75, 20);
+  c5.setStaticBody(true);
+  c5.setSensor(true);
+  world.add(c5);
 
   /* Setup the Virtual Coupling Contact Rendering Technique */
   s                   = new HVirtualCoupling((0.75)); 
@@ -319,8 +426,9 @@ void draw() {
   if (renderingForce == false) {
     background(255);
 
-    textFont(f, 22);
-
+    textFont(F, 22);
+    
+    
     if (mode ==1) {
       fill(0, 0, 0);
       textAlign(CENTER);
@@ -344,11 +452,12 @@ void draw() {
           spacedWalls[i][j].setSensor(true);
         }
       }
-      //if (reset){
-      //circle2.setPosition(12,7);
-      //reset = false;
-      //}
-      // all other mode drawings invisib
+      f.setNoFill();
+      supWall.setNoFill();
+      supWall2.setNoFill();
+      supWall3.setNoFill();
+      supWall4.setNoFill();
+
     } else if (mode ==2) {
       shape(wall);
       for (int i=0; i<4; i++)
@@ -368,7 +477,12 @@ void draw() {
         walls[i].setSensor(true);
       }
       circle2.setNoFill();
-      
+      f.setNoFill();
+      supWall.setNoFill();
+      supWall2.setNoFill();
+      supWall3.setNoFill();
+      supWall4.setNoFill();
+
     } else if (mode ==3) {
       for (int i=0; i<4; i++)
       {
@@ -386,13 +500,57 @@ void draw() {
         walls[i].setNoFill();
         walls[i].setSensor(true);
       }
-      circle2.setFill(255,0,0);
+      circle2.setFill(255, 0, 0);
+      f.setNoFill();
+      supWall.setNoFill();
+      supWall2.setNoFill();
+      supWall3.setNoFill();
+      supWall4.setNoFill();
+
+    } else if (mode ==4) {
+      for (int i=0; i<4; i++)
+      {
+        for (int j=0; j<12; j++)
+        {
+          if (i ==0 && j==2) {
+            j++;
+          }
+
+          spacedWalls[i][j].setNoFill();
+          spacedWalls[i][j].setSensor(true);
+        }
+      }  
+      for (int i=0; i<28; i++) {
+        walls[i].setNoFill();
+        walls[i].setSensor(true);
+      }
+      circle2.setNoFill();
+      f.setFill(255, 0, 255);
+      supWall.setFill(0, 0, 0);
+      supWall2.setFill(0, 0, 0);
+      supWall3.setFill(0, 0, 0);
+      supWall4.setFill(0, 0, 0);
       // if (reset){
       //
       //circle2.setPosition(12, 7);
       //reset = false;
       //}
-      
+    } else if (mode ==5) {
+      for (int i=0; i<4; i++)
+      {
+        for (int j=0; j<=12; j++)
+        {
+          if (i ==0 && j==2) {
+            j++;
+          }
+
+          spacedWalls[i][j].setNoFill();
+        }
+      }  
+      for (int i=0; i<28; i++) {
+        walls[i].setNoFill();
+      }
+      circle2.setNoFill();
     } else {
       for (int i=0; i<4; i++)
       {
@@ -402,7 +560,7 @@ void draw() {
             j++;
           }
 
-          spacedWalls[i][j].setFill(0, 0, 0);
+          spacedWalls[i][j].setNoFill();
         }
       }  
       for (int i=0; i<28; i++) {
@@ -463,23 +621,45 @@ class SimulationThread implements Runnable {
     widgetOne.device_write_torques();
 
     if (s.h_avatar.isTouchingBody(c1)) {
-      reset = true;
-      gameStart = true;
+            gameStart = true;
       mode =1;
       s.h_avatar.setSensor(false);
-      circle2.setPosition(12,7);
+      circle2.setPosition(12, 7);
     } else if (s.h_avatar.isTouchingBody(c2)) {
-      reset = true;
-
       mode =2;
       s.h_avatar.setSensor(false);
     } else if (s.h_avatar.isTouchingBody(c3)) {
-      reset = true;
-
       mode =3;
       s.h_avatar.setSensor(false);
-      circle2.setPosition(12,7);
+      circle2.setPosition(12, 7);
     }
+    else if (s.h_avatar.isTouchingBody(c4)) {    
+      mode =4;
+      s.h_avatar.setSensor(false);
+    }
+    else if (s.h_avatar.isTouchingBody(c5)) {
+      mode =5;
+      bubble.setFill(0,0,245);
+      bubble.setPosition(10, 8);
+      done=false;
+      bubble.setSensor(false);
+    }
+    if (mode ==5 && s.h_avatar.isTouchingBody(bubble) && !file.isPlaying()) {
+      //file.play();
+
+      currentMillis = millis();
+      if (currentMillis - previousMillis > interval) {
+        playAudio();
+        done=true;
+        print("inside");
+        bubble.setNoFill();
+        bubble.setSensor(true);
+      }
+    } else {
+      previousMillis = millis();
+      //circle2.setFill(0,0,0);
+    }
+
     world.step(1.0f/1000.0f);
 
     renderingForce = false;
@@ -549,5 +729,12 @@ void resetW() {
   w2=9.4;
   w3=13.2;
   //print("here" + w1+" "+w2+" "+w3);
+}
+void playAudio() {
+  if (done==false)
+  {
+    file.play();
+    print("here");
+  }
 }
 /* end helper functions section ****************************************************************************************/
