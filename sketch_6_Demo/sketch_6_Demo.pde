@@ -344,10 +344,10 @@ void draw() {
           spacedWalls[i][j].setSensor(true);
         }
       }
-      if (reset){
-      circle2.setPosition(12,7);
-      reset = false;
-      }
+      //if (reset){
+      //circle2.setPosition(12,7);
+      //reset = false;
+      //}
       // all other mode drawings invisib
     } else if (mode ==2) {
       shape(wall);
@@ -386,11 +386,12 @@ void draw() {
         walls[i].setNoFill();
         walls[i].setSensor(true);
       }
-       if (reset){
       circle2.setFill(255,0,0);
-      circle2.setPosition(12, 7);
-      reset = false;
-      }
+      // if (reset){
+      //
+      //circle2.setPosition(12, 7);
+      //reset = false;
+      //}
       
     } else {
       for (int i=0; i<4; i++)
@@ -466,6 +467,7 @@ class SimulationThread implements Runnable {
       gameStart = true;
       mode =1;
       s.h_avatar.setSensor(false);
+      circle2.setPosition(12,7);
     } else if (s.h_avatar.isTouchingBody(c2)) {
       reset = true;
 
@@ -476,6 +478,7 @@ class SimulationThread implements Runnable {
 
       mode =3;
       s.h_avatar.setSensor(false);
+      circle2.setPosition(12,7);
     }
     world.step(1.0f/1000.0f);
 
