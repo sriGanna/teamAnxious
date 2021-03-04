@@ -119,7 +119,7 @@ FCircle           c3;
 
 /* define game start */
 boolean           gameStart                           =false;
-int               mode                                =3;
+int               mode                                =0;
 
 /* text font */
 PFont             f;
@@ -150,7 +150,7 @@ void setup() {
    *      linux:        haplyBoard = new Board(this, "/dev/ttyUSB0", 0);
    *      mac:          haplyBoard = new Board(this, "/dev/cu.usbmodem1411", 0);
    */
-  haplyBoard          = new Board(this, "COM4", 0);
+  haplyBoard          = new Board(this, "COM3", 0);
   widgetOne           = new Device(widgetOneID, haplyBoard);
   pantograph          = new Pantograph();
 
@@ -340,6 +340,7 @@ void draw() {
           }
 
           spacedWalls[i][j].setNoFill();
+          spacedWalls[i][j].setSensor(true);
         }
       }   
       //circle2.setPosition(12,7);
@@ -355,6 +356,7 @@ void draw() {
           }
 
           spacedWalls[i][j].setNoFill();
+          spacedWalls[i][j].setSensor(true);
         }
       }  
       for (int i=0; i<28; i++) {
@@ -381,6 +383,17 @@ void draw() {
       }
       circle2.setFill(255,0,0);
     } else {
+      for (int i=0; i<4; i++)
+      {
+        for (int j=0; j<12; j++)
+        {
+          if (i ==0 && j==2) {
+            j++;
+          }
+
+          spacedWalls[i][j].setFill(0, 0, 0);
+        }
+      }  
       for (int i=0; i<28; i++) {
         walls[i].setNoFill();
       }
