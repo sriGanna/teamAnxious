@@ -86,7 +86,7 @@ PImage            haplyAvatar,pac2;
 
 /* end elements definition *********************************************************************************************/ 
 
-
+boolean done=false;
 
 /* setup section *******************************************************************************************************/
 void setup(){
@@ -282,7 +282,9 @@ class SimulationThread implements Runnable{
     
     
     if (s.h_avatar.isTouchingBody(wall4) || s.h_avatar.isTouchingBody(wall7) || s.h_avatar.isTouchingBody(wall6) && !file.isPlaying()){
-      file.play();
+      //file.play();
+      playAudio();
+      done=true;
       circle2.setNoFill();
     }
     else {
@@ -298,5 +300,12 @@ class SimulationThread implements Runnable{
 
 
 /* helper functions section, place helper functions here ***************************************************************/
-
+void playAudio(){
+  if(done==false)
+  {
+    file.play();
+    print("here");
+  }
+  
+}
 /* end helper functions section ****************************************************************************************/
