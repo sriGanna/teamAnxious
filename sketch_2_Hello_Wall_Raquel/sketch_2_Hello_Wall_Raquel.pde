@@ -62,10 +62,10 @@ float             rEE                                 = 0.006;
 
 /* virtual wall parameter  */
 float             kWall                               = 450;
-PVector           fWall                               = new PVector(0, 0);
+PVector           fWall, fWall2                               = new PVector(0, 0);
 PVector           penWall                             = new PVector(0, 0);
 PVector           posWall                             = new PVector(0.01, 0.10);
-PVector           posWall2                             = new PVector(0.01, 0.047);
+PVector           posWall2                             = new PVector(0.7, 0.047);
 PVector           penWall2                             = new PVector(0, 0);
 
 
@@ -77,7 +77,8 @@ PVector           torques                             = new PVector(0, 0);
 
 /* task space */
 PVector           posEE                               = new PVector(0, 0);
-PVector           fEE                                 = new PVector(0, 0); 
+PVector           fEE                                 = new PVector(0, 0);
+PVector           fEE2                                 = new PVector(0, 0);
 
 /* device graphical position */
 PVector           deviceOrigin                        = new PVector(0, 0);
@@ -123,7 +124,7 @@ void setup(){
   size(1000, 1000);
   
   /* device setup */
-  file = new SoundFile(this, "ball.mp3");
+  //file = new SoundFile(this, "ball.mp3");
   
   /**  
    * The board declaration needs to be changed depending on which USB serial port the Haply board is connected.
@@ -164,8 +165,8 @@ void setup(){
   wall = create_wall(posWall.x-0.2, posWall.y+rEE, posWall.x+0.2, posWall.y+rEE);
   wall.setStroke(color(0));
   
-  wall2 = create_wall(posWall.x-0.2, posWall.y+rEE-.05, 0, posWall.y+rEE-.05); //posWall.x-0.2, posWall.y+rEE, posWall.x+0.2, posWall.y+rEE
-  wall2.setStroke(color(2));
+  wall2 = create_wall(posWall2.x-0.2, posWall2.y+rEE-.02, 0, posWall2.y+rEE-.02); //posWall.x-0.2, posWall.y+rEE, posWall.x+0.2, posWall.y+rEE
+  wall2.setStroke(color(255,0,255));
   
   ///* creation of blob shape, warning may slow down simulation */
   //f                   = new FBlob();
@@ -248,7 +249,7 @@ class SimulationThread implements Runnable{
       
       /* haptic wall force calculation */
       fWall.set(0, 0);
-      
+      fWall2.set(0,0);
       penWall.set(0, (posWall.y - (posEE.y + rEE)));
       penWall2.set(0, (posWall2.y - (posEE.y + rEE)));
       
@@ -257,11 +258,13 @@ class SimulationThread implements Runnable{
       }
       
       if(penWall2.y < 0){
-        fWall = fWall.add(penWall2.mult(-kWall));  
+        fWall2 = fWall2.add(penWall2.mult(-kWall));  
       }
       
       fEE = (fWall.copy()).mult(-1);
+      fEE2 = (fWall2.copy()).mult(-1);
       fEE.set(graphics_to_device(fEE));
+      fEE2.set(graphics_to_device(fEE2));
       /* end haptic wall force calculation */
     
     
