@@ -83,7 +83,7 @@ final int         worldPixelHeight                    = 1300;
 /* World boundaries */
 FWorld            world;
 float             worldWidth                          = 32.0;  
-float             worldHeight                         = 210; 
+float             worldHeight                         = 21.0; 
 
 float             edgeTopLeftX                        = 0.0; 
 float             edgeTopLeftY                        = 0.0; 
@@ -133,7 +133,7 @@ void setup() {
   /* put setup code here, run once: */
 
   /* screen size definition */
-  size(1280, 760);
+  size(1280, 820);
 
   /* set font type and size */
   f                   = createFont("Arial", 16, true);
