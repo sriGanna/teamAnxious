@@ -195,24 +195,31 @@ void setup(){
   
   /* creation of blob shape, warning may slow down simulation */
   f                   = new FBlob();
-  f.setAsCircle(10,10,5);
+  f.setAsCircle(13,10,5);
   f.setStroke(0);
   file.play();
-  f.setPosition(1000,1500);
+  //f.setPosition(1000,1500);
   f.setStrokeWeight(2);
   //f.setFill(0);
-  f.setStatic(true);
+  //f.setStatic(true);
   //f.setFriction(15);
   //f.setDensity(1);
   //f.setDensity(30);
   f.setFill(random(255), random(255), random(255));
   world.add(f);
   
-  supWall                 = new FBox(11, 1);
+  supWall                 = new FBox(20, 1);
     supWall .setStatic(true);
     supWall .setFill(255);
     supWall .setNoStroke();
-    supWall.setPosition(10,12);
+    supWall.setPosition(10,13);
+    world.add(supWall);
+    
+      supWall                 = new FBox(5, 1);
+    supWall .setStatic(true);
+    supWall .setFill(0);
+    supWall .setNoStroke();
+    supWall.setPosition(10,5);
     world.add(supWall);
   
   /*Create wall */
@@ -231,7 +238,7 @@ void setup(){
   haplyAvatar = loadImage("../img/Haply_avatar.png"); 
   haplyAvatar.resize((int)(hAPI_Fisica.worldToScreen(1)), (int)(hAPI_Fisica.worldToScreen(1)));
   s.h_avatar.attachImage(haplyAvatar); 
-  file.play();
+ // file.play();
 
 
   /* world conditions setup */
@@ -240,7 +247,7 @@ void setup(){
   world.setEdges((edgeTopLeftX), (edgeTopLeftY), (edgeBottomRightX), (edgeBottomRightY)); 
   world.setEdgesRestitution(.4);
   world.setEdgesFriction(0.5);
-  file.play();
+ // file.play();
   
   
   world.draw();
@@ -303,6 +310,7 @@ class SimulationThread implements Runnable{
       
       if(penWall.y < 0){
         fWall = fWall.add(penWall.mult(-kWall));  
+       // file.play();
       }
       
       fEE = (fWall.copy()).mult(-1);
@@ -312,6 +320,9 @@ class SimulationThread implements Runnable{
     torques.set(widgetOne.set_device_torques(fEE.array()));
     widgetOne.device_write_torques();
   
+    if (s.h_avatar.isTouchingBody(supWall)){
+      file.play();
+    }
     
     
     renderingForce = false;
