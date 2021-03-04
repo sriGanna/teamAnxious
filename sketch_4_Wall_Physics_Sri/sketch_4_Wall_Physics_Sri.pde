@@ -220,7 +220,7 @@ void setup() {
   /* If you are developing on a Mac users must update the path below 
    * from "../img/Haply_avatar.png" to "./img/Haply_avatar.png" 
    */
-  haplyAvatar = loadImage("../img/pac3.png"); 
+  haplyAvatar = loadImage("../img/tack.png"); 
   haplyAvatar.resize((int)(hAPI_Fisica.worldToScreen(1)), (int)(hAPI_Fisica.worldToScreen(1)));
   s.h_avatar.attachImage(haplyAvatar); 
 
