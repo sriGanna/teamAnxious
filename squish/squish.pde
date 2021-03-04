@@ -102,6 +102,7 @@ FBlob             f;
 /* Initialization of virtual tool */
 HVirtualCoupling  s;
 PImage            haplyAvatar;
+FBox supWall, supWall2,supWall3,supWall4;
 
 
 
@@ -170,6 +171,33 @@ void setup(){
   //t.setDensity(50); 
   //t.setFill(random(255),random(255),random(255));
   //world.add(t);
+    supWall2                 = new FBox(20, 1);
+    supWall2 .setStatic(true);
+    supWall2 .setFill(255);
+    supWall2 .setNoStroke();
+    supWall2.setPosition(10,13);
+    world.add(supWall2);
+    
+      supWall                 = new FBox(5, 1);
+    supWall .setStatic(true);
+    supWall .setFill(0);
+    supWall .setNoStroke();
+    supWall.setPosition(10,5);
+    world.add(supWall);
+    
+         supWall3                 = new FBox(5, 1);
+    supWall3 .setStatic(true);
+    supWall3 .setFill(0);
+    supWall3 .setNoStroke();
+    supWall3.setPosition(10,0);
+    world.add(supWall3);
+    
+         supWall4                 = new FBox(5, 1);
+    supWall4 .setStatic(true);
+    supWall4 .setFill(0);
+    supWall4 .setNoStroke();
+    supWall4.setPosition(10,7);
+    world.add(supWall4);
   
   
   /* creation of small circle shape */
@@ -216,7 +244,7 @@ void setup(){
   haplyAvatar = loadImage("../img/Haply_avatar.png"); 
   haplyAvatar.resize((int)(hAPI_Fisica.worldToScreen(1)), (int)(hAPI_Fisica.worldToScreen(1)));
   s.h_avatar.attachImage(haplyAvatar); 
-  file.play();
+  //file.play();
 
 
   /* world conditions setup */
@@ -225,7 +253,7 @@ void setup(){
   world.setEdges((edgeTopLeftX), (edgeTopLeftY), (edgeBottomRightX), (edgeBottomRightY)); 
   world.setEdgesRestitution(.4);
   world.setEdgesFriction(0.5);
-  file.play();
+  //file.play();
   
   
   world.draw();
@@ -297,6 +325,9 @@ class SimulationThread implements Runnable{
     widgetOne.device_write_torques();
   
     
+    if (s.h_avatar.isTouchingBody(supWall3) || s.h_avatar.isTouchingBody(supWall2) & !file.isPlaying()){
+      file.play();
+    }
     
     renderingForce = false;
     world.step(1.0f/1000.0f);
