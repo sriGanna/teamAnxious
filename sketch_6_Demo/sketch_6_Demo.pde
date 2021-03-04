@@ -119,6 +119,7 @@ FCircle           c3;
 
 /* define game start */
 boolean           gameStart                           =false;
+boolean           reset                               =false;
 int               mode                                =0;
 
 /* text font */
@@ -342,8 +343,11 @@ void draw() {
           spacedWalls[i][j].setNoFill();
           spacedWalls[i][j].setSensor(true);
         }
-      }   
+      }
+      if (reset){
       circle2.setPosition(12,7);
+      reset = false;
+      }
       // all other mode drawings invisib
     } else if (mode ==2) {
       shape(wall);
@@ -382,8 +386,12 @@ void draw() {
         walls[i].setNoFill();
         walls[i].setSensor(true);
       }
+       if (reset){
       circle2.setFill(255,0,0);
       circle2.setPosition(12, 7);
+      reset = false;
+      }
+      
     } else {
       for (int i=0; i<4; i++)
       {
@@ -454,14 +462,17 @@ class SimulationThread implements Runnable {
     widgetOne.device_write_torques();
 
     if (s.h_avatar.isTouchingBody(c1)) {
+      reset = true;
       gameStart = true;
       mode =1;
       s.h_avatar.setSensor(false);
     } else if (s.h_avatar.isTouchingBody(c2)) {
+      reset = true;
 
       mode =2;
       s.h_avatar.setSensor(false);
     } else if (s.h_avatar.isTouchingBody(c3)) {
+      reset = true;
 
       mode =3;
       s.h_avatar.setSensor(false);
