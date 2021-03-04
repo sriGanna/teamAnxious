@@ -100,12 +100,12 @@ HVirtualCoupling  s;
 FBox[] walls = new FBox[28];
 PShape wall;
 
-FBox[][]              spacedWalls=new FBox[4][12];
+FBox[][]              spacedWalls=new FBox[4][13];
 float wallW = 0.6;
 
 float w1=4;
-float w2=10.2;
-float w3=15;
+float w2=9.4;
+float w3=13.2;
 
 FCircle           circle2;
 
@@ -205,9 +205,9 @@ void setup() {
     }
   }
   float wx1=7.18;
-  float wx2=23.2;
+  float wx2=21.4;
   float wy1=3;
-  float wy2=19;
+  float wy2=17.2;
 
   createWall(wx1, false, 0);
   resetW();
@@ -219,7 +219,7 @@ void setup() {
 
   for (int i=0; i<4; i++)
   {
-    for (int j=0; j<12; j++)
+    for (int j=0; j<=12; j++)
     {
       if (i ==0 && j==2) {
         j++;
@@ -353,7 +353,7 @@ void draw() {
       shape(wall);
       for (int i=0; i<4; i++)
       {
-        for (int j=0; j<12; j++)
+        for (int j=0; j<=12; j++)
         {
           if (i ==0 && j==2) {
             j++;
@@ -372,7 +372,7 @@ void draw() {
     } else if (mode ==3) {
       for (int i=0; i<4; i++)
       {
-        for (int j=0; j<12; j++)
+        for (int j=0; j<=12; j++)
         {
           if (i ==0 && j==2) {
             j++;
@@ -396,7 +396,7 @@ void draw() {
     } else {
       for (int i=0; i<4; i++)
       {
-        for (int j=0; j<12; j++)
+        for (int j=0; j<=12; j++)
         {
           if (i ==0 && j==2) {
             j++;
@@ -505,49 +505,49 @@ PShape create_wall(float x1, float y1, float x2, float y2) {
 }
 
 void createWall(float w, boolean isHorizontal, int wallNumber) {
-  for (int j=0; j<12; j++)
+  for (int j=0; j<=12; j++)
   {
     if (isHorizontal==true && j<4)
     {
       spacedWalls[wallNumber][j]=new FBox(wallW+0.2, 1);
       spacedWalls[wallNumber][j].setPosition(w1+4.2, w);      
-      w1=w1+1.6;
+      w1=w1+1.4;
     } else if (isHorizontal==true && j>=4 && j<8)
     {
       spacedWalls[wallNumber][j]=new FBox(wallW, 1);
       spacedWalls[wallNumber][j].setPosition(w2+4.2, w);     
-      w2=w2+1.2;
-    } else if (isHorizontal==true && j>=8 && j<12)
+      w2=w2+1;
+    } else if (isHorizontal==true && j>=8 && j<=12)
     {
       spacedWalls[wallNumber][j]=new FBox(wallW-0.2, 1);
       spacedWalls[wallNumber][j].setPosition(w3+4.2, w);      
-      w3=w3+1;
+      w3=w3+0.8;
     } else if (isHorizontal==false && j<4)
     {
       spacedWalls[wallNumber][j]=new FBox(1, wallW+0.2);
       spacedWalls[wallNumber][j].setPosition(w, w1);      
       //println(w,w1);
-      w1=w1+1.6;
+      w1=w1+1.4;
     } else if (isHorizontal==false && j>=4 && j<8)
     {
       spacedWalls[wallNumber][j]=new FBox(1, wallW);
       spacedWalls[wallNumber][j].setPosition(w, w2);      
       //println(w,w2);
-      w2=w2+1.2;
-    } else if (isHorizontal==false && j>=8 && j<12)
+      w2=w2+1;
+    } else if (isHorizontal==false && j>=8 && j<=12)
     {
       spacedWalls[wallNumber][j]=new FBox(1, wallW-0.2);
       spacedWalls[wallNumber][j].setPosition(w, w3);     
       //println(w,w3);
-      w3=w3+1;
+      w3=w3+0.8;
     }
   }
 }
 
 void resetW() {
   w1=4;
-  w2=10.2;
-  w3=15;
+  w2=9.4;
+  w3=13.2;
   //print("here" + w1+" "+w2+" "+w3);
 }
 /* end helper functions section ****************************************************************************************/
