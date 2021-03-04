@@ -337,7 +337,7 @@ void setup() {
   //popWall[2].setPosition(edgeTopLeftX+12.2, 9.2);
 
   bubble                   = new FCircle(1.7);
-  bubble.setPosition(10, 7);
+  bubble.setPosition(8.5, 7);
   bubble.setStatic(true);
   bubble.setFill(255);
   bubble.setNoStroke();
