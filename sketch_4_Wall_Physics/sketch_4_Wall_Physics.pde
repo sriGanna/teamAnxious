@@ -180,11 +180,12 @@ void setup(){
   //  world.add(wall10); 
     
     
-  //circle1                   = new FCircle(4);
-  //circle1.setPosition(15, 15);
-  //circle1.setStatic(true);
-  //circle1.setFill(0, 0, 0);
-  //world.add(circle1);
+  circle1                   = new FCircle(3);
+  circle1.setPosition(13, 5);
+  circle1.setStatic(true);
+  circle1.setFill(255, 255, 255);
+  circle1.setNoStroke();
+  world.add(circle1);
   
       
   circle2                   = new FCircle(1.7);
@@ -303,8 +304,10 @@ class SimulationThread implements Runnable{
       //delay(10);
       circle2.setNoFill();
     }
-    else {
-      //circle2.setFill(0,0,0);
+    else if (s.h_avatar.isTouchingBody(circle1)){
+      circle2.setFill(0,0,0);
+      circle2.setPosition(10, 8);
+      done=false;
     }
     
   
