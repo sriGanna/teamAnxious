@@ -86,7 +86,7 @@ FBlob             blob1;
 /* Timer variables */
 long currentMillis = millis();
 long previousMillis = 0;
-float interval = 300;
+float interval = 10;
 
 /* Initialization of virtual tool */
 HVirtualCoupling  s;
@@ -184,16 +184,17 @@ void setup() {
   //  world.add(wall10); 
 
 
-  //circle1                   = new FCircle(4);
-  //circle1.setPosition(15, 15);
-  //circle1.setStatic(true);
-  //circle1.setFill(0, 0, 0);
-  //world.add(circle1);
+  circle1                   = new FCircle(3);
+  circle1.setPosition(15, 5);
+  circle1.setStatic(true);
+  circle1.setFill(0, 255, 255);
+  circle1.setNoStroke();
+  world.add(circle1);
 
 
   circle2                   = new FCircle(1.7);
   circle2.setPosition(10, 7);
-  circle2.setStatic(false);
+  circle2.setStatic(true);
   circle2.setFill(0, 0, 0);
   circle2.setNoStroke();
   world.add(circle2);
@@ -300,13 +301,14 @@ class SimulationThread implements Runnable {
     world.step(1.0f/1000.0f);
 
 
-    if (s.h_avatar.isTouchingBody(wall4) || s.h_avatar.isTouchingBody(wall7) || s.h_avatar.isTouchingBody(wall6) && !file.isPlaying()) {
+    if (s.h_avatar.isTouchingBody(circle2) || s.h_avatar.isTouchingBody(wall7) || s.h_avatar.isTouchingBody(wall6) && !file.isPlaying()) {
       //file.play();
 
       currentMillis = millis();
       if (currentMillis - previousMillis > interval) {
         playAudio();
         done=true;
+        print("inside");
         //delay(10);
         circle2.setNoFill();
         circle2.setSensor(true);
@@ -322,9 +324,9 @@ class SimulationThread implements Runnable {
       done=false;
       circle2.setSensor(false);
 
-
+     }
       renderingForce = false;
-    }
+   
   }
 }
 /* end simulation section **********************************************************************************************/
