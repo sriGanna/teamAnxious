@@ -116,7 +116,7 @@ FCircle           circle2;
 FCircle           bubble;
 
 /* define start and stop button */
-FCircle           c1,c2,c3,c4,c5;
+FCircle           c1, c2, c3, c4, c5;
 
 
 /* Define Blob Variables*/
@@ -125,7 +125,7 @@ FBox              supWall, supWall2, supWall3, supWall4;
 
 /*Bubble Pop Variables*/
 FBox[] popWall = new FBox[3];
-PImage            haplyAvatar,bubbleImg;
+PImage            haplyAvatar, bubbleImg;
 boolean done=false;
 
 /* Timer variables */
@@ -138,7 +138,7 @@ float interval = 10;
 /* define game start */
 boolean           gameStart                           =false;
 boolean           reset                               =false;
-int               mode                                =1;
+int               mode                                =0;
 
 /* text font */
 PFont             F;
@@ -330,7 +330,7 @@ void setup() {
   //  popWall[i].setNoStroke();
   //  world.add(popWall[i]);
   //  popWall[i].setSensor(true);
-    
+
   //}
 
   //popWall[1].setPosition(edgeTopLeftX+10, 10);
@@ -342,7 +342,7 @@ void setup() {
   bubble.setFill(255);
   bubble.setNoStroke();
   world.add(bubble);
-bubble.setSensor(true);
+  bubble.setSensor(true);
   //bubbleImg = loadImage("../img/bubble.png"); 
   //bubbleImg.resize((int)(hAPI_Fisica.worldToScreen(2)), (int)(hAPI_Fisica.worldToScreen(2)));
   //bubble.attachImage(bubbleImg); 
@@ -373,16 +373,16 @@ bubble.setSensor(true);
   c3.setStaticBody(true);
   c3.setSensor(true);
   world.add(c3);
-  
-    /* Mode 4 Button */
+
+  /* Mode 4 Button */
   c4                  = new FCircle(1.0);
   c4.setPosition(edgeTopLeftX+2, edgeTopLeftY+worldHeight/2.0-2);
   c4.setFill(100, 50, 150);
   c4.setStaticBody(true);
   c4.setSensor(true);
   world.add(c4);
-  
-    /* Mode 5 Button */
+
+  /* Mode 5 Button */
   c5                  = new FCircle(1.0);
   c5.setPosition(edgeTopLeftX+2, edgeTopLeftY+worldHeight/2.0);
   c5.setFill(50, 75, 20);
@@ -427,8 +427,8 @@ void draw() {
     background(255);
 
     textFont(F, 22);
-    
-    
+
+
     if (mode ==1) {
       fill(0, 0, 0);
       textAlign(CENTER);
@@ -453,7 +453,6 @@ void draw() {
       supWall2.setNoFill();
       supWall3.setNoFill();
       supWall4.setNoFill();
-
     } else if (mode ==2) {
       shape(wall);
       for (int i=0; i<4; i++)
@@ -478,7 +477,6 @@ void draw() {
       supWall2.setNoFill();
       supWall3.setNoFill();
       supWall4.setNoFill();
-
     } else if (mode ==3) {
       for (int i=0; i<4; i++)
       {
@@ -502,7 +500,6 @@ void draw() {
       supWall2.setNoFill();
       supWall3.setNoFill();
       supWall4.setNoFill();
-
     } else if (mode ==4) {
       for (int i=0; i<4; i++)
       {
@@ -547,6 +544,11 @@ void draw() {
         walls[i].setNoFill();
       }
       circle2.setNoFill();
+      f.setNoFill();
+      supWall.setNoFill();
+      supWall2.setNoFill();
+      supWall3.setNoFill();
+      supWall4.setNoFill();
     } else {
       for (int i=0; i<4; i++)
       {
@@ -562,7 +564,7 @@ void draw() {
       for (int i=0; i<28; i++) {
         walls[i].setNoFill();
       }
-      
+
       f.setNoFill();
       supWall.setNoFill();
       supWall2.setNoFill();
@@ -623,7 +625,7 @@ class SimulationThread implements Runnable {
     widgetOne.device_write_torques();
 
     if (s.h_avatar.isTouchingBody(c1)) {
-            gameStart = true;
+      gameStart = true;
       mode =1;
       s.h_avatar.setSensor(false);
       circle2.setPosition(12, 7);
@@ -634,39 +636,39 @@ class SimulationThread implements Runnable {
       mode =3;
       s.h_avatar.setSensor(false);
       circle2.setPosition(12, 7);
-    }
-    else if (s.h_avatar.isTouchingBody(c4)) {    
+    } else if (s.h_avatar.isTouchingBody(c4)) {    
       mode =4;
       s.h_avatar.setSensor(false);
-    }
-    else if (s.h_avatar.isTouchingBody(c5)) {
+    } else if (s.h_avatar.isTouchingBody(c5)) {
       mode =5;
-      bubble.setFill(0,0,245);
+      bubble.setFill(0, 0, 245);
       bubble.setPosition(10, 8);
       done=false;
       bubble.setSensor(false);
     }
-     if (mode == 4){
-   if ((s.h_avatar.isTouchingBody(supWall) || s.h_avatar.isTouchingBody(supWall2) || s.h_avatar.isTouchingBody(supWall3) || s.h_avatar.isTouchingBody(supWall4)) && !file.isPlaying()){
-      file.play();
-   }
-   }
-   
-    if (mode ==5 && s.h_avatar.isTouchingBody(bubble) && !file.isPlaying()) {
-      //file.play();
-
-      currentMillis = millis();
-      if (currentMillis - previousMillis > interval) {
-        playAudio();
-        done=true;
-        print("inside");
-        bubble.setNoFill();
-        bubble.setSensor(true);
+    if (mode == 4) {
+      if ((s.h_avatar.isTouchingBody(supWall) || s.h_avatar.isTouchingBody(supWall2) || s.h_avatar.isTouchingBody(supWall3) || s.h_avatar.isTouchingBody(supWall4)) && !file.isPlaying()) {
+        file.play();
       }
-    } else {
-      previousMillis = millis();
-      //circle2.setFill(0,0,0);
     }
+    if (mode ==5) {
+      if (s.h_avatar.isTouchingBody(bubble) && !file.isPlaying()) {
+        //file.play();
+
+        currentMillis = millis();
+        if (currentMillis - previousMillis > interval) {
+          playAudio();
+          done=true;
+          print("inside");
+          bubble.setNoFill();
+          bubble.setSensor(true);
+        }
+      } else {
+        previousMillis = millis();
+        //circle2.setFill(0,0,0);
+      }
+    }
+
 
     world.step(1.0f/1000.0f);
 
