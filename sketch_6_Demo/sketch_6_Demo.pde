@@ -164,6 +164,7 @@ void setup() {
   /* set font type and size */
   F                   = createFont("Arial", 16, true);
 
+  /* create pantagraph graphics */
 
   /* device setup */
 
@@ -245,6 +246,7 @@ void setup() {
 
   /* Insert Drawings for Mode 2 Here */
   deviceOrigin.add(worldPixelWidth/2, 0);
+    create_pantagraph();
 
   /* create pantagraph graphics */
   wall = create_wall(posWall.x-0.2, posWall.y+rEE, posWall.x+0.2, posWall.y+rEE);
@@ -422,6 +424,7 @@ void setup() {
 /* draw section ********************************************************************************************************/
 void draw() {
   /* put graphical code here, runs repeatedly at defined framerate in setup, else default at 60fps: */
+  
   if (renderingForce == false) {
     background(255);
      fill(0, 0, 0);
@@ -431,8 +434,8 @@ void draw() {
 
 
     if (mode ==2) {
-      shape(wall);
-
+      //shape(wall);
+      update_animation(angles.x*radsPerDegree, angles.y*radsPerDegree, posEE.x, posEE.y);
       for (int i=0; i<4; i++)
       {
         for (int j=0; j<=12; j++)
@@ -579,7 +582,11 @@ class SimulationThread implements Runnable {
       angles.set(widgetOne.get_device_angles()); 
       posEE.set(widgetOne.get_device_position(angles.array()));
       posEE.set(posEE.copy().mult(200));  
+
       if (mode ==2) {
+         //angles.set(widgetOne.get_device_angles()); 
+         //posEE.set(widgetOne.get_device_position(angles.array()));
+         //posEE.set(device_to_graphics(posEE));
         /* haptic wall force calculation */
         fWall.set(0, 0);
 
@@ -747,8 +754,51 @@ void playAudio() {
     print("here");
   }
 }
+void update_animation(float th1, float th2, float xE, float yE){
+  
+  float lAni = pixelsPerMeter * l;
+  float LAni = pixelsPerMeter * L;
+  
+  xE = pixelsPerMeter * xE;
+  yE = pixelsPerMeter * yE;
+  
+  th1 = 3.14 - th1;
+  th2 = 3.14 - th2;
+  
+  pGraph.setVertex(1, deviceOrigin.x + lAni*cos(th1), deviceOrigin.y + lAni*sin(th1));
+  pGraph.setVertex(3, deviceOrigin.x + lAni*cos(th2), deviceOrigin.y + lAni*sin(th2));
+  pGraph.setVertex(2, deviceOrigin.x + xE, deviceOrigin.y + yE);
+  
+  //shape(pGraph);
+  shape(wall);
+  
+  translate(xE, yE);
+}
 
-
-
+void create_pantagraph(){
+  float lAni = pixelsPerMeter * l;
+  float LAni = pixelsPerMeter * L;
+  float rEEAni = pixelsPerMeter * rEE;
+  
+  pGraph = createShape();
+  pGraph.beginShape();
+  pGraph.fill(255);
+  pGraph.stroke(0);
+  pGraph.strokeWeight(2);
+  
+  pGraph.vertex(deviceOrigin.x, deviceOrigin.y);
+  pGraph.vertex(deviceOrigin.x, deviceOrigin.y);
+  pGraph.vertex(deviceOrigin.x, deviceOrigin.y);
+  pGraph.vertex(deviceOrigin.x, deviceOrigin.y);
+  pGraph.endShape(CLOSE);
+  
+  joint = createShape(ELLIPSE, deviceOrigin.x, deviceOrigin.y, rEEAni, rEEAni);
+  joint.setStroke(color(0));
+  
+  endEffector = createShape(ELLIPSE, deviceOrigin.x, deviceOrigin.y, 2*rEEAni, 2*rEEAni);
+  endEffector.setStroke(color(0));
+  strokeWeight(5);
+  
+}
 
 /* end helper functions section ****************************************************************************************/
