@@ -24,6 +24,7 @@ import ddf.minim.*;
 Minim minim;
 AudioPlayer song;
 SoundFile file;
+SoundFile file2;
 /* end library imports *************************************************************************************************/
 
 
@@ -151,6 +152,7 @@ PFont             F;
 void setup() {
   /* put setup code here, run once: */
   file = new SoundFile(this, "pop1.wav");
+  file2 = new SoundFile(this, "squish.mp3");
   /* screen size definition */
   size(1280, 820);
 
@@ -228,6 +230,7 @@ void setup() {
   circle2                   = new FCircle(1);
   circle2.setPosition(12, 7);
   circle2.setStatic(false);
+  circle2.setDensity(4);
   circle2.setFill(255, 0, 0);
   circle2.setNoStroke();
   world.add(circle2);
@@ -286,28 +289,29 @@ void setup() {
 
   supWall2                 = new FBox(20, 1);
   supWall2 .setStatic(true);
-  supWall2 .setNoFill();
+  //supWall2 .setNoFill();
+  supWall2.setFill(255,255,0);
   supWall2 .setNoStroke();
   supWall2.setPosition(30, 13);
   world.add(supWall2);
 
   supWall                 = new FBox(5, 1);
   supWall .setStatic(true);
-  supWall .setNoFill();
+  //supWall .setNoFill();
   supWall .setNoStroke();
   supWall.setPosition(25, 5);
   world.add(supWall);
 
   supWall3                 = new FBox(5, 1);
   supWall3 .setStatic(true);
-  supWall3 .setNoFill();
+  //supWall3 .setNoFill();
   supWall3 .setNoStroke();
   supWall3.setPosition(25, 0);
   world.add(supWall3);
 
   supWall4                 = new FBox(5, 1);
   supWall4 .setStatic(true);
-  supWall4 .setNoFill();
+  //supWall4 .setNoFill();
   supWall4 .setNoStroke();
   supWall4.setPosition(20, 7);
   world.add(supWall4);
@@ -351,12 +355,12 @@ void setup() {
   /* end of mode 5 drawings */
 
   /* Mode 1 Button */
-  c1                  = new FCircle(1.0); // diameter is 2
-  c1.setPosition(edgeTopLeftX+2, edgeTopLeftY+worldHeight/2.0-4);
-  c1.setFill(0, 255, 0);
-  c1.setStaticBody(true);
-  c1.setSensor(true);
-  world.add(c1);
+  //c1                  = new FCircle(1.0); // diameter is 2
+  //c1.setPosition(edgeTopLeftX+2, edgeTopLeftY+worldHeight/2.0-4);
+  //c1.setFill(0, 255, 0);
+  //c1.setStaticBody(true);
+  //c1.setSensor(true);
+  //world.add(c1);
 
   /* Mode 2 Button */
   c2                  = new FCircle(1.0);
@@ -425,35 +429,13 @@ void draw() {
   /* put graphical code here, runs repeatedly at defined framerate in setup, else default at 60fps: */
   if (renderingForce == false) {
     background(255);
-
+     fill(0, 0, 0);
+      textAlign(CENTER);
+      text("Touch a coloured circle to switch modes", width/2, 90);
     textFont(F, 22);
 
 
-    if (mode ==1) {
-      fill(0, 0, 0);
-      textAlign(CENTER);
-      text("Touch a coloured circle to switch modes", width/2, 90);
-      // mode 1 drawings visible 
-
-      for (int i=0; i<28; i++) {
-        walls[i].setFill(0, 0, 0);
-        walls[i].setSensor(false);
-      }
-      circle2.setFill(255, 0, 0);
-      for (int i=0; i<4; i++)
-      {
-        for (int j=0; j<12; j++)
-        {
-          spacedWalls[i][j].setNoFill();
-          spacedWalls[i][j].setSensor(true);
-        }
-      }
-      f.setNoFill();
-      supWall.setNoFill();
-      supWall2.setNoFill();
-      supWall3.setNoFill();
-      supWall4.setNoFill();
-    } else if (mode ==2) {
+    if (mode ==2) {
       shape(wall);
       for (int i=0; i<4; i++)
       {
@@ -624,21 +606,27 @@ class SimulationThread implements Runnable {
     torques.set(widgetOne.set_device_torques(fEE.array()));
     widgetOne.device_write_torques();
 
-    if (s.h_avatar.isTouchingBody(c1)) {
-      gameStart = true;
-      mode =1;
-      s.h_avatar.setSensor(false);
-      circle2.setPosition(12, 7);
-    } else if (s.h_avatar.isTouchingBody(c2)) {
+    //if (s.h_avatar.isTouchingBody(c1)) {
+    //  gameStart = true;
+    //  mode =1;
+    //  s.h_avatar.setSensor(false);
+    //  circle2.setPosition(12, 7);
+      if (s.h_avatar.isTouchingBody(c2)) {
       mode =2;
       s.h_avatar.setSensor(false);
+      bubble.setSensor(true);
+      bubble.setNoFill();
     } else if (s.h_avatar.isTouchingBody(c3)) {
       mode =3;
       s.h_avatar.setSensor(false);
       circle2.setPosition(12, 7);
+      bubble.setSensor(true);
+      bubble.setNoFill();
     } else if (s.h_avatar.isTouchingBody(c4)) {    
       mode =4;
       s.h_avatar.setSensor(false);
+      bubble.setSensor(true);
+      bubble.setNoFill();
     } else if (s.h_avatar.isTouchingBody(c5)) {
       mode =5;
       bubble.setFill(0, 0, 245);
@@ -647,8 +635,8 @@ class SimulationThread implements Runnable {
       bubble.setSensor(false);
     }
     if (mode == 4) {
-      if ((s.h_avatar.isTouchingBody(supWall) || s.h_avatar.isTouchingBody(supWall2) || s.h_avatar.isTouchingBody(supWall3) || s.h_avatar.isTouchingBody(supWall4)) && !file.isPlaying()) {
-        file.play();
+      if ((s.h_avatar.isTouchingBody(supWall) || s.h_avatar.isTouchingBody(supWall2) || s.h_avatar.isTouchingBody(supWall3) || s.h_avatar.isTouchingBody(supWall4)) && !file2.isPlaying()) {
+        file2.play();
       }
     }
     if (mode ==5) {
