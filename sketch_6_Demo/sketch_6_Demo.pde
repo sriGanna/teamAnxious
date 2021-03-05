@@ -138,7 +138,7 @@ float interval = 10;
 /* define game start */
 boolean           gameStart                           =false;
 boolean           reset                               =false;
-int               mode                                =4;
+int               mode                                =1;
 
 /* text font */
 PFont             F;
@@ -150,7 +150,7 @@ PFont             F;
 /* setup section *******************************************************************************************************/
 void setup() {
   /* put setup code here, run once: */
-  file = new SoundFile(this, ".../sound/pop1.wav");
+  file = new SoundFile(this, "pop1.wav");
   /* screen size definition */
   size(1280, 820);
 
@@ -444,10 +444,6 @@ void draw() {
       {
         for (int j=0; j<12; j++)
         {
-          if (i ==0 && j==2) {
-            j++;
-          }
-
           spacedWalls[i][j].setNoFill();
           spacedWalls[i][j].setSensor(true);
         }
@@ -464,9 +460,9 @@ void draw() {
       {
         for (int j=0; j<=12; j++)
         {
-          if (i ==0 && j==2) {
-            j++;
-          }
+          //if (i ==0 && j==2) {
+          //  j++;
+          //}
 
           spacedWalls[i][j].setNoFill();
           spacedWalls[i][j].setSensor(true);
@@ -488,9 +484,9 @@ void draw() {
       {
         for (int j=0; j<=12; j++)
         {
-          if (i ==0 && j==2) {
-            j++;
-          }
+          //if (i ==0 && j==2) {
+          //  j++;
+          //}
 
           spacedWalls[i][j].setFill(0, 0, 0);
           spacedWalls[i][j].setSensor(false);
@@ -512,9 +508,9 @@ void draw() {
       {
         for (int j=0; j<12; j++)
         {
-          if (i ==0 && j==2) {
-            j++;
-          }
+          //if (i ==0 && j==2) {
+          //  j++;
+          //}
 
           spacedWalls[i][j].setNoFill();
           spacedWalls[i][j].setSensor(true);
@@ -566,6 +562,12 @@ void draw() {
       for (int i=0; i<28; i++) {
         walls[i].setNoFill();
       }
+      
+      f.setNoFill();
+      supWall.setNoFill();
+      supWall2.setNoFill();
+      supWall3.setNoFill();
+      supWall4.setNoFill();
       circle2.setNoFill();
     }
 
@@ -644,6 +646,12 @@ class SimulationThread implements Runnable {
       done=false;
       bubble.setSensor(false);
     }
+     if (mode == 4){
+   if ((s.h_avatar.isTouchingBody(supWall) || s.h_avatar.isTouchingBody(supWall2) || s.h_avatar.isTouchingBody(supWall3) || s.h_avatar.isTouchingBody(supWall4)) && !file.isPlaying()){
+      file.play();
+   }
+   }
+   
     if (mode ==5 && s.h_avatar.isTouchingBody(bubble) && !file.isPlaying()) {
       //file.play();
 
