@@ -78,19 +78,22 @@ float             edgeBottomRightX                    = worldWidth;
 float             edgeBottomRightY                    = worldHeight;
 
 
-/* Initialization of wall */
-FBox              wall, wall2, wall3, wall4, wall5, wall6, wall7, wall8, wall9, wall10; 
-FCircle           circle1, circle2;
-FBlob             blob1;
+/* Initialization of elements */
+FCircle           circle1, bbody;
+FPoly             b1;
+FPoly             b2;
+FLine             l1;
+FLine             l2;
+FLine             l3;
 
 /* Timer variables */
 long currentMillis = millis();
 long previousMillis = 0;
-float interval = 30;
+float interval = 10;
 
 /* Initialization of virtual tool */
 HVirtualCoupling  s;
-PImage            haplyAvatar, pac2;
+PImage            haplyAvatar, pac2,bubble;
 
 /* end elements definition *********************************************************************************************/
 
@@ -131,81 +134,55 @@ void setup() {
 
   widgetOne.device_set_parameters();
 
-
   /* 2D physics scaling and world creation */
   hAPI_Fisica.init(this); 
   hAPI_Fisica.setScale(pixelsPerCentimeter); 
   world               = new FWorld();
 
+  //reset circle
+  circle1                   = new FCircle(3);
+  circle1.setPosition(15, 5);
+  circle1.setStatic(true);
+  circle1.setFill(255,255,255);
+  circle1.setNoStroke();
+  world.add(circle1);
+   
+  //balloon  
+  l1 = new FLine(10,8.5,9.8,8.8);
+  addLine(l1);
 
+  l2 = new FLine(9.8,8.8,10.1,9);
+  addLine(l2);
+  
+  l3 = new FLine(10.1,9,9.9,9.3);
+  addLine(l3);
+  
+  b1                   = new FPoly(); 
+  b1.vertex(-0.7f, -1.0f);
+  b1.vertex( 0.7f, -1.0f);
+  b1.vertex( 0, 0);
+  b1.setPosition(10, 8.5); 
+  addPoly(b1);
 
-  wall4                   = new FBox(0.4, 1.4);
-  wall4.setPosition(edgeTopLeftX+7.7, 9.2);
-  wall4.setStatic(true);
-  wall4.setFill(255, 255, 255);
-  wall4.setNoStroke();
-  world.add(wall4);
+  
+  b2                   = new FPoly(); 
+  b2.vertex(-0.3f, 1.0f);
+  b2.vertex( 0.3f, 1.0f);
+  b2.vertex( 0, 0);
+  b2.setPosition(10, 7.5); 
+  addPoly(b2); 
+  
+  bbody                   = new FCircle(1.7);
+  bbody.setPosition(10, 7);
+  bbody.setStatic(true);
+  bbody.setFill(97, 59, 175);
+  bbody.setNoStroke();
+  world.add(bbody);
 
-  wall6                   = new FBox(5, 0.5);
-  wall6.setPosition(edgeTopLeftX+10, 10);
-  wall6.setStatic(true);
-  wall6.setFill(255, 255, 255);
-  wall6.setNoStroke();
-  world.add(wall6);
-
-  wall7                   = new FBox(0.4, 1.4);
-  wall7.setPosition(edgeTopLeftX+12.2, 9.2);
-  wall7.setStatic(true);
-  wall7.setFill(255, 255, 255);
-  wall7.setNoStroke();
-  world.add(wall7);
-
-  wall8                   = new FBox(4, 1);
-  wall8.setPosition(edgeTopLeftX+4, 2);
-  wall8.setStatic(true);
-  wall8.setFill(0,255,255);
-    wall8.setNoStroke();
-  world.add(wall8); 
-
-
-  //wall9                   = new FBox(2, 8);
-  //wall9.setPosition(5, 15);
-  //wall9.setStatic(true);
-  //wall9.setFill(0,255,255);
-  //  wall9.setNoStroke();
-  //world.add(wall9);
-
-
-  //wall10                   = new FBox(3, 2);
-  //wall10.setPosition(11, 8);
-  //wall10.setStatic(true);
-  //wall10.setFill(255,0,255);
-  //  wall10.setNoStroke();
-  //  world.add(wall10); 
-
-
-  //circle1                   = new FCircle(4);
-  //circle1.setPosition(15, 15);
-  //circle1.setStatic(true);
-  //circle1.setFill(0, 0, 0);
-  //world.add(circle1);
-
-
-  circle2                   = new FCircle(1.7);
-  circle2.setPosition(10, 7);
-  circle2.setStatic(false);
-  circle2.setFill(0, 0, 0);
-  circle2.setNoStroke();
-  world.add(circle2);
-
-  //FBlob blob1 = new FBlob();
-  //blob1.setAsCircle(13);
-  ////blob1.setPosition(7, 15);
-  //blob1.setStatic(false);
-  //blob1.setDensity(1);
-  //blob1.setFriction(15);
-  //blob1.setFill(128, 255, 0);
-  //world.add(blob1);
+  
+  //bubble = loadImage("../img/bubble.png"); 
+  //bubble.resize((int)(hAPI_Fisica.worldToScreen(2)), (int)(hAPI_Fisica.worldToScreen(2)));
+  //bbody.attachImage(bubble); 
 
   /* Haptic Tool Initialization */
   s                   = new HVirtualCoupling((1)); 
@@ -216,13 +193,9 @@ void setup() {
   /* If you are developing on a Mac users must update the path below 
    * from "../img/Haply_avatar.png" to "./img/Haply_avatar.png" 
    */
-  haplyAvatar = loadImage("../img/pac3.png"); 
+  haplyAvatar = loadImage("../img/tack.png"); 
   haplyAvatar.resize((int)(hAPI_Fisica.worldToScreen(1)), (int)(hAPI_Fisica.worldToScreen(1)));
   s.h_avatar.attachImage(haplyAvatar); 
-
-  //pac2 = loadImage("../img/pac2.png"); 
-  //pac2.resize((int)(hAPI_Fisica.worldToScreen(1)), (int)(hAPI_Fisica.worldToScreen(1)));
-  //wall7.attachImage(pac2); 
 
   /* world conditions setup */
   world.setGravity((0.0), (6000.0)); //1000 cm/(s^2)
@@ -300,31 +273,38 @@ class SimulationThread implements Runnable {
     world.step(1.0f/1000.0f);
 
 
-    if (s.h_avatar.isTouchingBody(wall4) || s.h_avatar.isTouchingBody(wall7) || s.h_avatar.isTouchingBody(wall6) && !file.isPlaying()) {
+    if (s.h_avatar.isTouchingBody(bbody) || s.h_avatar.isTouchingBody(b1) || s.h_avatar.isTouchingBody(b2) && !file.isPlaying()) {
       //file.play();
 
       currentMillis = millis();
       if (currentMillis - previousMillis > interval) {
         playAudio();
         done=true;
+        //print("inside");
         //delay(10);
-        circle2.setNoFill();
-        circle2.setSensor(true);
+        bbody.setNoFill();
+        b1.setNoFill();
+        b2.setNoFill();
+        bbody.setSensor(true);
       }
     } else {
       previousMillis = millis();
-      //circle2.setFill(0,0,0);
+      //bbody.setFill(0,0,0);
     }
 
     if (s.h_avatar.isTouchingBody(circle1)) {
-      circle2.setFill(0, 0, 0);
-      circle2.setPosition(10, 8);
+      b1.setPosition(10, 8.5); 
+      b1.setFill(82,50,148);
+      b2.setPosition(10, 7.5); 
+      b2.setFill(82,50,148);
+      bbody.setFill(97,59,175);
+      bbody.setPosition(10, 7);
       done=false;
-      circle2.setSensor(false);
+      bbody.setSensor(false);
 
-}
+     }
       renderingForce = false;
-    
+   
   }
 }
 /* end simulation section **********************************************************************************************/
@@ -336,7 +316,22 @@ void playAudio() {
   if (done==false)
   {
     file.play();
-    print("here");
+    //print("here");
   }
+}
+
+void addLine(FLine l) {
+  l.setStatic(true);
+  l.setFill(0,255,0);
+  l.setStroke(0,0,0);
+  l.setStrokeWeight(3);
+  world.add(l);
+}
+
+void addPoly(FPoly p) {
+  p.setStatic(true);
+  p.setFill(82,50,148);
+  p.setNoStroke();
+  world.add(p); 
 }
 /* end helper functions section ****************************************************************************************/
