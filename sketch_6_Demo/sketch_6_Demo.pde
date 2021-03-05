@@ -139,7 +139,7 @@ float interval = 10;
 /* define game start */
 boolean           gameStart                           =false;
 boolean           reset                               =false;
-int               mode                                =0;
+int               mode                                =4;
 
 /* text font */
 PFont             F;
@@ -193,50 +193,7 @@ void setup() {
   world               = new FWorld();
 
 
-  /* Mode 1 Drawings */
 
-
-  for (int i = 0; i <10; i++) {
-    walls[i]                  = new FBox(1, wallW);
-    walls[i].setStatic(true);
-    walls[i].setFill(0, 0, 0);
-    walls[i].setNoStroke();
-    world.add(walls[i]);
-
-    if (i ==2) {
-      walls[i].setPosition(18.8, 4);
-    }
-    if (i<7 & i>2) {
-      walls[i].setPosition(18.8, i+1.9);
-    } else if (i>=7) {
-      walls[i].setPosition(11.18, i-1.1);
-    }
-  }
-  for (int i = 10; i <28; i++) {
-    walls[i]                  = new FBox(wallW, 1);
-    walls[i].setStatic(true);
-    walls[i].setFill(0, 0, 0);
-    walls[i].setNoStroke();
-    world.add(walls[i]);
-    if (i<19) {
-      walls[i].setPosition(i+1, 3);
-    } else {
-      walls[i].setPosition(i-8, 9);
-    }
-  }
-
-
-  //circle
-  circle2                   = new FCircle(1);
-  circle2.setPosition(12, 7);
-  circle2.setStatic(false);
-  circle2.setDensity(4);
-  circle2.setFill(255, 0, 0);
-  circle2.setNoStroke();
-  world.add(circle2);
-
-
-  /* End of Mode 1 Drawings */
 
   /* Insert Drawings for Mode 2 Here */
   deviceOrigin.add(worldPixelWidth/2, 0);
@@ -276,6 +233,14 @@ void setup() {
       world.add(spacedWalls[i][j]);
     }
   }  
+  circle2                   = new FCircle(1);
+  circle2.setPosition(12, 7);
+  circle2.setStatic(false);
+  circle2.setDensity(4);
+  circle2.setFill(255, 0, 0);
+  circle2.setNoStroke();
+  world.add(circle2);
+
   /* Insert Drawings for Mode 4 Here */
   f                   = new FBlob();
   f.setAsCircle(30, 0, 50);
@@ -355,12 +320,12 @@ void setup() {
   /* end of mode 5 drawings */
 
   /* Mode 1 Button */
-  //c1                  = new FCircle(1.0); // diameter is 2
-  //c1.setPosition(edgeTopLeftX+2, edgeTopLeftY+worldHeight/2.0-4);
-  //c1.setFill(0, 255, 0);
-  //c1.setStaticBody(true);
-  //c1.setSensor(true);
-  //world.add(c1);
+  c1                  = new FCircle(1.0); // diameter is 2
+  c1.setPosition(edgeTopLeftX+2, edgeTopLeftY+worldHeight/2.0-4);
+  c1.setFill(0, 255, 0);
+  c1.setStaticBody(true);
+  c1.setSensor(true);
+  world.add(c1);
 
   /* Mode 2 Button */
   c2                  = new FCircle(1.0);
@@ -387,12 +352,12 @@ void setup() {
   world.add(c4);
 
   /* Mode 5 Button */
-  c5                  = new FCircle(1.0);
-  c5.setPosition(edgeTopLeftX+2, edgeTopLeftY+worldHeight/2.0);
-  c5.setFill(50, 75, 20);
-  c5.setStaticBody(true);
-  c5.setSensor(true);
-  world.add(c5);
+  //c5                  = new FCircle(1.0);
+  //c5.setPosition(edgeTopLeftX+2, edgeTopLeftY+worldHeight/2.0);
+  //c5.setFill(50, 75, 20);
+  //c5.setStaticBody(true);
+  //c5.setSensor(true);
+  //world.add(c5);
 
   /* Setup the Virtual Coupling Contact Rendering Technique */
   s                   = new HVirtualCoupling((0.75)); 
@@ -449,10 +414,7 @@ void draw() {
           spacedWalls[i][j].setSensor(true);
         }
       }  
-      for (int i=0; i<28; i++) {
-        walls[i].setNoFill();
-        walls[i].setSensor(true);
-      }
+     
       circle2.setNoFill();
       f.setNoFill();
       supWall.setNoFill();
@@ -472,10 +434,7 @@ void draw() {
           spacedWalls[i][j].setSensor(false);
         }
       }  
-      for (int i=0; i<28; i++) {
-        walls[i].setNoFill();
-        walls[i].setSensor(true);
-      }
+      
       circle2.setFill(255, 0, 0);
       f.setNoFill();
       supWall.setNoFill();
@@ -487,29 +446,22 @@ void draw() {
       {
         for (int j=0; j<12; j++)
         {
-          //if (i ==0 && j==2) {
-          //  j++;
-          //}
+          if (i ==0 && j==2) {
+            j++;
+          }
 
           spacedWalls[i][j].setNoFill();
           spacedWalls[i][j].setSensor(true);
         }
       }  
-      for (int i=0; i<28; i++) {
-        walls[i].setNoFill();
-        walls[i].setSensor(true);
-      }
+      
       circle2.setNoFill();
       f.setFill(255, 0, 255);
       supWall.setFill(0, 0, 0);
       supWall2.setFill(0, 0, 0);
       supWall3.setFill(0, 0, 0);
       supWall4.setFill(0, 0, 0);
-      // if (reset){
-      //
-      //circle2.setPosition(12, 7);
-      //reset = false;
-      //}
+      
     } else if (mode ==5) {
       for (int i=0; i<4; i++)
       {
@@ -522,9 +474,7 @@ void draw() {
           spacedWalls[i][j].setNoFill();
         }
       }  
-      for (int i=0; i<28; i++) {
-        walls[i].setNoFill();
-      }
+    
       circle2.setNoFill();
       f.setNoFill();
       supWall.setNoFill();
@@ -543,9 +493,7 @@ void draw() {
           spacedWalls[i][j].setNoFill();
         }
       }  
-      for (int i=0; i<28; i++) {
-        walls[i].setNoFill();
-      }
+     
 
       f.setNoFill();
       supWall.setNoFill();
@@ -611,23 +559,23 @@ class SimulationThread implements Runnable {
     //  mode =1;
     //  s.h_avatar.setSensor(false);
     //  circle2.setPosition(12, 7);
-      if (s.h_avatar.isTouchingBody(c2)) {
+      if (s.h_avatar.isTouchingBody(c1)) {
       mode =2;
       s.h_avatar.setSensor(false);
       bubble.setSensor(true);
       bubble.setNoFill();
-    } else if (s.h_avatar.isTouchingBody(c3)) {
+    } else if (s.h_avatar.isTouchingBody(c2)) {
       mode =3;
       s.h_avatar.setSensor(false);
       circle2.setPosition(12, 7);
       bubble.setSensor(true);
       bubble.setNoFill();
-    } else if (s.h_avatar.isTouchingBody(c4)) {    
+    } else if (s.h_avatar.isTouchingBody(c3)) {    
       mode =4;
       s.h_avatar.setSensor(false);
       bubble.setSensor(true);
       bubble.setNoFill();
-    } else if (s.h_avatar.isTouchingBody(c5)) {
+    } else if (s.h_avatar.isTouchingBody(c4)) {
       mode =5;
       bubble.setFill(0, 0, 245);
       bubble.setPosition(10, 8);
