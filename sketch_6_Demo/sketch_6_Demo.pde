@@ -435,7 +435,7 @@ void draw() {
 
     if (mode ==2) {
       //shape(wall);
-      update_animation(angles.x*radsPerDegree, angles.y*radsPerDegree, posEE.x, posEE.y);
+        shape(wall);
       for (int i=0; i<4; i++)
       {
         for (int j=0; j<=12; j++)
@@ -589,6 +589,7 @@ class SimulationThread implements Runnable {
          angles.set(widgetOne.get_device_angles()); 
          posEE.set(widgetOne.get_device_position(angles.array()));
          posEE.set(device_to_graphics(posEE));
+         
         /* haptic wall force calculation */
         fWall.set(0, 0);
 
@@ -601,9 +602,10 @@ class SimulationThread implements Runnable {
         fEE = (fWall.copy()).mult(-1);
         fEE.set(graphics_to_device(fEE));
         /* end haptic wall force calculation */
+        posEE.set(posEE.copy().mult(175));
       }
+      
     }
-
     s.setToolPosition(edgeTopLeftX+worldWidth/2-(posEE).x, edgeTopLeftY+(posEE).y-7); 
     s.updateCouplingForce();
 
@@ -757,21 +759,20 @@ void playAudio() {
     print("here");
   }
 }
-void update_animation(float th1, float th2, float xE, float yE){
+//void update_animation(float th1, float th2, float xE, float yE){
   
-  float lAni = pixelsPerMeter * l;
-  float LAni = pixelsPerMeter * L;
+//  float lAni = pixelsPerMeter * l;
+//  float LAni = pixelsPerMeter * L;
   
-  xE = pixelsPerMeter * xE;
-  yE = pixelsPerMeter * yE;
+//  xE = pixelsPerMeter * xE;
+//  yE = pixelsPerMeter * yE;
   
-  th1 = 3.14 - th1;
-  th2 = 3.14 - th2;
+//  th1 = 3.14 - th1;
+//  th2 = 3.14 - th2;
   
-  //shape(pGraph);
-  shape(wall);
+//  shape(wall);
   
-  translate(xE, yE);
-}
+//  translate(xE, yE);
+//}
 
 /* end helper functions section ****************************************************************************************/
