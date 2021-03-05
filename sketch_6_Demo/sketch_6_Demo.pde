@@ -71,6 +71,10 @@ PVector           fWall                               = new PVector(0, 0);
 PVector           penWall                             = new PVector(0, 0);
 PVector           posWall                             = new PVector(0.01, 0.10);
 
+/* pantagraph link parameters in meters */
+float             l                                   = 0.07;
+float             L                                   = 0.09;
+
 
 /* generic data for a 2DOF device */
 /* joint space */
@@ -85,7 +89,8 @@ PVector           fEE                                 = new PVector(0, 0);
 PVector           deviceOrigin                        = new PVector(0, 0);
 
 final int         worldPixelWidth                     = 1280;
-final int         worldPixelHeight                    = 1300;
+final int         worldPixelHeight                    = 820;
+PShape pGraph, joint, endEffector;
 
 /* World boundaries */
 FWorld            world;
@@ -126,7 +131,7 @@ FBox              supWall, supWall2, supWall3, supWall4;
 
 /*Bubble Pop Variables*/
 FBox[] popWall = new FBox[3];
-PImage            haplyAvatar, bubbleImg;
+PImage            haplyAvatar, bubbleImg, tomato;
 boolean done=false;
 
 /* Timer variables */
@@ -279,41 +284,44 @@ void setup() {
   /* Insert Drawings for Mode 4 Here */
   f                   = new FBlob();
   f.setAsCircle(30, 0, 50);
-  f.setNoFill();
   f.setNoStroke();
   f.setStatic(false);
   f.setFriction(15);
-  f.setDensity(1);
+  f.setForce(500,500);
+  //tomato = loadImage("../img/tomato.png"); 
+  //tomato.resize((int)(hAPI_Fisica.worldToScreen(2)), (int)(hAPI_Fisica.worldToScreen(2)));
+  //f.attachImage(tomato);
+  f.setDensity(2);
 
   world.add(f);
 
-  supWall2                 = new FBox(20, 1);
+  supWall2                 = new FBox(15, 1);
   supWall2 .setStatic(true);
   supWall2 .setNoFill();
-  supWall2.setFill(255,255,0);
+  supWall2.setNoFill();
   supWall2 .setNoStroke();
-  supWall2.setPosition(30, 13);
+  supWall2.setPosition(25, 5);
   world.add(supWall2);
 
-  supWall                 = new FBox(5, 1);
+  supWall                 = new FBox(15, 1);
   supWall .setStatic(true);
   supWall .setNoFill();
   supWall .setNoStroke();
-  supWall.setPosition(25, 5);
+  supWall.setPosition(25, 6);
   world.add(supWall);
 
-  supWall3                 = new FBox(5, 1);
+  supWall3                 = new FBox(15, 4);
   supWall3 .setStatic(true);
   supWall3 .setNoFill();
   supWall3 .setNoStroke();
-  supWall3.setPosition(25, 0);
+  supWall3.setPosition(22, 15);
   world.add(supWall3);
 
-  supWall4                 = new FBox(5, 1);
+  supWall4                 = new FBox(15, 4);
   supWall4 .setStatic(true);
   supWall4 .setNoFill();
   supWall4 .setNoStroke();
-  supWall4.setPosition(20, 7);
+  supWall4.setPosition(25, 7);
   world.add(supWall4);
   /* End of Mode 4 Drawings */
 
@@ -347,9 +355,6 @@ void setup() {
   bubble.setNoStroke();
   world.add(bubble);
   bubble.setSensor(true);
-  //bubbleImg = loadImage("../img/bubble.png"); 
-  //bubbleImg.resize((int)(hAPI_Fisica.worldToScreen(2)), (int)(hAPI_Fisica.worldToScreen(2)));
-  //bubble.attachImage(bubbleImg); 
 
 
   /* Mode 2 Button */
@@ -427,6 +432,7 @@ void draw() {
 
     if (mode ==2) {
       shape(wall);
+
       for (int i=0; i<4; i++)
       {
         for (int j=0; j<=12; j++)
@@ -443,6 +449,7 @@ void draw() {
         walls[i].setNoFill();
         walls[i].setSensor(true);
       }
+      
       circle2.setNoFill();
       f.setNoFill();
       supWall.setNoFill();
@@ -490,11 +497,15 @@ void draw() {
         walls[i].setSensor(true);
       }
       circle2.setNoFill();
-      f.setFill(255, 0, 255);
-      supWall.setFill(0, 0, 0);
-      supWall2.setFill(0, 0, 0);
-      supWall3.setFill(0, 0, 0);
-      supWall4.setFill(0, 0, 0);
+      f.setFill(255, 0, 0);
+      //supWall.setNoFill();
+      //supWall2.setNoFill();
+      //supWall3.setNoFill();
+      //supWall4.setNoFill();
+      //supWall.setFill(0, 0, 0);
+      //supWall2.setFill(0, 0, 0);
+      //supWall3.setFill(0, 0, 0);
+      //supWall4.setFill(0, 0, 0);
       // if (reset){
       //
       //circle2.setPosition(12, 7);
@@ -736,4 +747,8 @@ void playAudio() {
     print("here");
   }
 }
+
+
+
+
 /* end helper functions section ****************************************************************************************/
