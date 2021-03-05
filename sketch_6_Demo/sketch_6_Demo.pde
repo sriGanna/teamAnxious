@@ -289,7 +289,7 @@ void setup() {
 
   supWall2                 = new FBox(20, 1);
   supWall2 .setStatic(true);
-  //supWall2 .setNoFill();
+  supWall2 .setNoFill();
   supWall2.setFill(255,255,0);
   supWall2 .setNoStroke();
   supWall2.setPosition(30, 13);
@@ -297,21 +297,21 @@ void setup() {
 
   supWall                 = new FBox(5, 1);
   supWall .setStatic(true);
-  //supWall .setNoFill();
+  supWall .setNoFill();
   supWall .setNoStroke();
   supWall.setPosition(25, 5);
   world.add(supWall);
 
   supWall3                 = new FBox(5, 1);
   supWall3 .setStatic(true);
-  //supWall3 .setNoFill();
+  supWall3 .setNoFill();
   supWall3 .setNoStroke();
   supWall3.setPosition(25, 0);
   world.add(supWall3);
 
   supWall4                 = new FBox(5, 1);
   supWall4 .setStatic(true);
-  //supWall4 .setNoFill();
+  supWall4 .setNoFill();
   supWall4 .setNoStroke();
   supWall4.setPosition(20, 7);
   world.add(supWall4);
@@ -352,19 +352,9 @@ void setup() {
   //bubble.attachImage(bubbleImg); 
 
 
-  /* end of mode 5 drawings */
-
-  /* Mode 1 Button */
-  //c1                  = new FCircle(1.0); // diameter is 2
-  //c1.setPosition(edgeTopLeftX+2, edgeTopLeftY+worldHeight/2.0-4);
-  //c1.setFill(0, 255, 0);
-  //c1.setStaticBody(true);
-  //c1.setSensor(true);
-  //world.add(c1);
-
   /* Mode 2 Button */
   c2                  = new FCircle(1.0);
-  c2.setPosition(edgeTopLeftX+2, edgeTopLeftY+worldHeight/2.0-6);
+  c2.setPosition(edgeTopLeftX+2, edgeTopLeftY+worldHeight/2.0-4);
   c2.setFill(200, 0, 0);
   c2.setStaticBody(true);
   c2.setSensor(true);
@@ -372,7 +362,7 @@ void setup() {
 
   /* Mode 3 Button */
   c3                  = new FCircle(1.0);
-  c3.setPosition(edgeTopLeftX+2, edgeTopLeftY+worldHeight/2.0-8);
+  c3.setPosition(edgeTopLeftX+2, edgeTopLeftY+worldHeight/2.0-6);
   c3.setFill(0, 0, 200);
   c3.setStaticBody(true);
   c3.setSensor(true);
@@ -431,7 +421,7 @@ void draw() {
     background(255);
      fill(0, 0, 0);
       textAlign(CENTER);
-      text("Touch a coloured circle to switch modes", width/2, 90);
+      text("Touch a coloured (colored) circle to switch modes", width/4, 70);
     textFont(F, 22);
 
 
@@ -520,6 +510,7 @@ void draw() {
           }
 
           spacedWalls[i][j].setNoFill();
+          spacedWalls[i][j].setSensor(true);
         }
       }  
       for (int i=0; i<28; i++) {
@@ -605,34 +596,44 @@ class SimulationThread implements Runnable {
 
     torques.set(widgetOne.set_device_torques(fEE.array()));
     widgetOne.device_write_torques();
-
-    //if (s.h_avatar.isTouchingBody(c1)) {
-    //  gameStart = true;
-    //  mode =1;
-    //  s.h_avatar.setSensor(false);
-    //  circle2.setPosition(12, 7);
       if (s.h_avatar.isTouchingBody(c2)) {
       mode =2;
       s.h_avatar.setSensor(false);
       bubble.setSensor(true);
       bubble.setNoFill();
+      supWall.setSensor(true);
+      supWall2.setSensor(true);
+      supWall3.setSensor(true);
+      supWall4.setSensor(true);
     } else if (s.h_avatar.isTouchingBody(c3)) {
       mode =3;
       s.h_avatar.setSensor(false);
       circle2.setPosition(12, 7);
       bubble.setSensor(true);
       bubble.setNoFill();
+      supWall.setSensor(true);
+      supWall2.setSensor(true);
+      supWall3.setSensor(true);
+      supWall4.setSensor(true);
     } else if (s.h_avatar.isTouchingBody(c4)) {    
       mode =4;
       s.h_avatar.setSensor(false);
       bubble.setSensor(true);
       bubble.setNoFill();
+      supWall.setSensor(false);
+      supWall2.setSensor(false);
+      supWall3.setSensor(false);
+      supWall4.setSensor(false);
     } else if (s.h_avatar.isTouchingBody(c5)) {
       mode =5;
       bubble.setFill(0, 0, 245);
       bubble.setPosition(10, 8);
       done=false;
       bubble.setSensor(false);
+      supWall.setSensor(true);
+      supWall2.setSensor(true);
+      supWall3.setSensor(true);
+      supWall4.setSensor(true);
     }
     if (mode == 4) {
       if ((s.h_avatar.isTouchingBody(supWall) || s.h_avatar.isTouchingBody(supWall2) || s.h_avatar.isTouchingBody(supWall3) || s.h_avatar.isTouchingBody(supWall4)) && !file2.isPlaying()) {
