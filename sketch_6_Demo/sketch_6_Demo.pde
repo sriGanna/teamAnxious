@@ -66,7 +66,7 @@ float             pixelsPerCentimeter                 = 40.0;
 float             rEE                                 = 0.006;
 
 /* virtual wall parameter  */
-float             kWall                               = 450;
+float             kWall                               = 2000;
 PVector           fWall                               = new PVector(0, 0);
 PVector           penWall                             = new PVector(0, 0);
 PVector           posWall                             = new PVector(0.01, 0.10);
