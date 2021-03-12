@@ -41,11 +41,6 @@ int               CCW                                 = 1;
 boolean           renderingForce                      = false;
 /* end device block definition *****************************************************************************************/
 
-/* virtual wall parameter  */
-float             kWall                               = 450;
-PVector           fWall                               = new PVector(0, 0);
-PVector           penWall                             = new PVector(0, 0);
-PVector           posWall                             = new PVector(0.01, 0.10);
 
 /* Screen and world setup parameters */
 float             pixelsPerMeter                      = 4000.0;
@@ -92,7 +87,7 @@ float             edgeBottomRightY                    = worldHeight;
 
 
 /* Initialization of interative shapes */
-FBox              b;
+FCircle           c;
 FPoly             t;
 FCircle           g;
 FCircle           e;
@@ -102,7 +97,6 @@ FBlob             f;
 /* Initialization of virtual tool */
 HVirtualCoupling  s;
 PImage            haplyAvatar;
-FBox supWall, supWall2,supWall3,supWall4;
 
 
 
@@ -148,88 +142,29 @@ void setup(){
   hAPI_Fisica.setScale(pixelsPerCentimeter); 
   world               = new FWorld();
   
-  
-  /* creation of square shape */
-  //b                   = new FBox(3.0, 3.0);
-  //b.setPosition(edgeTopLeftX+worldWidth/4.0, edgeTopLeftY+worldHeight/2.0);
-  //b.setDensity(30);
-  //b.setFill(random(255), random(255), random(255));
-  //world.add(b);
-  
-  
-  /* creation of T shape */
-  //t                   = new FPoly(); 
-  //t.vertex(-1.5, -1.0);
-  //t.vertex( 1.5, -1.0);
-  //t.vertex( 3.0/2.0, 0);
-  //t.vertex( 1.0/2.0, 0);
-  //t.vertex( 1.0/2.0, 4.0/2.0);
-  //t.vertex(-1.0/2.0, 4.0/2.0);
-  //t.vertex(-1.0/2.0, 0);
-  //t.vertex(-3.0/2.0, 0);
-  //t.setPosition(edgeTopLeftX+10, edgeTopLeftY+5); 
-  //t.setDensity(50); 
-  //t.setFill(random(255),random(255),random(255));
-  //world.add(t);
-    supWall2                 = new FBox(20, 1);
-    supWall2 .setStatic(true);
-    supWall2 .setFill(255);
-    supWall2 .setNoStroke();
-    supWall2.setPosition(10,13);
-    world.add(supWall2);
-    
-      supWall                 = new FBox(5, 1);
-    supWall .setStatic(true);
-    supWall .setFill(0);
-    supWall .setNoStroke();
-    supWall.setPosition(10,5);
-    world.add(supWall);
-    
-         supWall3                 = new FBox(5, 1);
-    supWall3 .setStatic(true);
-    supWall3 .setFill(0);
-    supWall3 .setNoStroke();
-    supWall3.setPosition(10,0);
-    world.add(supWall3);
-    
-         supWall4                 = new FBox(5, 1);
-    supWall4 .setStatic(true);
-    supWall4 .setFill(0);
-    supWall4 .setNoStroke();
-    supWall4.setPosition(10,7);
-    world.add(supWall4);
-  
-  
-  /* creation of small circle shape */
-  //g                   = new FCircle(1.0);
-  //g.setPosition(7, 7);
-  //g.setFill(random(255),random(255),random(255));
-  //g.setDensity(10);
-  //world.add(g);
-  
-  
-  ///* creation of large circle shape */
-  //e                   = new FCircle(5);
-  //e.setPosition(5, 3);
-  //e.setFill(random(255), random(255), random(255));
-  //e.setDensity(18); //60g/cm2
-  //world.add(e);
-  
+ 
+
   
   /* creation of blob shape, warning may slow down simulation */
   f                   = new FBlob();
-  f.setAsCircle(50);
+  f.setAsCircle(9, 3, 20, 70);
   f.setStroke(0);
-  file.play();
-  f.setPosition(200,200);
   f.setStrokeWeight(2);
-  f.setFill(255);
-  f.setStatic(false);
-  f.setFriction(15);
-  f.setDensity(1);
-  //f.setDensity(30);
+  //f.setFill(255);
+  f.setStatic(true);
+  f.setFriction(20);
+  f.setDensity(100);
+  f.setSensor(true);
   f.setFill(random(255), random(255), random(255));
   world.add(f);
+  
+  c                   = new FCircle(17.0);
+  c.setPosition(edgeTopLeftX+worldWidth/1.3-10, edgeTopLeftY+2*worldHeight/6.0-4);
+  c.setStatic(true);
+  c.setSensor(true);
+  c.setNoFill();
+  c.setNoStroke();
+  world.add(c);
   
   
   /* Haptic Tool Initialization */
@@ -238,13 +173,12 @@ void setup(){
   s.init(world, edgeTopLeftX+worldWidth/2, edgeTopLeftY+2); 
  
   
-  /* If you are developing on a Mac users must update the path below 
-   * from "../img/Haply_avatar.png" to "./img/Haply_avatar.png" 
-   */
-  haplyAvatar = loadImage("../img/Haply_avatar.png"); 
-  haplyAvatar.resize((int)(hAPI_Fisica.worldToScreen(1)), (int)(hAPI_Fisica.worldToScreen(1)));
-  s.h_avatar.attachImage(haplyAvatar); 
-  //file.play();
+  ///* If you are developing on a Mac users must update the path below 
+  // * from "../img/Haply_avatar.png" to "./img/Haply_avatar.png" 
+  // */
+  //haplyAvatar = loadImage("../img/Haply_avatar.png"); 
+  //haplyAvatar.resize((int)(hAPI_Fisica.worldToScreen(1)), (int)(hAPI_Fisica.worldToScreen(1)));
+  //s.h_avatar.attachImage(haplyAvatar); 
 
 
   /* world conditions setup */
@@ -253,7 +187,7 @@ void setup(){
   world.setEdges((edgeTopLeftX), (edgeTopLeftY), (edgeBottomRightX), (edgeBottomRightY)); 
   world.setEdgesRestitution(.4);
   world.setEdgesFriction(0.5);
-  //file.play();
+
   
   
   world.draw();
@@ -308,26 +242,18 @@ class SimulationThread implements Runnable{
     fEE.set(-s.getVirtualCouplingForceX(), s.getVirtualCouplingForceY());
     fEE.div(100000); //dynes to newtons
     
-          /* haptic wall force calculation */
-      fWall.set(0, 0);
-      
-      penWall.set(0, (posWall.y - (posEE.y + rEE)));
-      
-      if(penWall.y < 0){
-        fWall = fWall.add(penWall.mult(-kWall));  
-      }
-      
-      fEE = (fWall.copy()).mult(-1);
-      fEE.set(graphics_to_device(fEE));
-      /* end haptic wall force calculation */
+
     
     torques.set(widgetOne.set_device_torques(fEE.array()));
     widgetOne.device_write_torques();
-  
-    
-    if (s.h_avatar.isTouchingBody(supWall3) || s.h_avatar.isTouchingBody(supWall2) & !file.isPlaying()){
+    if (s.h_avatar.isTouchingBody(c) && !file.isPlaying()){
+      s.h_avatar.setDamping(800);
       file.play();
+        
+    }else{
+      s.h_avatar.setDamping(0);
     }
+    
     
     renderingForce = false;
     world.step(1.0f/1000.0f);
@@ -338,12 +264,4 @@ class SimulationThread implements Runnable{
 
 
 /* helper functions section, place helper functions here ***************************************************************/
-PVector device_to_graphics(PVector deviceFrame){
-  return deviceFrame.set(-deviceFrame.x, deviceFrame.y);
-}
-
-
-PVector graphics_to_device(PVector graphicsFrame){
-  return graphicsFrame.set(-graphicsFrame.x, graphicsFrame.y);
-}
 /* end helper functions section ****************************************************************************************/
