@@ -122,12 +122,11 @@ FCircle           circle2;
 FCircle           bubble;
 
 /* define start and stop button */
-FCircle           c1, c2, c3, c4, c5;
+FCircle           c1, c2, c3, c4, c5, c;
 
 
 /* Define Blob Variables*/
 FBlob             f;
-FBox              supWall, supWall2, supWall3, supWall4;
 
 /*Bubble Pop Variables*/
 FBox[] popWall = new FBox[3];
@@ -231,8 +230,7 @@ void setup() {
     }
   }
 
-
-  //circle
+    //circle
   circle2                   = new FCircle(1);
   circle2.setPosition(12, 7);
   circle2.setStatic(false);
@@ -240,7 +238,6 @@ void setup() {
   circle2.setFill(255, 0, 0);
   circle2.setNoStroke();
   world.add(circle2);
-
 
   /* End of Mode 1 Drawings */
 
@@ -253,9 +250,6 @@ void setup() {
   wall.setStroke(color(0));
   /* End of Mode 2 Drawings */
 
-  /* Insert Drawings for Mode 3 Here */
-
-  /* End of Mode 3 Drawings */
   float wx1=7.18;
   float wx2=21.4;
   float wy1=3;
@@ -284,47 +278,25 @@ void setup() {
     }
   }  
   /* Insert Drawings for Mode 4 Here */
+  c                   = new FCircle(20.0);
+  c.setPosition(edgeTopLeftX+worldWidth/1.3-4, edgeTopLeftY+2*worldHeight/6.0-1);
+  c.setStatic(true);
+  c.setSensor(true);
+  c.setNoFill();
+  c.setNoStroke();
+  world.add(c);
+  
   f                   = new FBlob();
-  f.setAsCircle(30, 0, 50);
+  f.setAsCircle(16, 7, 20, 70);
   f.setNoStroke();
-  f.setStatic(false);
-  f.setFriction(15);
-  f.setForce(500,500);
-  //tomato = loadImage("../img/tomato.png"); 
-  //tomato.resize((int)(hAPI_Fisica.worldToScreen(2)), (int)(hAPI_Fisica.worldToScreen(2)));
-  //f.attachImage(tomato);
-  f.setDensity(2);
-
+  f.setStrokeWeight(2);
+  f.setStatic(true);
+  f.setFriction(20);
+  f.setDensity(100);
+  f.setSensor(true);
+  f.setNoFill();
+  //f.setFill(random(255), random(255), random(255));
   world.add(f);
-
-  supWall2                 = new FBox(15, 1);
-  supWall2 .setStatic(true);
-  supWall2 .setNoFill();
-  supWall2.setNoFill();
-  supWall2 .setNoStroke();
-  supWall2.setPosition(25, 5);
-  world.add(supWall2);
-
-  supWall                 = new FBox(15, 1);
-  supWall .setStatic(true);
-  supWall .setNoFill();
-  supWall .setNoStroke();
-  supWall.setPosition(25, 6);
-  world.add(supWall);
-
-  supWall3                 = new FBox(15, 4);
-  supWall3 .setStatic(true);
-  supWall3 .setNoFill();
-  supWall3 .setNoStroke();
-  supWall3.setPosition(22, 15);
-  world.add(supWall3);
-
-  supWall4                 = new FBox(15, 4);
-  supWall4 .setStatic(true);
-  supWall4 .setNoFill();
-  supWall4 .setNoStroke();
-  supWall4.setPosition(25, 7);
-  world.add(supWall4);
   /* End of Mode 4 Drawings */
 
   /* Mode 5 Drawings */
@@ -455,10 +427,6 @@ void draw() {
       
       circle2.setNoFill();
       f.setNoFill();
-      supWall.setNoFill();
-      supWall2.setNoFill();
-      supWall3.setNoFill();
-      supWall4.setNoFill();
     } else if (mode ==3) {
       for (int i=0; i<4; i++)
       {
@@ -478,10 +446,6 @@ void draw() {
       }
       circle2.setFill(255, 0, 0);
       f.setNoFill();
-      supWall.setNoFill();
-      supWall2.setNoFill();
-      supWall3.setNoFill();
-      supWall4.setNoFill();
     } else if (mode ==4) {
       for (int i=0; i<4; i++)
       {
@@ -500,20 +464,8 @@ void draw() {
         walls[i].setSensor(true);
       }
       circle2.setNoFill();
+      f.setStroke(0);
       f.setFill(255, 0, 0);
-      //supWall.setNoFill();
-      //supWall2.setNoFill();
-      //supWall3.setNoFill();
-      //supWall4.setNoFill();
-      //supWall.setFill(0, 0, 0);
-      //supWall2.setFill(0, 0, 0);
-      //supWall3.setFill(0, 0, 0);
-      //supWall4.setFill(0, 0, 0);
-      // if (reset){
-      //
-      //circle2.setPosition(12, 7);
-      //reset = false;
-      //}
     } else if (mode ==5) {
       for (int i=0; i<4; i++)
       {
@@ -532,10 +484,6 @@ void draw() {
       }
       circle2.setNoFill();
       f.setNoFill();
-      supWall.setNoFill();
-      supWall2.setNoFill();
-      supWall3.setNoFill();
-      supWall4.setNoFill();
     } else {
       for (int i=0; i<4; i++)
       {
@@ -553,10 +501,6 @@ void draw() {
       }
 
       f.setNoFill();
-      supWall.setNoFill();
-      supWall2.setNoFill();
-      supWall3.setNoFill();
-      supWall4.setNoFill();
       circle2.setNoFill();
     }
 
@@ -622,10 +566,6 @@ class SimulationThread implements Runnable {
       s.h_avatar.setSensor(false);
       bubble.setSensor(true);
       bubble.setNoFill();
-      supWall.setSensor(true);
-      supWall2.setSensor(true);
-      supWall3.setSensor(true);
-      supWall4.setSensor(true);
       
     } else if (s.h_avatar.isTouchingBody(c3)) {
       mode =3;
@@ -633,34 +573,26 @@ class SimulationThread implements Runnable {
       circle2.setPosition(12, 7);
       bubble.setSensor(true);
       bubble.setNoFill();
-      supWall.setSensor(true);
-      supWall2.setSensor(true);
-      supWall3.setSensor(true);
-      supWall4.setSensor(true);
     } else if (s.h_avatar.isTouchingBody(c4)) {    
       mode =4;
       s.h_avatar.setSensor(false);
       bubble.setSensor(true);
       bubble.setNoFill();
-      supWall.setSensor(false);
-      supWall2.setSensor(false);
-      supWall3.setSensor(false);
-      supWall4.setSensor(false);
     } else if (s.h_avatar.isTouchingBody(c5)) {
       mode =5;
       bubble.setFill(0, 0, 245);
       bubble.setPosition(10, 8);
       done=false;
       bubble.setSensor(false);
-      supWall.setSensor(true);
-      supWall2.setSensor(true);
-      supWall3.setSensor(true);
-      supWall4.setSensor(true);
     }
     if (mode == 4) {
-      if ((s.h_avatar.isTouchingBody(supWall) || s.h_avatar.isTouchingBody(supWall2) || s.h_avatar.isTouchingBody(supWall3) || s.h_avatar.isTouchingBody(supWall4)) && !file2.isPlaying()) {
+      if ((s.h_avatar.isTouchingBody(c) && !file2.isPlaying())) {
+        s.h_avatar.setDamping(800);
         file2.play();
       }
+      else{
+        s.h_avatar.setDamping(0);
+    }
     }
     if (mode ==5) {
       if (s.h_avatar.isTouchingBody(bubble) && !file.isPlaying()) {

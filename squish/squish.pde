@@ -147,7 +147,7 @@ void setup(){
   
   /* creation of blob shape, warning may slow down simulation */
   f                   = new FBlob();
-  f.setAsCircle(9, 3, 20, 70);
+  f.setAsCircle(16, 7, 20, 70);
   f.setStroke(0);
   f.setStrokeWeight(2);
   //f.setFill(255);
@@ -158,8 +158,8 @@ void setup(){
   f.setFill(random(255), random(255), random(255));
   world.add(f);
   
-  c                   = new FCircle(17.0);
-  c.setPosition(edgeTopLeftX+worldWidth/1.3-10, edgeTopLeftY+2*worldHeight/6.0-4);
+  c                   = new FCircle(20.0);
+  c.setPosition(edgeTopLeftX+worldWidth/1.3-4, edgeTopLeftY+2*worldHeight/6.0-1);
   c.setStatic(true);
   c.setSensor(true);
   c.setNoFill();
