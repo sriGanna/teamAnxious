@@ -176,7 +176,7 @@ void setup() {
    *      linux:        haplyBoard = new Board(this, "/dev/ttyUSB0", 0);
    *      mac:          haplyBoard = new Board(this, "/dev/cu.usbmodem1411", 0);
    */
-  haplyBoard          = new Board(this, "COM3", 0);
+  haplyBoard          = new Board(this, "COM4", 0);
   widgetOne           = new Device(widgetOneID, haplyBoard);
   pantograph          = new Pantograph();
 
@@ -349,7 +349,7 @@ void setup() {
 
   /* Mode 4 Button */
   c4                  = new FCircle(1.0);
-  c4.setPosition(edgeTopLeftX+2, edgeTopLeftY+worldHeight/2.0-2);
+  c4.setPosition(edgeTopLeftX+2, edgeTopLeftY+worldHeight/2.0-16);
   c4.setFill(100, 50, 150);
   c4.setStaticBody(true);
   c4.setSensor(true);
@@ -357,7 +357,7 @@ void setup() {
 
   /* Mode 5 Button */
   c5                  = new FCircle(1.0);
-  c5.setPosition(edgeTopLeftX+2, edgeTopLeftY+worldHeight/2.0);
+  c5.setPosition(edgeTopLeftX+2, edgeTopLeftY+worldHeight/2.0-2);
   c5.setFill(50, 75, 20);
   c5.setStaticBody(true);
   c5.setSensor(true);
