@@ -230,7 +230,7 @@ void setup() {
     }
   }
 
-    //circle
+  //circle
   circle2                   = new FCircle(1);
   circle2.setPosition(12, 7);
   circle2.setStatic(false);
@@ -243,7 +243,7 @@ void setup() {
 
   /* Insert Drawings for Mode 2 Here */
   deviceOrigin.add(worldPixelWidth/2, 0);
-    //create_pantagraph();
+  //create_pantagraph();
 
   /* create pantagraph graphics */
   wall = create_wall(posWall.x-0.2, posWall.y+rEE, posWall.x+0.2, posWall.y+rEE);
@@ -285,7 +285,7 @@ void setup() {
   c.setNoFill();
   c.setNoStroke();
   world.add(c);
-  
+
   f                   = new FBlob();
   f.setAsCircle(16, 7, 20, 70);
   f.setNoStroke();
@@ -396,18 +396,18 @@ void setup() {
 /* draw section ********************************************************************************************************/
 void draw() {
   /* put graphical code here, runs repeatedly at defined framerate in setup, else default at 60fps: */
-  
+
   if (renderingForce == false) {
     background(255);
-     fill(0, 0, 0);
-      textAlign(CENTER);
-      text("Touch a coloured circle to switch modes", width/4, 70);
+    fill(0, 0, 0);
+    textAlign(CENTER);
+    text("Touch a coloured circle to switch modes", width/4, 70);
     textFont(F, 22);
 
 
     if (mode ==2) {
       //shape(wall);
-        shape(wall);
+      shape(wall);
       for (int i=0; i<4; i++)
       {
         for (int j=0; j<=12; j++)
@@ -424,7 +424,7 @@ void draw() {
         walls[i].setNoFill();
         walls[i].setSensor(true);
       }
-      
+
       circle2.setNoFill();
       f.setNoFill();
     } else if (mode ==3) {
@@ -467,6 +467,9 @@ void draw() {
       f.setStroke(0);
       f.setFill(255, 0, 0);
     } else if (mode ==5) {
+      //if (bubble == null) {
+      //  world.add(bubble);
+      //}
       for (int i=0; i<4; i++)
       {
         for (int j=0; j<=12; j++)
@@ -510,9 +513,9 @@ void draw() {
 /* end draw section ****************************************************************************************************/
 
 
-
+boolean bubble_remove = false;
 /* simulation section **************************************************************************************************/
-class SimulationThread implements Runnable {
+  class SimulationThread implements Runnable {
 
   public void run() {
     /* put haptic simulation code here, runs repeatedly at 1kHz as defined in setup */
@@ -523,16 +526,16 @@ class SimulationThread implements Runnable {
       /* GET END-EFFECTOR STATE (TASK SPACE) */
       widgetOne.device_read_data();
 
-      
-      if (mode != 2){
-      angles.set(widgetOne.get_device_angles()); 
-      posEE.set(widgetOne.get_device_position(angles.array()));
-      posEE.set(posEE.copy().mult(200));  
+
+      if (mode != 2) {
+        angles.set(widgetOne.get_device_angles()); 
+        posEE.set(widgetOne.get_device_position(angles.array()));
+        posEE.set(posEE.copy().mult(200));
       }
       if (mode ==2) {
-         angles.set(widgetOne.get_device_angles()); 
-         posEE.set(widgetOne.get_device_position(angles.array()));
-         
+        angles.set(widgetOne.get_device_angles()); 
+        posEE.set(widgetOne.get_device_position(angles.array()));
+
         /* haptic wall force calculation */
         fWall.set(0, 0);
 
@@ -547,7 +550,6 @@ class SimulationThread implements Runnable {
         /* end haptic wall force calculation */
         posEE.set(posEE.copy().mult(175));
       }
-      
     }
     s.setToolPosition(edgeTopLeftX+worldWidth/2-(posEE).x, edgeTopLeftY+(posEE).y-7); 
     s.updateCouplingForce();
@@ -559,14 +561,13 @@ class SimulationThread implements Runnable {
 
     torques.set(widgetOne.set_device_torques(fEE.array()));
     widgetOne.device_write_torques();
-    
+
     //decides what happens when we switch to each mode
-      if (s.h_avatar.isTouchingBody(c2)) {
+    if (s.h_avatar.isTouchingBody(c2)) {
       mode =2;
       s.h_avatar.setSensor(false);
       bubble.setSensor(true);
       bubble.setNoFill();
-      
     } else if (s.h_avatar.isTouchingBody(c3)) {
       mode =3;
       s.h_avatar.setSensor(false);
@@ -584,15 +585,18 @@ class SimulationThread implements Runnable {
       bubble.setPosition(10, 8);
       done=false;
       bubble.setSensor(false);
+      if (bubble_remove) {
+        world.add(bubble);
+        bubble_remove =false;
+      }
     }
     if (mode == 4) {
       if ((s.h_avatar.isTouchingBody(c) && !file2.isPlaying())) {
         s.h_avatar.setDamping(800);
         file2.play();
-      }
-      else{
+      } else {
         s.h_avatar.setDamping(0);
-    }
+      }
     }
     if (mode ==5) {
       if (s.h_avatar.isTouchingBody(bubble) && !file.isPlaying()) {
@@ -604,7 +608,11 @@ class SimulationThread implements Runnable {
           done=true;
           print("inside");
           bubble.setNoFill();
-          bubble.setSensor(true);
+          //bubble.setSensor(true);
+          if (bubble != null) {
+            world.remove(bubble);
+            bubble_remove = true;
+          }
         }
       } else {
         previousMillis = millis();
@@ -691,18 +699,18 @@ void playAudio() {
   }
 }
 //void update_animation(float th1, float th2, float xE, float yE){
-  
+
 //  float lAni = pixelsPerMeter * l;
 //  float LAni = pixelsPerMeter * L;
-  
+
 //  xE = pixelsPerMeter * xE;
 //  yE = pixelsPerMeter * yE;
-  
+
 //  th1 = 3.14 - th1;
 //  th2 = 3.14 - th2;
-  
+
 //  shape(wall);
-  
+
 //  translate(xE, yE);
 //}
 
