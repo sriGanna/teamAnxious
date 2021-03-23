@@ -284,7 +284,7 @@ void setup() {
   c.setSensor(true);
   c.setNoFill();
   c.setNoStroke();
-  world.add(c);
+  //world.add(c);
 
   f                   = new FBlob();
   f.setAsCircle(16, 7, 20, 70);
@@ -296,7 +296,7 @@ void setup() {
   f.setSensor(true);
   f.setNoFill();
   //f.setFill(random(255), random(255), random(255));
-  world.add(f);
+  //world.add(f);
   /* End of Mode 4 Drawings */
 
   /* Mode 5 Drawings */
