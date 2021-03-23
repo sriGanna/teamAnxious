@@ -585,10 +585,10 @@ boolean bubble_remove = false;
       bubble.setPosition(10, 8);
       done=false;
       bubble.setSensor(false);
-      if (bubble_remove) {
-        world.add(bubble);
-        bubble_remove =false;
-      }
+      //if (bubble_remove) {
+      //  world.add(bubble);
+      //  bubble_remove =false;
+      //}
     }
     if (mode == 4) {
       if ((s.h_avatar.isTouchingBody(c) && !file2.isPlaying())) {
@@ -608,11 +608,11 @@ boolean bubble_remove = false;
           done=true;
           print("inside");
           bubble.setNoFill();
-          //bubble.setSensor(true);
-          if (bubble != null) {
-            world.remove(bubble);
-            bubble_remove = true;
-          }
+          bubble.setSensor(true);
+          //if (bubble != null) {
+          //  world.remove(bubble);
+          //  bubble_remove = true;
+          //}
         }
       } else {
         previousMillis = millis();
