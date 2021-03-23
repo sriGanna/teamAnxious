@@ -19,10 +19,10 @@ import processing.serial.*;
 import static java.util.concurrent.TimeUnit.*;
 import java.util.concurrent.*;
 import processing.sound.*;
-import ddf.minim.*;
+//import ddf.minim.*;
 
-Minim minim;
-AudioPlayer song;
+//Minim minim;
+//AudioPlayer song;
 SoundFile file;
 SoundFile file2;
 /* end library imports *************************************************************************************************/
@@ -606,7 +606,7 @@ boolean bubble_remove = false;
         if (currentMillis - previousMillis > interval) {
           playAudio();
           done=true;
-          print("inside");
+          //print("inside");
           bubble.setNoFill();
           bubble.setSensor(true);
           //if (bubble != null) {
