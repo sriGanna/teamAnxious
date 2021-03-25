@@ -107,7 +107,7 @@ PImage            haplyAvatar;
 /* setup section *******************************************************************************************************/
 void setup(){
   /* put setup code here, run once: */
-  file = new SoundFile(this, "sound.mp3");
+  //file = new SoundFile(this, "squish.mp3");
   /* screen size definition */
   size(1000,1000);
   
@@ -209,7 +209,7 @@ void setup(){
 void draw(){
   /* put graphical code here, runs repeatedly at defined framerate in setup, else default at 60fps: */
   if(renderingForce == false){
-    background(255);
+    //background(255);
     world.draw();
   }
 }
@@ -246,7 +246,7 @@ class SimulationThread implements Runnable{
     
     torques.set(widgetOne.set_device_torques(fEE.array()));
     widgetOne.device_write_torques();
-    if (s.h_avatar.isTouchingBody(c) && !file.isPlaying()){
+    if (s.h_avatar.isTouchingBody(c)){
       s.h_avatar.setDamping(800);
       //file.play();
         
