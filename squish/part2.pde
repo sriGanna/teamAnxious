@@ -107,7 +107,7 @@ PImage            haplyAvatar;
 /* setup section *******************************************************************************************************/
 void setup(){
   /* put setup code here, run once: */
-  file = new SoundFile(this, "squish.mp3");
+  file = new SoundFile(this, "sound.mp3");
   /* screen size definition */
   size(1000,1000);
   
@@ -248,7 +248,7 @@ class SimulationThread implements Runnable{
     widgetOne.device_write_torques();
     if (s.h_avatar.isTouchingBody(c) && !file.isPlaying()){
       s.h_avatar.setDamping(800);
-      file.play();
+      //file.play();
         
     }else{
       s.h_avatar.setDamping(0);
