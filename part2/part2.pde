@@ -248,7 +248,7 @@ class SimulationThread implements Runnable{
     widgetOne.device_write_torques();
     if (s.h_avatar.isTouchingBody(c) && !file.isPlaying()){
       s.h_avatar.setDamping(800);
-      file.play();
+      //file.play();
         
     }else{
       s.h_avatar.setDamping(0);
