@@ -1,0 +1,509 @@
+/**
+ **********************************************************************************************************************
+ * @file       sketch_4_Wall_Physics.pde
+ * @author     Steve Ding, Colin Gallacher
+ * @version    V4.1.0
+ * @date       08-January-2021
+ * @brief      wall haptic example using 2D physics engine 
+ **********************************************************************************************************************
+ * @attention
+ *
+ *
+ **********************************************************************************************************************
+ */
+
+
+
+/* library imports *****************************************************************************************************/
+import processing.serial.*;
+import static java.util.concurrent.TimeUnit.*;
+import java.util.concurrent.*;
+import processing.sound.*;
+import ddf.minim.*;
+import java.util.*;
+import controlP5.*;
+
+Minim minim;
+AudioPlayer song;
+SoundFile file;
+/* end library imports *************************************************************************************************/
+
+
+
+/* scheduler definition ************************************************************************************************/
+private final ScheduledExecutorService scheduler      = Executors.newScheduledThreadPool(1);
+/* end scheduler definition ********************************************************************************************/
+
+
+
+/* device block definitions ********************************************************************************************/
+Board             haplyBoard;
+Device            widgetOne;
+Mechanisms        pantograph;
+
+byte              widgetOneID                         = 5;
+int               CW                                  = 0;
+int               CCW                                 = 1;
+boolean           renderingForce                      = false;
+/* end device block definition *****************************************************************************************/
+
+
+
+/* framerate definition ************************************************************************************************/
+long              baseFrameRate                       = 120;
+/* end framerate definition ********************************************************************************************/
+/* elements definition *************************************************************************************************/
+/* Screen and world setup parameters */
+float             pixelsPerMeter                      = 4000.0;
+float             radsPerDegree                       = 0.01745;
+
+/* Screen and world setup parameters */
+float             pixelsPerCentimeter                 = 40.0;
+
+/* end effector radius in meters */
+float             rEE                                 = 0.006;
+
+/* virtual wall parameter  */
+float             kWall                               = 2000;
+PVector           fWall                               = new PVector(0, 0);
+PVector           penWall                             = new PVector(0, 0);
+PVector           posWall                             = new PVector(0.01, 0.1);
+
+/* pantagraph link parameters in meters */
+float             l                                   = 0.07;
+float             L                                   = 0.09;
+
+
+/* generic data for a 2DOF device */
+/* joint space */
+PVector           angles                              = new PVector(0, 0);
+PVector           torques                             = new PVector(0, 0);
+
+/* task space */
+PVector           posEE                               = new PVector(0, 0);
+PVector           fEE                                 = new PVector(0, 0); 
+
+/* device graphical position */
+PVector           deviceOrigin                        = new PVector(0, 0);
+
+final int         worldPixelWidth                     = 1280;
+final int         worldPixelHeight                    = 820;
+PShape pGraph, joint, endEffector;
+
+/* World boundaries */
+FWorld            world;
+float             worldWidth                          = 32.0;  
+float             worldHeight                         = 21.0; 
+
+float             edgeTopLeftX                        = 0.0; 
+float             edgeTopLeftY                        = 0.0; 
+float             edgeBottomRightX                    = worldWidth; 
+float             edgeBottomRightY                    = worldHeight;
+
+float             gravityAcceleration                 = 980; //cm/s2
+/* Initialization of virtual tool */
+HVirtualCoupling  s;
+
+
+/* Initialization of elements */
+FCircle           circle1, bbody;
+FPoly             b1;
+FPoly             b2;
+FLine             l1;
+FLine             l2;
+FLine             l3;
+FBlob           blob;
+FBox            anchor1, anchor2;
+FDistanceJoint    joint1, joint2;
+FCircle          c1, c2, c3, select;
+PShape wall;
+FCircle[] bubbles = new FCircle[28];
+float colour_inc=0;
+float colR,colG,colB;
+ArrayList<FBody> isTouching;
+
+/* Initialization of virtual tool */
+PImage            colour;
+
+/* end elements definition *********************************************************************************************/
+
+boolean done=false;
+ArrayList <Splat> splats = new ArrayList <Splat> ();
+boolean splatshown=false;
+boolean selectCol = true;
+
+/* setup section *******************************************************************************************************/
+void setup() {
+  /* put setup code here, run once: */
+  file = new SoundFile(this, "pop1.wav");
+  //file.play();
+
+  /* screen size definition */
+  size(1300, 850);
+
+  /* device setup */
+
+  /**  
+   * The board declaration needs to be changed depending on which USB serial port the Haply board is connected.
+   * In the base example, a connection is setup to the first detected serial device, this parameter can be changed
+   * to explicitly state the serial port will look like the following for different OS:
+   *
+   *      windows:      haplyBoard = new Board(this, "COM10", 0);
+   *      linux:        haplyBoard = new Board(this, "/dev/ttyUSB0", 0);
+   *      mac:          haplyBoard = new Board(this, "/dev/cu.usbmodem1411", 0);
+   */
+  haplyBoard          = new Board(this, "COM4", 0);
+  widgetOne           = new Device(widgetOneID, haplyBoard);
+  pantograph          = new Pantograph();
+
+  widgetOne.set_mechanism(pantograph);
+
+  widgetOne.add_actuator(1, CCW, 2);
+  widgetOne.add_actuator(2, CW, 1);
+
+  widgetOne.add_encoder(1, CCW, 241, 10752, 2);
+  widgetOne.add_encoder(2, CW, -61, 10752, 1);
+
+
+  widgetOne.device_set_parameters();
+
+  /* 2D physics scaling and world creation */
+  hAPI_Fisica.init(this); 
+  hAPI_Fisica.setScale(pixelsPerCentimeter); 
+  world               = new FWorld();
+
+
+  /* Haptic Tool Initialization */
+  s                   = new HVirtualCoupling((1)); 
+  s.h_avatar.setDensity(4);  
+  s.h_avatar.setStroke(0);
+  s.h_avatar.setFill(255);
+  s.init(world, edgeTopLeftX+worldWidth/2, edgeTopLeftY+2); 
+
+  createSling();
+  createPalette();
+  createBubbles();
+
+  wall = create_wall(posWall.x-0.2, posWall.y+rEE+.01, posWall.x+0.2, posWall.y+rEE+.01);
+
+  /* world conditions setup */
+  world.setGravity((0.0), (6000.0)); //1000 cm/(s^2)
+  world.setEdges((edgeTopLeftX), (edgeTopLeftY), (edgeBottomRightX), (edgeBottomRightY)); 
+  world.setEdgesRestitution(0.4);
+  world.setEdgesFriction(1.2);
+
+
+  world.draw();
+
+
+  /* setup framerate speed */
+  frameRate(baseFrameRate);
+
+
+  /* setup simulation thread to run at 1kHz */
+  SimulationThread st = new SimulationThread();
+  scheduler.scheduleAtFixedRate(st, 1, 1, MILLISECONDS);
+}
+/* end setup section ***************************************************************************************************/
+
+
+
+/* draw section ********************************************************************************************************/
+void draw() {
+  /* put graphical code here, runs repeatedly at defined framerate in setup, else default at 60fps: */
+  if (renderingForce == false) {
+    background(255);
+    //shape(wall);
+    for (Splat abs : splats) {
+      abs.display();
+    }
+
+
+
+    world.draw();
+  }
+}
+/* end draw section ****************************************************************************************************/
+
+
+//void contactResult(FContactResult result) {
+//  // Draw an ellipse where the contact took place and as big as the normal impulse of the contact
+//  ellipse(result.getX(), result.getY(), result.getNormalImpulse(), result.getNormalImpulse());
+
+//  // Trigger your sound here
+//  // ...
+//  playAudio();
+//  done=true;
+//}
+
+
+/* Timer variables */
+long currentMillis = millis();
+long previousMillis = 0;
+float interval = 50;
+/* simulation section **************************************************************************************************/
+class SimulationThread implements Runnable {
+
+  public void run() {
+    /* put haptic simulation code here, runs repeatedly at 1kHz as defined in setup */
+
+    renderingForce = true;
+    //file.play();
+
+    if (haplyBoard.data_available()) {
+      /* GET END-EFFECTOR STATE (TASK SPACE) */
+      widgetOne.device_read_data();
+      angles.set(widgetOne.get_device_angles()); 
+      posEE.set(widgetOne.get_device_position(angles.array()));
+
+      /* haptic wall force calculation */
+      fWall.set(0, 0);
+
+      penWall.set(0, (posWall.y - (posEE.y + rEE)));
+
+      println(penWall.y);
+
+      if (penWall.y < 0) {
+        fWall = fWall.add(penWall.mult(-kWall));
+      }
+
+      fEE = (fWall.copy()).mult(-1);
+      fEE.set(graphics_to_device(fEE));
+      /* end haptic wall force calculation */
+      posEE.set(posEE.copy().mult(175));
+    }
+    s.setToolPosition(edgeTopLeftX+worldWidth/2-(posEE).x, edgeTopLeftY+(posEE).y-7+6); 
+
+
+    s.updateCouplingForce();
+    //fEE.set(-s.getVirtualCouplingForceX(), s.getVirtualCouplingForceY());
+    //fEE.div(100000); //dynes to newtons
+
+    torques.set(widgetOne.set_device_torques(fEE.array()));
+    widgetOne.device_write_torques();
+    selectColour();
+    checkSplat();
+    world.step(1.0f/1000.0f);
+    renderingForce = false;
+  }
+}
+/* end simulation section **********************************************************************************************/
+
+
+
+/* helper functions section, place helper functions here ***************************************************************/
+void playAudio() {
+  if (done==false)
+  {
+    file.play();
+    //print("here");
+  }
+}
+
+void addLine(FLine l) {
+  l.setStatic(true);
+  l.setFill(0, 255, 0);
+  l.setStroke(0, 0, 0);
+  l.setStrokeWeight(3);
+  world.add(l);
+}
+
+void addPoly(FPoly p) {
+  p.setStatic(true);
+  p.setFill(82, 50, 148);
+  p.setNoStroke();
+  world.add(p);
+}
+
+class Splat {
+  float x, y;
+  float rad;
+  PGraphics splat;
+
+  Splat(float x, float y) {
+    this.x = x;
+    this.y = y;
+    rad = 17;
+    splat = createGraphics(200, 200, JAVA2D);
+    create();
+  }
+
+  void create() {
+    splat.beginDraw();
+    splat.smooth();
+    splat.colorMode(HSB, 360, 100, 100);
+    splat.fill(colR, colG, colB);
+    splat.noStroke();
+    for (float i=3; i<29; i+=.35) {
+      float angle = random(0, TWO_PI);
+      float splatX = (splat.width-50)/2 + 25 + cos(angle)*2*i;
+      float splatY = (splat.height-50)/2 + 25 + sin(angle)*3*i;
+      splat.ellipse(splatX, splatY, rad-i, rad-i+1.8);
+    }
+    splat.endDraw();
+  }
+  void display() {
+    imageMode(CENTER);
+    image(splat, x, y);
+  }
+}
+
+PVector device_to_graphics(PVector deviceFrame) {
+  return deviceFrame.set(-deviceFrame.x, deviceFrame.y);
+}
+
+
+PVector graphics_to_device(PVector graphicsFrame) {
+  return graphicsFrame.set(-graphicsFrame.x, graphicsFrame.y);
+}
+
+PShape create_wall(float x1, float y1, float x2, float y2) {
+  x1 = pixelsPerMeter * x1;
+  y1 = pixelsPerMeter * y1;
+  x2 = pixelsPerMeter * x2;
+  y2 = pixelsPerMeter * y2;
+
+  return createShape(LINE, deviceOrigin.x + x1, deviceOrigin.y + y1, deviceOrigin.x + x2, deviceOrigin.y+y2);
+}
+
+void createSling() {
+
+  anchor1              = new FBox(1, 1);
+  anchor1.setFill(0);
+  anchor1.setPosition(2, 12);
+  anchor1.setStatic(true);
+  world.add(anchor1);
+
+  anchor2              = new FBox(1, 1);
+  anchor2.setFill(0);
+  anchor2.setPosition(27, 12);
+  anchor2.setStatic(true);
+  world.add(anchor2);
+
+  joint1 = new FDistanceJoint(anchor1, s.h_avatar);
+  world.add(joint1);
+
+  joint2 = new FDistanceJoint(anchor2, s.h_avatar);
+  world.add(joint2);
+}
+
+void createPalette() {
+  c1                   = new FCircle(1);
+  c1.setPosition(12, 18);
+  c1.setStatic(true);
+  c1.setFill(350, 0, 0);
+  c1.setSensor(true);
+  c1.setNoStroke();
+  world.add(c1);
+
+  c2                   = new FCircle(1);
+  c2.setPosition(15, 18);
+  c2.setStatic(true);
+  c2.setFill(0, 255, 0);
+  c2.setSensor(true);
+  c2.setNoStroke();
+  world.add(c2);
+
+  c3                   = new FCircle(1);
+  c3.setPosition(18, 18);
+  c3.setStatic(true);
+  c3.setSensor(true);
+  c3.setFill(0, 0, 255);
+  c3.setNoStroke();
+  world.add(c3);
+
+  select               = new FCircle(1);
+  select.setPosition(27, 6);
+  select.setStatic(true);
+  select.setSensor(true);
+  select.setFill(0, 0, 255);
+  select.setNoStroke();
+  world.add(select);
+
+  colour = loadImage("colWheel.jpeg"); 
+  colour.resize((int)(hAPI_Fisica.worldToScreen(1)), (int)(hAPI_Fisica.worldToScreen(1)));
+  select.attachImage(colour);
+}
+
+void selectColour() {
+  if (s.h_avatar.isTouchingBody(c1)) {
+    colour_inc++;
+    if (colour_inc >3600) {
+      colour_inc=0;
+    }
+    c1.setFill(colour_inc/20+75, 0, 0);
+    s.h_avatar.setFill(colour_inc/20+75, 0, 0);
+    colR = colour_inc/20+75;
+    colG = 0;
+    colB = 0;
+  } else if (s.h_avatar.isTouchingBody(c2)) {
+    colour_inc++;
+    if (colour_inc >3600) {
+      colour_inc=0;
+    }
+    c2.setFill(0, colour_inc/20+75, 0);
+    s.h_avatar.setFill(0, colour_inc/20+75, 0);
+    colR = 0;
+    colG = colour_inc/20+75;
+    colB = 0;
+  } else if (s.h_avatar.isTouchingBody(c3)) {
+    colour_inc++;
+    if (colour_inc >3600) {
+      colour_inc=0;
+    }
+    c3.setFill(0, 0, colour_inc/20+75);
+    colR = 0;
+    colG = 0;
+    colB = colour_inc/20+75;
+    s.h_avatar.setFill(0, 0, colour_inc/20+75);
+  } else {
+    colour_inc = 0;
+  }
+}
+
+void createBubbles() {
+  float x, y;
+  for (int i = 0; i<3; i++) {
+    bubbles[i] = new FCircle(1);
+    HashSet xSet = new HashSet();
+    HashSet ySet = new HashSet();
+    x = random(5, 21);
+    y = random(5, 10);
+    while (xSet.contains(x)) {
+      x = random(10, 23);
+    }
+    xSet.add(x);
+    while (ySet.contains(y)) {
+      y = random(3, 8);
+    }
+    ySet.add(y);
+    bubbles[i].setPosition(x, y);
+
+    bubbles[i].setFill(random(0, 255), random(0, 255), random(0, 255));
+
+    bubbles[i].setNoStroke();
+    bubbles[i].setStatic(true);
+    //bubbles[i].setSensor(true);
+    world.add(bubbles[i]);
+  }
+}
+
+
+void checkSplat() {
+
+  isTouching = s.h_avatar.getTouching();
+  println(isTouching);
+  if (isTouching.contains(bubbles[0])) {
+    animateSplat(bubbles[0]);
+  }
+}
+
+void animateSplat(FCircle bubble) {
+  playAudio();
+  if (splatshown == false) {
+    splats.add(new Splat(bubble.getX()*8, bubble.getY()*8));
+    splatshown = true;
+    world.remove(bubble);
+  }
+}
+/* end helper functions section ****************************************************************************************/
