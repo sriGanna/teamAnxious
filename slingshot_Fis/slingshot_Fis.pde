@@ -34,7 +34,8 @@ SoundFile file;
 private final ScheduledExecutorService scheduler      = Executors.newScheduledThreadPool(1);
 /* end scheduler definition ********************************************************************************************/
 
-
+boolean DEBUG = false;
+boolean DEBUGPOS = true;
 
 /* device block definitions ********************************************************************************************/
 Board             haplyBoard;
@@ -258,8 +259,9 @@ class SimulationThread implements Runnable {
       fWall.set(0, 0);
 
       penWall.set(0, (posWall.y - (posEE.y + rEE)));
-
-      println(penWall.y);
+      if (DEBUG) {
+        println(penWall.y);
+      }
 
       if (penWall.y < 0) {
         fWall = fWall.add(penWall.mult(-kWall));
@@ -282,8 +284,7 @@ class SimulationThread implements Runnable {
     keyPressed();
     if (selectCol) {
       selectColour();
-    }
-    else{
+    } else {
       hideSelect();
     }
 
@@ -431,12 +432,12 @@ void createPalette() {
 }
 
 void selectColour() {
-  
-  if(redraw){
-  world.add(c1);
-  world.add(c2);
-  world.add(c3);
-  redraw = false;
+
+  if (redraw) {
+    world.add(c1);
+    world.add(c2);
+    world.add(c3);
+    redraw = false;
   }
   if (s.h_avatar.isTouchingBody(c1)) {
     colour_inc++;
@@ -504,7 +505,9 @@ void createBubbles() {
 void checkSplat() {
 
   isTouching = s.h_avatar.getTouching();
-  println(isTouching);
+  if (DEBUG) {
+    println(isTouching);
+  }
   for (int i =0; i<bubbleQuant; i++) {
     if (isTouching.contains(bubbles[i])) {
       splatshown = false;
@@ -516,7 +519,11 @@ void checkSplat() {
 void animateSplat(FCircle bubble) {
   playAudio();
   if (splatshown == false) {
-    splats.add(new Splat(bubble.getX()*8, bubble.getY()*8));
+    splats.add(new Splat(bubble.getX()*40, bubble.getY()*40));
+    if (DEBUGPOS) {
+      println(bubble.getX());
+      println(bubble.getY());
+    }
     splatshown = true;
     world.remove(bubble);
   }
@@ -526,17 +533,17 @@ void keyPressed() {
   if (key == 'q') {
     selectCol = false;
   }
-   if (key == 'w') {
+  if (key == 'w') {
     selectCol = true;
   }
 }
 
-void hideSelect(){
-  if(redraw == false){
-  world.remove(c1);
-  world.remove(c2);
-  world.remove(c3);
-  redraw = true;
+void hideSelect() {
+  if (redraw == false) {
+    world.remove(c1);
+    world.remove(c2);
+    world.remove(c3);
+    redraw = true;
   }
 }
 /* end helper functions section ****************************************************************************************/
