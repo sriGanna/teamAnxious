@@ -119,7 +119,8 @@ FCircle          c1, c2, c3, select;
 PShape wall;
 FCircle[] bubbles = new FCircle[28];
 float colour_inc=0;
-float colR,colG,colB;
+float colR, colG, colB;
+int bubbleQuant = 4;
 ArrayList<FBody> isTouching;
 
 /* Initialization of virtual tool */
@@ -131,7 +132,7 @@ boolean done=false;
 ArrayList <Splat> splats = new ArrayList <Splat> ();
 boolean splatshown=false;
 boolean selectCol = true;
-
+boolean redraw = false;
 /* setup section *******************************************************************************************************/
 void setup() {
   /* put setup code here, run once: */
@@ -217,9 +218,6 @@ void draw() {
     for (Splat abs : splats) {
       abs.display();
     }
-
-
-
     world.draw();
   }
 }
@@ -281,7 +279,14 @@ class SimulationThread implements Runnable {
 
     torques.set(widgetOne.set_device_torques(fEE.array()));
     widgetOne.device_write_torques();
-    selectColour();
+    keyPressed();
+    if (selectCol) {
+      selectColour();
+    }
+    else{
+      hideSelect();
+    }
+
     checkSplat();
     world.step(1.0f/1000.0f);
     renderingForce = false;
@@ -332,7 +337,7 @@ class Splat {
     splat.beginDraw();
     splat.smooth();
     splat.colorMode(HSB, 360, 100, 100);
-    splat.fill(colR, colG, colB);
+    splat.fill(s.h_avatar.getFillColor());
     splat.noStroke();
     for (float i=3; i<29; i+=.35) {
       float angle = random(0, TWO_PI);
@@ -426,6 +431,13 @@ void createPalette() {
 }
 
 void selectColour() {
+  
+  if(redraw){
+  world.add(c1);
+  world.add(c2);
+  world.add(c3);
+  redraw = false;
+  }
   if (s.h_avatar.isTouchingBody(c1)) {
     colour_inc++;
     if (colour_inc >3600) {
@@ -463,12 +475,12 @@ void selectColour() {
 
 void createBubbles() {
   float x, y;
-  for (int i = 0; i<3; i++) {
+  for (int i = 0; i<bubbleQuant; i++) {
     bubbles[i] = new FCircle(1);
     HashSet xSet = new HashSet();
     HashSet ySet = new HashSet();
     x = random(5, 21);
-    y = random(5, 10);
+    y = random(7, 10);
     while (xSet.contains(x)) {
       x = random(10, 23);
     }
@@ -493,8 +505,11 @@ void checkSplat() {
 
   isTouching = s.h_avatar.getTouching();
   println(isTouching);
-  if (isTouching.contains(bubbles[0])) {
-    animateSplat(bubbles[0]);
+  for (int i =0; i<bubbleQuant; i++) {
+    if (isTouching.contains(bubbles[i])) {
+      splatshown = false;
+      animateSplat(bubbles[i]);
+    }
   }
 }
 
@@ -504,6 +519,24 @@ void animateSplat(FCircle bubble) {
     splats.add(new Splat(bubble.getX()*8, bubble.getY()*8));
     splatshown = true;
     world.remove(bubble);
+  }
+}
+
+void keyPressed() {
+  if (key == 'q') {
+    selectCol = false;
+  }
+   if (key == 'w') {
+    selectCol = true;
+  }
+}
+
+void hideSelect(){
+  if(redraw == false){
+  world.remove(c1);
+  world.remove(c2);
+  world.remove(c3);
+  redraw = true;
   }
 }
 /* end helper functions section ****************************************************************************************/
