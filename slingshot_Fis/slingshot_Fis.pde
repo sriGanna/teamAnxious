@@ -26,6 +26,7 @@ import controlP5.*;
 Minim minim;
 AudioPlayer song;
 SoundFile file;
+ControlP5 cp5;
 /* end library imports *************************************************************************************************/
 
 
@@ -95,7 +96,7 @@ PShape pGraph, joint, endEffector;
 
 /* World boundaries */
 FWorld            world;
-float             worldWidth                          = 32.0;  
+float             worldWidth                          = 25.0;  
 float             worldHeight                         = 21.0; 
 
 float             edgeTopLeftX                        = 0.0; 
@@ -118,7 +119,7 @@ FLine             l3;
 FBlob           blob;
 FBox            anchor1, anchor2;
 FDistanceJoint    joint1, joint2;
-FBox          c1, c2, c3,c4,c5,c6,c7;
+FBox          c1, c2, c3, c4, c5, c6, c7;
 FCircle select, balloon;
 
 PShape wall;
@@ -149,7 +150,7 @@ void setup() {
   //file.play();
 
   /* screen size definition */
-  size(1300, 850);
+  size(1100, 700);
 
   /* device setup */
 
@@ -193,6 +194,9 @@ void setup() {
   createSling();
   createPalette();
   //createBubbles();
+
+  //cp5.setColorActive(0xffff0000);
+
 
   wall = create_wall(posWall.x-0.2, posWall.y+rEE+.01, posWall.x+0.2, posWall.y+rEE+.01);
 
@@ -292,12 +296,12 @@ class SimulationThread implements Runnable {
 
     torques.set(widgetOne.set_device_torques(fEE.array()));
     widgetOne.device_write_torques();
-    keyPressed();
-    if (selectCol) {
-      selectColour();
-    } else {
-      hideSelect();
-    }
+    //keyPressed();
+    //if (selectCol) {
+    //  selectColour();
+    //} else {
+    //  hideSelect();
+    //}
 
     //checkSplat();
     isReleased();
@@ -409,7 +413,7 @@ void createSling() {
 
   anchor2              = new FBox(1, 1);
   anchor2.setFill(0);
-  anchor2.setPosition(30, 12);
+  anchor2.setPosition(22, 12);
   anchor2.setStatic(true);
   world.add(anchor2);
 
@@ -429,71 +433,178 @@ void createSling() {
 }
 
 void createPalette() {
-  // red 
-  c1                   = new FBox(2,1);
-  c1.setPosition(10, 18);
-  c1.setStatic(true);
-  c1.setFill(255, 0, 0);
-  c1.setSensor(true);
-  c1.setNoStroke();
-  world.add(c1);
+  //  // red 
+  //  c1                   = new FBox(2,1);
+  //  c1.setPosition(10, 18);
+  //  c1.setStatic(true);
+  //  c1.setFill(255, 0, 0);
+  //  c1.setSensor(true);
+  //  c1.setNoStroke();
+  //  world.add(c1);
 
-  //orange 
-  c2                   = new FBox(2,1);
-  c2.setPosition(12, 18);
-  c2.setStatic(true);
-  c2.setFill(255, 128, 0);
-  c2.setSensor(true);
-  c2.setNoStroke();
-  world.add(c2);
-  
-  //yellow 
-    c3                   = new FBox(2,1);
-  c3.setPosition(14, 18);
-  c3.setStatic(true);
-  c3.setSensor(true);
-  c3.setFill(255, 255,0);
-  c3.setNoStroke();
-  world.add(c3);
+  //  //orange 
+  //  c2                   = new FBox(2,1);
+  //  c2.setPosition(12, 18);
+  //  c2.setStatic(true);
+  //  c2.setFill(255, 128, 0);
+  //  c2.setSensor(true);
+  //  c2.setNoStroke();
+  //  world.add(c2);
 
-//green
-  c4                   = new FBox(2,1);
-  c4.setPosition(16, 18);
-  c4.setStatic(true);
-  c4.setSensor(true);
-  c4.setFill(0, 255, 0);
-  c4.setNoStroke();
-  world.add(c4);
-  
-  //light blue
-  c5                   = new FBox(2,1);
-  c5.setPosition(18, 18);
-  c5.setStatic(true);
-  c5.setSensor(true);
-  c5.setFill(0, 255, 255);
-  c5.setNoStroke();
-  world.add(c5);
-  
-  //dark blue
-  c6                  = new FBox(2,1);
-  c6.setPosition(20, 18);
-  c6.setStatic(true);
-  c6.setSensor(true);
-  c6.setFill(0, 0, 255);
-  c6.setNoStroke();
-  world.add(c6);
-  
-  //purple 
-  c7                   = new FBox(2,1);
-  c7.setPosition(22, 18);
-  c7.setStatic(true);
-  c7.setSensor(true);
-  c7.setFill(255, 0, 255);
-  c7.setNoStroke();
-  world.add(c7);
+  //  //yellow 
+  //    c3                   = new FBox(2,1);
+  //  c3.setPosition(14, 18);
+  //  c3.setStatic(true);
+  //  c3.setSensor(true);
+  //  c3.setFill(255, 255,0);
+  //  c3.setNoStroke();
+  //  world.add(c3);
+
+  ////green
+  //  c4                   = new FBox(2,1);
+  //  c4.setPosition(16, 18);
+  //  c4.setStatic(true);
+  //  c4.setSensor(true);
+  //  c4.setFill(0, 255, 0);
+  //  c4.setNoStroke();
+  //  world.add(c4);
+
+  //  //light blue
+  //  c5                   = new FBox(2,1);
+  //  c5.setPosition(18, 18);
+  //  c5.setStatic(true);
+  //  c5.setSensor(true);
+  //  c5.setFill(0, 255, 255);
+  //  c5.setNoStroke();
+  //  world.add(c5);
+
+  //  //dark blue
+  //  c6                  = new FBox(2,1);
+  //  c6.setPosition(20, 18);
+  //  c6.setStatic(true);
+  //  c6.setSensor(true);
+  //  c6.setFill(0, 0, 255);
+  //  c6.setNoStroke();
+  //  world.add(c6);
+
+  //  //purple 
+  //  c7                   = new FBox(2,1);
+  //  c7.setPosition(22, 18);
+  //  c7.setStatic(true);
+  //  c7.setSensor(true);
+  //  c7.setFill(255, 0, 255);
+  //  c7.setNoStroke();
+  //  world.add(c7);
+  cp5 = new ControlP5(this);
+
+  PFont p = createFont("Verdana", 17); 
+  ControlFont font = new ControlFont(p);
+
+  // change the original colors
+  cp5.setColorForeground(color(0, 0, 0));
+  cp5.setColorBackground(color(0, 0, 0));
+  cp5.setFont(font);
+
+  cp5.addButton("red")
+    .setLabel("red")
+    .setPosition(980, 100)
+    .setSize(100, 50)
+    .setColorBackground(color(255, 0, 0))
+
+    ;
+  cp5.addButton("orange")
+    .setLabel("orange")
+    .setPosition(980, 150)
+    .setSize(100, 50)
+    .setColorBackground(color(255, 128, 0))
+
+    ;
+  cp5.addButton("yellow")
+    .setLabel("yellow")
+    .setPosition(980, 200)
+    .setSize(100, 50)
+    .setColorBackground(color(255, 255, 0))
+
+    ;
+  cp5.addButton("green")
+    .setLabel("green")
+    .setPosition(980, 250)
+    .setSize(100, 50)
+    .setColorBackground(color(0, 255, 0))
+
+    ;
+  cp5.addButton("lBlue")
+    .setLabel("light-blue")
+    .setPosition(980, 300)
+    .setSize(100, 50)
+    .setColorBackground(color(0, 128, 255))
+
+    ;
+  cp5.addButton("blue")
+    .setLabel("blue")
+    .setPosition(980, 350)
+    .setSize(100, 50)
+    .setColorBackground(color(0, 0, 255))
+
+    ;
+  cp5.addButton("purple")
+    .setLabel("purple")
+    .setPosition(980, 400)
+    .setSize(100, 50)
+    .setColorBackground(color(255, 0, 255))
+
+    ;
 }
 
-void selectColour() {
+void controlEvent(CallbackEvent event) {
+  if (event.getAction() == ControlP5.ACTION_CLICK) {
+    switch(event.getController().getAddress()) {
+    case "/red":
+      colR = 255;
+      colG = 0;
+      colB = 0;
+      s.h_avatar.setFill(colR,colG,colB);
+      break;
+     case "/orange":
+      colR = 255;
+      colG = 128;
+      colB = 0;
+      s.h_avatar.setFill(colR,colG,colB);
+      break;
+      case "/yellow":
+      colR = 255;
+      colG = 255;
+      colB = 0;
+      s.h_avatar.setFill(colR,colG,colB);
+      break;
+      case "/green":
+      colR = 0;
+      colG = 255;
+      colB = 0;
+      s.h_avatar.setFill(colR,colG,colB);
+      break;
+      case "/lBlue":
+      colR = 0;
+      colG = 128;
+      colB = 255;
+      s.h_avatar.setFill(colR,colG,colB);
+      break;
+      case "/blue":
+      colR = 0;
+      colG = 0;
+      colB = 255;
+      s.h_avatar.setFill(colR,colG,colB);
+      break;
+      case "/purple":
+      colR = 255;
+      colG = 0;
+      colB = 255;
+      s.h_avatar.setFill(colR,colG,colB);
+      break;
+    }
+  }
+}
+void selectColour_old() {
 
   if (redraw) {
     world.add(c1);
@@ -530,26 +641,22 @@ void selectColour() {
     if (colour_inc >3600) {
       colour_inc=0;
     }
-    c3.setFill(colour_inc/20+125, colour_inc/20+125,0);
+    c3.setFill(colour_inc/20+125, colour_inc/20+125, 0);
     colR = colour_inc/20+125;
     colG = colour_inc/20+125;
     colB = 0;
-    s.h_avatar.setFill(colour_inc/20+125, colour_inc/20+125,0);
-  } 
-  
-  else if (s.h_avatar.isTouchingBody(c4)) { //green
+    s.h_avatar.setFill(colour_inc/20+125, colour_inc/20+125, 0);
+  } else if (s.h_avatar.isTouchingBody(c4)) { //green
     colour_inc++;
     if (colour_inc >3600) {
       colour_inc=0;
     }
-    c4.setFill(0,colour_inc/20+75,0);
+    c4.setFill(0, colour_inc/20+75, 0);
     colR = 0;
     colG = colour_inc/20+75;
     colB = 0;
-    s.h_avatar.setFill(0, colour_inc/20+75,0);
-  }
-  
-  else if (s.h_avatar.isTouchingBody(c5)) { //light blue
+    s.h_avatar.setFill(0, colour_inc/20+75, 0);
+  } else if (s.h_avatar.isTouchingBody(c5)) { //light blue
     colour_inc++;
     if (colour_inc >3600) {
       colour_inc=0;
@@ -559,9 +666,7 @@ void selectColour() {
     colG = colour_inc/20+125;
     colB = colour_inc/20+125;
     s.h_avatar.setFill(0, colour_inc/20+125, colour_inc/20+125);
-  }
-  
-  else if (s.h_avatar.isTouchingBody(c6)) { //blue 
+  } else if (s.h_avatar.isTouchingBody(c6)) { //blue 
     colour_inc++;
     if (colour_inc >3600) {
       colour_inc=0;
@@ -571,9 +676,7 @@ void selectColour() {
     colG = 0;
     colB = colour_inc/20+100;
     s.h_avatar.setFill(0, 0, colour_inc/20+100);
-  }
-  
-  else if (s.h_avatar.isTouchingBody(c7)) { //purple 
+  } else if (s.h_avatar.isTouchingBody(c7)) { //purple 
     colour_inc++;
     if (colour_inc >3600) {
       colour_inc=0;
@@ -583,11 +686,7 @@ void selectColour() {
     colG = 0;
     colB = colour_inc/20+100;
     s.h_avatar.setFill(255, 0, colour_inc/20+100);
-  }
-  
-  
-  
-  else {
+  } else {
     colour_inc = 0;
   }
 }
@@ -706,23 +805,18 @@ void drawSplat()
   }
 }
 
-boolean isMoving(){
-  
-  if(abs(s.h_avatar.getVelocityX())<.05 && abs(s.h_avatar.getVelocityY())<.05){
+boolean isMoving() {
+
+  if (abs(s.h_avatar.getVelocityX())<.05 && abs(s.h_avatar.getVelocityY())<.05) {
     return false;
+  } else {
+    return true;
   }
-  else {
-   return true; 
-  }
-  
-  
 }
 void updateBalloonPos() {
   balloon.setPosition(s.h_avatar.getX(), s.h_avatar.getY());
 }
 
-void dettachBalloon(){
-  
-  
+void dettachBalloon() {
 }
 /* end helper functions section ****************************************************************************************/
