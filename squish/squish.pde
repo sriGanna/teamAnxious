@@ -20,6 +20,7 @@ import static java.util.concurrent.TimeUnit.*;
 import java.util.concurrent.*;
 import processing.sound.*;
 SoundFile file;
+import controlP5.*;
 /* end library imports *************************************************************************************************/  
 
 
@@ -77,7 +78,7 @@ PVector           fEE                                 = new PVector(0, 0);
 
 /* World boundaries in centimeters */
 FWorld            world;
-float             worldWidth                          = 25.0;  
+float             worldWidth                          = 35.0;  
 float             worldHeight                         = 25.0; 
 
 float             edgeTopLeftX                        = 0.0; 
@@ -87,18 +88,18 @@ float             edgeBottomRightY                    = worldHeight;
 
 
 /* Initialization of interative shapes */
-FCircle           c;
+FCircle           c, c2;
 FPoly             t;
 FCircle           g;
 FCircle           e;
-FBlob             f;
+FBlob             f, f2;
 
 
 /* Initialization of virtual tool */
 HVirtualCoupling  s;
 PImage            haplyAvatar;
 
-
+ControlP5 cp5,cp6, cp7;
 
 /* end elements definition *********************************************************************************************/ 
 
@@ -109,7 +110,34 @@ void setup(){
   /* put setup code here, run once: */
   //file = new SoundFile(this, "squish.mp3");
   /* screen size definition */
-  size(1000,1000);
+  size(1400,1000);
+  
+   smooth();
+  cp5 = new ControlP5(this);
+  cp6 = new ControlP5(this);
+  cp7 = new ControlP5(this);
+
+  PFont p = createFont("Verdana", 17); 
+  ControlFont font = new ControlFont(p);
+
+  // change the original colors
+  cp5.setColorForeground(0xffaa0000);
+  cp5.setColorBackground(color(255,0,0));
+  cp5.setFont(font);
+  cp5.setColorActive(0xffff0000);
+  
+    // change the original colors
+  cp6.setColorForeground(0xffaa0000);
+  cp6.setColorBackground(color(0,0,255));
+  cp6.setFont(font);
+  cp6.setColorActive(0xffff0000);
+  
+    // change the original colors
+  cp7.setColorForeground(0xffaa0000);
+  cp7.setColorBackground(color(0,255,0));
+  cp7.setFont(font);
+  cp7.setColorActive(0xffff0000);
+
   
   /* device setup */
   
@@ -143,11 +171,27 @@ void setup(){
   world               = new FWorld();
   
  
-
+    //buttons
+  cp5.addButton("Red")
+    .setValue(0)
+    .setPosition(0,  0)
+    .setSize(90, 30)
+    ;
+  cp6.addButton("Blue")
+    .setValue(0)
+    .setPosition(100,  0)
+    .setSize(90, 30)
+    ;
+  cp7.addButton("Green")
+    .setValue(0)
+    .setPosition(200, 0)
+    .setSize(90, 30)
+    ;
   
   /* creation of blob shape, warning may slow down simulation */
   f                   = new FBlob();
-  f.setAsCircle(16, 7, 20, 70);
+  //f.setAsCircle(16, 7, 20, 70);
+  f.setAsCircle(25, 20, 21, 70);
   f.setStroke(0);
   f.setStrokeWeight(2);
   //f.setFill(255);
@@ -158,18 +202,41 @@ void setup(){
   f.setFill(random(255), random(255), random(255));
   world.add(f);
   
+    f2                   = new FBlob();
+  //f.setAsCircle(16, 7, 20, 70);
+  f2.setAsCircle(10, 20, 21, 70);
+  f2.setStroke(0);
+  f2.setStrokeWeight(2);
+  //f.setFill(255);
+  f2.setStatic(true);
+  f2.setFriction(20);
+  f2.setDensity(100);
+  f2.setSensor(true);
+  f2.setFill(random(255), random(255), random(255));
+  world.add(f2);
+  
   c                   = new FCircle(20.0);
-  c.setPosition(edgeTopLeftX+worldWidth/1.3-4, edgeTopLeftY+2*worldHeight/6.0-1);
+  c.setPosition(edgeTopLeftX+worldWidth/1.3-3, edgeTopLeftY+2*worldHeight/6.0+11);
   c.setStatic(true);
   c.setSensor(true);
   c.setNoFill();
   c.setNoStroke();
   world.add(c);
   
+    c2                   = new FCircle(22.0);
+  c2.setPosition(edgeTopLeftX+worldWidth/1.3-16, edgeTopLeftY+2*worldHeight/6.0+12);
+  c2.setStatic(true);
+  c2.setSensor(true);
+  c2.setNoFill();
+  c2.setNoStroke();
+  world.add(c2);
+  
   
   /* Haptic Tool Initialization */
   s                   = new HVirtualCoupling((1)); 
   s.h_avatar.setDensity(4); 
+  s.h_avatar.setNoStroke();
+  s.h_avatar.setFill(0,0,0);
   s.init(world, edgeTopLeftX+worldWidth/2, edgeTopLeftY+2); 
  
   
@@ -246,7 +313,7 @@ class SimulationThread implements Runnable{
     
     torques.set(widgetOne.set_device_torques(fEE.array()));
     widgetOne.device_write_torques();
-    if (s.h_avatar.isTouchingBody(c)){
+    if (s.h_avatar.isTouchingBody(c) || s.h_avatar.isTouchingBody(c2)){
       s.h_avatar.setDamping(800);
       //file.play();
         
@@ -264,4 +331,15 @@ class SimulationThread implements Runnable{
 
 
 /* helper functions section, place helper functions here ***************************************************************/
+public void Red(int theValue) {
+  s.h_avatar.setFill(255,0,0);
+}
+
+public void Blue(int theValue) {
+  s.h_avatar.setFill(0,0,255);
+}
+
+public void Green(int theValue) {
+  s.h_avatar.setFill(0,255,0);
+}
 /* end helper functions section ****************************************************************************************/
