@@ -118,7 +118,8 @@ FLine             l3;
 FBlob           blob;
 FBox            anchor1, anchor2;
 FDistanceJoint    joint1, joint2;
-FCircle          c1, c2, c3, select, balloon;
+FBox          c1, c2, c3,c4,c5,c6,c7;
+FCircle select, balloon;
 
 PShape wall;
 FCircle[] bubbles = new FCircle[28];
@@ -408,7 +409,7 @@ void createSling() {
 
   anchor2              = new FBox(1, 1);
   anchor2.setFill(0);
-  anchor2.setPosition(27, 12);
+  anchor2.setPosition(30, 12);
   anchor2.setStatic(true);
   world.add(anchor2);
 
@@ -418,7 +419,7 @@ void createSling() {
   balloon.setSensor(true);
   balloon.setFill(0);
   balloon.setStroke(0);
-  world.add(balloon);
+  //world.add(balloon);
 
   joint1 = new FDistanceJoint(anchor1, s.h_avatar);
   world.add(joint1);
@@ -428,41 +429,68 @@ void createSling() {
 }
 
 void createPalette() {
-  c1                   = new FCircle(1);
-  c1.setPosition(12, 18);
+  // red 
+  c1                   = new FBox(2,1);
+  c1.setPosition(10, 18);
   c1.setStatic(true);
-  c1.setFill(350, 0, 0);
+  c1.setFill(255, 0, 0);
   c1.setSensor(true);
   c1.setNoStroke();
   world.add(c1);
 
-  c2                   = new FCircle(1);
-  c2.setPosition(15, 18);
+  //orange 
+  c2                   = new FBox(2,1);
+  c2.setPosition(12, 18);
   c2.setStatic(true);
-  c2.setFill(0, 255, 0);
+  c2.setFill(255, 128, 0);
   c2.setSensor(true);
   c2.setNoStroke();
   world.add(c2);
-
-  c3                   = new FCircle(1);
-  c3.setPosition(18, 18);
+  
+  //yellow 
+    c3                   = new FBox(2,1);
+  c3.setPosition(14, 18);
   c3.setStatic(true);
   c3.setSensor(true);
-  c3.setFill(0, 0, 255);
+  c3.setFill(255, 255,0);
   c3.setNoStroke();
   world.add(c3);
 
-  select               = new FCircle(1);
-  select.setPosition(27, 6);
-  select.setStatic(true);
-  select.setSensor(true);
-  select.setFill(0, 0, 255);
-  select.setNoStroke();
-  world.add(select);
-
-  colour = loadImage("colWheel.jpeg"); 
-  colour.resize((int)(hAPI_Fisica.worldToScreen(1)), (int)(hAPI_Fisica.worldToScreen(1)));
-  select.attachImage(colour);
+//green
+  c4                   = new FBox(2,1);
+  c4.setPosition(16, 18);
+  c4.setStatic(true);
+  c4.setSensor(true);
+  c4.setFill(0, 255, 0);
+  c4.setNoStroke();
+  world.add(c4);
+  
+  //light blue
+  c5                   = new FBox(2,1);
+  c5.setPosition(18, 18);
+  c5.setStatic(true);
+  c5.setSensor(true);
+  c5.setFill(0, 255, 255);
+  c5.setNoStroke();
+  world.add(c5);
+  
+  //dark blue
+  c6                  = new FBox(2,1);
+  c6.setPosition(20, 18);
+  c6.setStatic(true);
+  c6.setSensor(true);
+  c6.setFill(0, 0, 255);
+  c6.setNoStroke();
+  world.add(c6);
+  
+  //purple 
+  c7                   = new FBox(2,1);
+  c7.setPosition(22, 18);
+  c7.setStatic(true);
+  c7.setSensor(true);
+  c7.setFill(255, 0, 255);
+  c7.setNoStroke();
+  world.add(c7);
 }
 
 void selectColour() {
@@ -471,39 +499,95 @@ void selectColour() {
     world.add(c1);
     world.add(c2);
     world.add(c3);
+    world.add(c4);
+    world.add(c5);
+    world.add(c6);
+    world.add(c7);
     redraw = false;
   }
-  if (s.h_avatar.isTouchingBody(c1)) {
+  if (s.h_avatar.isTouchingBody(c1)) { ///red
     colour_inc++;
     if (colour_inc >3600) {
       colour_inc=0;
     }
-    c1.setFill(colour_inc/20+75, 0, 0);
-    s.h_avatar.setFill(colour_inc/20+75, 0, 0);
-    colR = colour_inc/20+75;
+    c1.setFill(colour_inc/20+100, 0, 0);
+    s.h_avatar.setFill(colour_inc/20+100, 0, 0);
+    colR = colour_inc/20+100;
     colG = 0;
     colB = 0;
-  } else if (s.h_avatar.isTouchingBody(c2)) {
+  } else if (s.h_avatar.isTouchingBody(c2)) { //orange 
     colour_inc++;
     if (colour_inc >3600) {
       colour_inc=0;
     }
-    c2.setFill(0, colour_inc/20+75, 0);
-    s.h_avatar.setFill(0, colour_inc/20+75, 0);
+    c2.setFill(255, colour_inc/20+75, 0);
+    s.h_avatar.setFill(255, colour_inc/20+75, 0);
+    colR = 255;
+    colG = colour_inc/20+75;
+    colB = 0;
+  } else if (s.h_avatar.isTouchingBody(c3)) { //yellow
+    colour_inc++;
+    if (colour_inc >3600) {
+      colour_inc=0;
+    }
+    c3.setFill(colour_inc/20+125, colour_inc/20+125,0);
+    colR = colour_inc/20+125;
+    colG = colour_inc/20+125;
+    colB = 0;
+    s.h_avatar.setFill(colour_inc/20+125, colour_inc/20+125,0);
+  } 
+  
+  else if (s.h_avatar.isTouchingBody(c4)) { //green
+    colour_inc++;
+    if (colour_inc >3600) {
+      colour_inc=0;
+    }
+    c4.setFill(0,colour_inc/20+75,0);
     colR = 0;
     colG = colour_inc/20+75;
     colB = 0;
-  } else if (s.h_avatar.isTouchingBody(c3)) {
+    s.h_avatar.setFill(0, colour_inc/20+75,0);
+  }
+  
+  else if (s.h_avatar.isTouchingBody(c5)) { //light blue
     colour_inc++;
     if (colour_inc >3600) {
       colour_inc=0;
     }
-    c3.setFill(0, 0, colour_inc/20+75);
+    c5.setFill(0, colour_inc/20+125, colour_inc/20+125);
+    colR = 0;
+    colG = colour_inc/20+125;
+    colB = colour_inc/20+125;
+    s.h_avatar.setFill(0, colour_inc/20+125, colour_inc/20+125);
+  }
+  
+  else if (s.h_avatar.isTouchingBody(c6)) { //blue 
+    colour_inc++;
+    if (colour_inc >3600) {
+      colour_inc=0;
+    }
+    c6.setFill(0, 0, colour_inc/20+100);
     colR = 0;
     colG = 0;
-    colB = colour_inc/20+75;
-    s.h_avatar.setFill(0, 0, colour_inc/20+75);
-  } else {
+    colB = colour_inc/20+100;
+    s.h_avatar.setFill(0, 0, colour_inc/20+100);
+  }
+  
+  else if (s.h_avatar.isTouchingBody(c7)) { //purple 
+    colour_inc++;
+    if (colour_inc >3600) {
+      colour_inc=0;
+    }
+    c7.setFill(255, 0, colour_inc/20+100);
+    colR = 255;
+    colG = 0;
+    colB = colour_inc/20+100;
+    s.h_avatar.setFill(255, 0, colour_inc/20+100);
+  }
+  
+  
+  
+  else {
     colour_inc = 0;
   }
 }
@@ -581,6 +665,10 @@ void hideSelect() {
     world.remove(c1);
     world.remove(c2);
     world.remove(c3);
+    world.remove(c4);
+    world.remove(c5);
+    world.remove(c6);
+    world.remove(c7);
     redraw = true;
   }
 }
@@ -603,15 +691,6 @@ boolean isReleased() {
   {
     return false;
   }
-  //currentPosY = s.h_avatar.getY();
-  ////if(currentPosY > posWall && pulled){
-
-  ////}
-  //if (DEBUGREL) {
-  //  //println(s.h_avatar.getForceY());
-  //  println(currentPosY/150);
-  //  println(posWall.y);
-  //}
 }
 
 void drawSplat()
