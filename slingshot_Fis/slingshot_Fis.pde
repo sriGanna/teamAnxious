@@ -36,6 +36,8 @@ private final ScheduledExecutorService scheduler      = Executors.newScheduledTh
 
 boolean DEBUG = false;
 boolean DEBUGPOS = true;
+boolean DEBUGREL = false;
+;
 
 /* device block definitions ********************************************************************************************/
 Board             haplyBoard;
@@ -116,11 +118,13 @@ FLine             l3;
 FBlob           blob;
 FBox            anchor1, anchor2;
 FDistanceJoint    joint1, joint2;
-FCircle          c1, c2, c3, select;
+FCircle          c1, c2, c3, select, balloon;
+
 PShape wall;
 FCircle[] bubbles = new FCircle[28];
 float colour_inc=0;
 float colR, colG, colB;
+float currentPosY;
 int bubbleQuant = 4;
 ArrayList<FBody> isTouching;
 
@@ -134,6 +138,9 @@ ArrayList <Splat> splats = new ArrayList <Splat> ();
 boolean splatshown=false;
 boolean selectCol = true;
 boolean redraw = false;
+boolean wasPulled = false;
+boolean released = false;
+boolean loadBalloon = false;
 /* setup section *******************************************************************************************************/
 void setup() {
   /* put setup code here, run once: */
@@ -184,7 +191,7 @@ void setup() {
 
   createSling();
   createPalette();
-  createBubbles();
+  //createBubbles();
 
   wall = create_wall(posWall.x-0.2, posWall.y+rEE+.01, posWall.x+0.2, posWall.y+rEE+.01);
 
@@ -215,6 +222,9 @@ void draw() {
   /* put graphical code here, runs repeatedly at defined framerate in setup, else default at 60fps: */
   if (renderingForce == false) {
     background(255);
+    //if (loadBalloon &&isMoving()) {
+    //  updateBalloonPos();
+    //}
     //shape(wall);
     for (Splat abs : splats) {
       abs.display();
@@ -288,7 +298,23 @@ class SimulationThread implements Runnable {
       hideSelect();
     }
 
-    checkSplat();
+    //checkSplat();
+    isReleased();
+    if (DEBUGREL) {
+      println(pulledBack());
+    }
+    if (pulledBack()) {
+      wasPulled = true;
+    }
+    if (released && !isMoving()) {
+      println("drawing");
+      splatshown = false;
+      drawSplat();
+    }
+
+    //println(isReleased());
+    //println(wasPulled);
+    //println(released);
     world.step(1.0f/1000.0f);
     renderingForce = false;
   }
@@ -385,6 +411,14 @@ void createSling() {
   anchor2.setPosition(27, 12);
   anchor2.setStatic(true);
   world.add(anchor2);
+
+  balloon                   = new FCircle(1);
+  balloon.setPosition(s.h_avatar.getX(), s.h_avatar.getY());
+  balloon.setStatic(true);
+  balloon.setSensor(true);
+  balloon.setFill(0);
+  balloon.setStroke(0);
+  world.add(balloon);
 
   joint1 = new FDistanceJoint(anchor1, s.h_avatar);
   world.add(joint1);
@@ -536,6 +570,10 @@ void keyPressed() {
   if (key == 'w') {
     selectCol = true;
   }
+  if (key == 'r') {
+    loadBalloon = true;
+    println("balloon loaded");
+  }
 }
 
 void hideSelect() {
@@ -545,5 +583,67 @@ void hideSelect() {
     world.remove(c3);
     redraw = true;
   }
+}
+boolean pulledBack() {
+  currentPosY = s.h_avatar.getY()/150;
+  if (currentPosY > .1) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+boolean isReleased() {
+
+  if (wasPulled & !pulledBack()) {
+    wasPulled = false;
+    released = true;
+    return true;
+  } else 
+  {
+    return false;
+  }
+  //currentPosY = s.h_avatar.getY();
+  ////if(currentPosY > posWall && pulled){
+
+  ////}
+  //if (DEBUGREL) {
+  //  //println(s.h_avatar.getForceY());
+  //  println(currentPosY/150);
+  //  println(posWall.y);
+  //}
+}
+
+void drawSplat()
+{
+  released = false;
+  if (splatshown == false) {
+    splats.add(new Splat(s.h_avatar.getX()*40, s.h_avatar.getY()*40));
+    if (DEBUGPOS) {
+      println(s.h_avatar.getX());
+      println(s.h_avatar.getY());
+    }
+    splatshown = true;
+  }
+}
+
+boolean isMoving(){
+  
+  if(abs(s.h_avatar.getVelocityX())<.05 && abs(s.h_avatar.getVelocityY())<.05){
+    return false;
+  }
+  else {
+   return true; 
+  }
+  
+  
+}
+void updateBalloonPos() {
+  balloon.setPosition(s.h_avatar.getX(), s.h_avatar.getY());
+}
+
+void dettachBalloon(){
+  
+  
 }
 /* end helper functions section ****************************************************************************************/
