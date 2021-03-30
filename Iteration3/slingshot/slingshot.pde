@@ -133,6 +133,7 @@ ArrayList<FBody> isTouching;
 
 /* Initialization of virtual tool */
 PImage            colour;
+PGraphics output;
 
 /* end elements definition *********************************************************************************************/
 
@@ -207,8 +208,9 @@ void setup() {
   world.setEdgesRestitution(0.4);
   world.setEdgesFriction(1.2);
 
-
+  output = createGraphics(800, 800, JAVA2D);
   world.draw();
+  
 
 
   /* setup framerate speed */
@@ -228,13 +230,12 @@ void draw() {
   /* put graphical code here, runs repeatedly at defined framerate in setup, else default at 60fps: */
   if (renderingForce == false) {
     background(255);
-    //if (loadBalloon &&isMoving()) {
-    //  updateBalloonPos();
-    //}
-    //shape(wall);
+
     for (Splat abs : splats) {
       abs.display();
     }
+    imageMode(CENTER);
+    image(output, x, y);
     world.draw();
   }
 }
@@ -380,8 +381,13 @@ class Splat {
     splat.endDraw();
   }
   void display() {
-    imageMode(CENTER);
-    image(splat, x, y);
+   output.beginDraw();
+    output.imageMode(CENTER);
+    output.image(splat, x, y);
+    output.endDraw();
+  }
+  void saveSplat(){
+    splat.save("./saved/test.png");
   }
 }
 
@@ -430,6 +436,16 @@ void createSling() {
 
   joint2 = new FDistanceJoint(anchor2, s.h_avatar);
   world.add(joint2);
+}
+
+void removeSling() {
+  world.remove(joint1);
+  world.remove(joint2);
+  world.remove(anchor1);
+  world.remove(anchor2);
+  delay(500);
+  save("./saved/test.png");
+  delay(100);
 }
 
 void createPalette() {
@@ -547,23 +563,14 @@ void controlEvent(CallbackEvent event) {
       s.h_avatar.setFill(colR, colG, colB);
       break;
     case "/save":
-      save("./saved/test.png");
+      //removeSling();
+      //createSling();
+      output.save("./saved/test.png");
       break;
     }
   }
 }
 void selectColour_old() {
-
-  if (redraw) {
-    world.add(c1);
-    world.add(c2);
-    world.add(c3);
-    world.add(c4);
-    world.add(c5);
-    world.add(c6);
-    world.add(c7);
-    redraw = false;
-  }
   if (s.h_avatar.isTouchingBody(c1)) { ///red
     colour_inc++;
     if (colour_inc >3600) {
@@ -681,18 +688,7 @@ void keyPressed() {
   }
 }
 
-void hideSelect() {
-  if (redraw == false) {
-    world.remove(c1);
-    world.remove(c2);
-    world.remove(c3);
-    world.remove(c4);
-    world.remove(c5);
-    world.remove(c6);
-    world.remove(c7);
-    redraw = true;
-  }
-}
+
 boolean pulledBack() {
   currentPosY = s.h_avatar.getY()/150;
   if (currentPosY > .1) {
@@ -749,10 +745,5 @@ boolean isMoving() {
     return true;
   }
 }
-void updateBalloonPos() {
-  balloon.setPosition(s.h_avatar.getX(), s.h_avatar.getY());
-}
 
-void dettachBalloon() {
-}
 /* end helper functions section ****************************************************************************************/

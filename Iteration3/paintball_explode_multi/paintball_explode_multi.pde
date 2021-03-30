@@ -1,5 +1,4 @@
-/**
- **********************************************************************************************************************
+/**********************************************************************************************************************
  * @file       sketch_4_Wall_Physics.pde
  * @author     Steve Ding, Colin Gallacher
  * @version    V4.1.0
@@ -20,19 +19,20 @@ import static java.util.concurrent.TimeUnit.*;
 import java.util.concurrent.*;
 import processing.sound.*;
 import ddf.minim.*;
+import controlP5.*;
 
-Minim minim;
 AudioPlayer song;
 SoundFile file;
-/* end library imports *************************************************************************************************/
 
-
+ControlP5 cp5;
 
 /* scheduler definition ************************************************************************************************/
 private final ScheduledExecutorService scheduler      = Executors.newScheduledThreadPool(1);
 /* end scheduler definition ********************************************************************************************/
 
 
+boolean DEBUG = false;
+boolean DEBUGPOS = true;
 
 /* device block definitions ********************************************************************************************/
 Board             haplyBoard;
@@ -69,23 +69,33 @@ PVector           fEE                                = new PVector(0, 0);
 
 /* World boundaries in centimeters */
 FWorld            world;
-float             worldWidth                          = 20.0;  
-float             worldHeight                         = 15.0; 
+float             worldWidth                          = 30.0;  
+float             worldHeight                         = 20.0; 
 
 float             edgeTopLeftX                        = 0.0; 
 float             edgeTopLeftY                        = 0.0; 
 float             edgeBottomRightX                    = worldWidth; 
 float             edgeBottomRightY                    = worldHeight;
 
+//bubble locations
+int[] xCord={5, 7, 10, 13, 16, 18, 20, 22, 24, 26};
+int[] yCord={5, 14, 8, 14, 7, 16, 5, 12, 16, 4};
+float[] rad={4, 3, 2, 4, 3, 3, 2, 3, 2, 4};
+FCircle[] bub=new FCircle[10];
+FCircle[] burst=new FCircle[10];
+//color codes
+int[] r=new int[10];
+int[] g=new int[10];
+int[] b=new int[10];
 
+ArrayList<FBody> isTouching;
 /* Initialization of elements */
-FCircle           circle1, bbody, burstCirc;
-
+FCircle           circle1;
 
 /* Timer variables */
 long currentMillis = millis();
-long previousMillis = 0;
-float interval = 10;
+long previousMillis = millis();
+float interval = 1500;
 int time = -1;
 
 /* Initialization of virtual tool */
@@ -98,6 +108,8 @@ int c1, c2, c3;
 
 boolean done=false;
 boolean splatshown=false;
+boolean reset=false;
+
 Splat abc;
 ArrayList <Splat> splats = new ArrayList <Splat> ();
 /* setup section *******************************************************************************************************/
@@ -107,10 +119,19 @@ void setup() {
   //file.play();
 
   /* screen size definition */
-  size(800, 600);
+  size(1200, 800);
 
   /* device setup */
+  cp5 = new ControlP5(this);
 
+  PFont p = createFont("Verdana", 17); 
+  ControlFont font = new ControlFont(p);
+
+  // change the original colors
+  cp5.setColorForeground(0xffaa0000);
+  cp5.setColorBackground(color(0, 0, 0));
+  cp5.setFont(font);
+  cp5.setColorActive(0xffff0000);
   /**  
    * The board declaration needs to be changed depending on which USB serial port the Haply board is connected.
    * In the base example, a connection is setup to the first detected serial device, this parameter can be changed
@@ -140,31 +161,44 @@ void setup() {
   hAPI_Fisica.setScale(pixelsPerCentimeter); 
   world               = new FWorld();
 
-  randomize();
+  //randomize();
 
-  //reset circle
-  circle1                   = new FCircle(3);
-  circle1.setPosition(15, 5);
-  circle1.setStatic(true);
-  circle1.setFill(255, 255, 255);
-  circle1.setNoStroke();
-  world.add(circle1);
+  //reset button
+  cp5.addButton("Reset")
+    .setPosition(500, 710)
+    .setSize(150, 50)
+    ;
 
 
 
-  bbody                   = new FCircle(1.7);
-  bbody.setPosition(10, 7);
-  bbody.setStatic(true);
-  bbody.setFill(c1, c2, c3);
-  bbody.setNoStroke();
-  world.add(bbody);
+  for (int i=0; i<10; i++)
+  {
+    randomize();
+    r[i]=c1;
+    g[i]=c2;
+    b[i]=c3;
+  }
 
-  burstCirc = new FCircle (4);
-  burstCirc.setPosition(10, 7);
-  burstCirc.setStatic(true);
-  burstCirc.setNoFill();
-  burstCirc.setNoStroke();
-  //world.add(bbody);
+  //creating field of bubbles
+  for (int i =0; i<10; i++)
+  {
+    bub[i] = new FCircle(rad[i]);
+    bub[i].setPosition(xCord[i], yCord[i]);
+    bub[i].setStatic(true);
+    bub[i].setFill(r[i], g[i], b[i]);
+    bub[i].setNoStroke();
+    world.add(bub[i]);
+    burst[i] = new FCircle(rad[i]+2);
+    burst[i].setPosition(xCord[i], yCord[i]);
+    burst[i].setStatic(true);
+    burst[i].setNoFill();
+    burst[i].setNoStroke();
+  }
+
+
+  //bubble = loadImage("../img/bubble.png"); 
+  //bubble.resize((int)(hAPI_Fisica.worldToScreen(2)), (int)(hAPI_Fisica.worldToScreen(2)));
+  //bbody.attachImage(bubble); 
 
   /* Haptic Tool Initialization */
   s                   = new HVirtualCoupling((1)); 
@@ -199,19 +233,18 @@ void setup() {
 }
 /* end setup section ***************************************************************************************************/
 
-
-
 /* draw section ********************************************************************************************************/
 void draw() {
   /* put graphical code here, runs repeatedly at defined framerate in setup, else default at 60fps: */
   if (renderingForce == false) {
     background(255);
 
-    if (splatshown==true) {
-      //for (Splat s : splats) {
-      //  s.display();
-      //}
-      abc.display();
+
+    for (Splat s : splats) {
+      if (splatshown==true) {
+        s.display();
+      }
+      //abc.display();
     }    
 
 
@@ -219,19 +252,6 @@ void draw() {
   }
 }
 /* end draw section ****************************************************************************************************/
-
-
-//void contactResult(FContactResult result) {
-//  // Draw an ellipse where the contact took place and as big as the normal impulse of the contact
-//  ellipse(result.getX(), result.getY(), result.getNormalImpulse(), result.getNormalImpulse());
-
-//  // Trigger your sound here
-//  // ...
-//  playAudio();
-//  done=true;
-//}
-
-
 
 /* simulation section **************************************************************************************************/
 class SimulationThread implements Runnable {
@@ -264,84 +284,49 @@ class SimulationThread implements Runnable {
 
     world.step(1.0f/1000.0f);
 
-    //if (s.h_avatar.isTouchingBody(bbody) || s.h_avatar.isTouchingBody(b1) || s.h_avatar.isTouchingBody(b2) && !file.isPlaying()) {
-    if (s.h_avatar.isTouchingBody(bbody) && !file.isPlaying()) {
-      //file.play();
 
-      currentMillis = millis();
-      if (currentMillis - previousMillis > interval) {
-        playAudio();
-        done=true;
-        //print("inside");
-        //delay(10);
-        bbody.setNoFill();
-        //b1.setNoFill();
-        //b2.setNoFill();
-        bbody.setSensor(true);
-        //b1.setSensor(true);
-        //b2.setSensor(true);
-        if (splatshown==false) {
-          //splats.add(new Splat(400, 300));
-          abc=new Splat(400, 300);
-          world.add(burstCirc);
-          splatshown = true;
-          timer_reset();
-        }
-      }
-    } else {
-      previousMillis = millis();
-      if(splatshown && timer_passed(100)){
-        world.remove(burstCirc);
-      }
-      //bbody.setFill(0,0,0);
-    }
+    checkSplat();
 
-    if (s.h_avatar.isTouchingBody(circle1)) {
-      //b1.setPosition(10, 8.5); 
-      //b1.setFill(82, 50, 148);
-      //b2.setPosition(10, 7.5); 
-      //b2.setFill(82, 50, 148);
-      randomize();
-      bbody.setFill(c1, c2, c3);
-      bbody.setPosition(10, 7);
-      done=false;
-      splatshown=false;
-      abc.hide();
-      world.remove(burstCirc);
-      //for (Splat s : splats) {
-      //  s.hide();
-      //}
-      bbody.setSensor(false);
-    }
     renderingForce = false;
   }
 }
 /* end simulation section **********************************************************************************************/
 
-
+public void Reset() {
+  done=false;
+  splatshown=false;
+  splats.clear();
+  //world.clear();
+  for (int i=0; i<10; i++) {
+    randomize();
+    r[i]=c1;
+    g[i]=c2;
+    b[i]=c3;
+  }
+  for (int i=0; i<10; i++)
+  {
+    world.remove(bub[i]);
+    bub[i] = new FCircle(rad[i]);
+    bub[i].setPosition(xCord[i], yCord[i]);
+    bub[i].setStatic(true);
+    bub[i].setFill(r[i], g[i], b[i]);
+    bub[i].setNoStroke();
+    world.add(bub[i]);
+       burst[i] = new FCircle(rad[i]+2);
+    burst[i].setPosition(xCord[i], yCord[i]);
+    burst[i].setStatic(true);
+    burst[i].setNoFill();
+    burst[i].setNoStroke();
+  } 
+  reset=false;
+}
 
 /* helper functions section, place helper functions here ***************************************************************/
 void playAudio() {
   if (done==false)
   {
     file.play();
-    //print("here");
   }
-}
-
-//void addLine(FLine l) {
-//  l.setStatic(true);
-//  l.setFill(0, 255, 0);
-//  l.setStroke(0, 0, 0);
-//  l.setStrokeWeight(3);
-//  world.add(l);
-//}
-
-void addPoly(FPoly p) {
-  p.setStatic(true);
-  p.setFill(82, 50, 148);
-  p.setNoStroke();
-  world.add(p);
 }
 
 void randomize() {
@@ -352,13 +337,17 @@ void randomize() {
 
 class Splat {
   float x, y;
-  float rad;
+  int i;
+  float radi;
   PGraphics splat;
+  boolean done;
+  boolean z;
 
-  Splat(float x, float y) {
-    this.x = x;
-    this.y = y;
-    rad = 30;
+  Splat(float x, float y, int i) {
+    this.x = x*40;
+    this.y = y*40;
+    this.i = i;
+    radi = rad[i]*10;
     splat = createGraphics(600, 600, JAVA2D);
     create();
   }
@@ -366,15 +355,14 @@ class Splat {
   void create() {
     splat.beginDraw();
     splat.smooth();
-    print(c1, c2, c3);
     splat.colorMode(RGB, 255);
-    splat.fill(c1, c2, c3);
+    splat.fill(r[i], g[i], b[i]);
     splat.noStroke();
     for (float i=3; i<29; i+=.35) {
       float angle = random(0, TWO_PI);
       float splatX = (splat.width-50)/2 + 25 + cos(angle)*2*i;
       float splatY = (splat.height-50)/2 + 25 + sin(angle)*3*i;
-      splat.ellipse(splatX, splatY, rad-i, rad-i+1.8);
+      splat.ellipse(splatX, splatY, radi-i, radi-i+1.8);
     }
     splat.endDraw();
   }
@@ -382,18 +370,51 @@ class Splat {
     imageMode(CENTER);
     image(splat, x, y);
   }
-  void hide() {
-    splatshown=false;
+}
+
+void checkSplat() {
+
+  isTouching = s.h_avatar.getTouching();
+  if (DEBUG) {
+    println(isTouching);
+  }
+  for (int i =0; i<10; i++) {
+    if (isTouching.contains(bub[i])) { 
+      currentMillis = millis();
+      if (currentMillis - previousMillis > interval) {         
+        splatshown = false;
+        animateSplat(bub[i], burst[i], i); 
+        previousMillis = millis();
+      }
+    }
+    if (splatshown && timer_passed(100)) {
+      world.remove(burst[i]);
+    }
+  }
+}
+
+void animateSplat(FCircle bubble, FCircle burstCirc, int i) {
+  playAudio();
+  if (splatshown == false) {
+    splats.add(new Splat(bubble.getX(), bubble.getY(), i));
+    if (DEBUGPOS) {
+      println(bubble.getX());
+      println(bubble.getY());
+    }
+    splatshown = true;
+    world.remove(bubble);
+    world.add(burstCirc);
   }
 }
 
 void timer_reset() {
   time = millis();
 }
- 
+
 boolean timer_passed(int mseconds) {
   return ( millis() - time > mseconds );
 }
- 
+
+
 
 /* end helper functions section ****************************************************************************************/
