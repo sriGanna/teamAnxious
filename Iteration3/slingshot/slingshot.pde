@@ -36,9 +36,9 @@ private final ScheduledExecutorService scheduler      = Executors.newScheduledTh
 /* end scheduler definition ********************************************************************************************/
 
 boolean DEBUG = false;
-boolean DEBUGPOS = true;
+boolean DEBUGPOS = false;
 boolean DEBUGREL = false;
-;
+boolean DEBUGSPEED = true;
 
 /* device block definitions ********************************************************************************************/
 Board             haplyBoard;
@@ -128,6 +128,7 @@ float colour_inc=0;
 float colR, colG, colB;
 float currentPosY;
 int bubbleQuant = 4;
+double speed;
 ArrayList<FBody> isTouching;
 
 /* Initialization of virtual tool */
@@ -312,14 +313,13 @@ class SimulationThread implements Runnable {
       wasPulled = true;
     }
     if (released && !isMoving()) {
-      println("drawing");
+      if (DEBUG) {
+        println("drawing");
+      }
       splatshown = false;
-      drawSplat();
+      drawSplat(speed);
     }
 
-    //println(isReleased());
-    //println(wasPulled);
-    //println(released);
     world.step(1.0f/1000.0f);
     renderingForce = false;
   }
@@ -357,10 +357,10 @@ class Splat {
   float rad;
   PGraphics splat;
 
-  Splat(float x, float y) {
+  Splat(float x, float y, float rad) {
     this.x = x;
     this.y = y;
-    rad = 17;
+    this.rad = rad;
     splat = createGraphics(200, 200, JAVA2D);
     create();
   }
@@ -433,7 +433,7 @@ void createSling() {
 }
 
 void createPalette() {
-   cp5 = new ControlP5(this);
+  cp5 = new ControlP5(this);
 
   PFont p = createFont("Verdana", 17); 
   ControlFont font = new ControlFont(p);
@@ -501,43 +501,43 @@ void controlEvent(CallbackEvent event) {
       colR = 255;
       colG = 0;
       colB = 0;
-      s.h_avatar.setFill(colR,colG,colB);
+      s.h_avatar.setFill(colR, colG, colB);
       break;
-     case "/orange":
+    case "/orange":
       colR = 255;
       colG = 128;
       colB = 0;
-      s.h_avatar.setFill(colR,colG,colB);
+      s.h_avatar.setFill(colR, colG, colB);
       break;
-      case "/yellow":
+    case "/yellow":
       colR = 255;
       colG = 255;
       colB = 0;
-      s.h_avatar.setFill(colR,colG,colB);
+      s.h_avatar.setFill(colR, colG, colB);
       break;
-      case "/green":
+    case "/green":
       colR = 0;
       colG = 255;
       colB = 0;
-      s.h_avatar.setFill(colR,colG,colB);
+      s.h_avatar.setFill(colR, colG, colB);
       break;
-      case "/lBlue":
+    case "/lBlue":
       colR = 0;
       colG = 128;
       colB = 255;
-      s.h_avatar.setFill(colR,colG,colB);
+      s.h_avatar.setFill(colR, colG, colB);
       break;
-      case "/blue":
+    case "/blue":
       colR = 0;
       colG = 0;
       colB = 255;
-      s.h_avatar.setFill(colR,colG,colB);
+      s.h_avatar.setFill(colR, colG, colB);
       break;
-      case "/purple":
+    case "/purple":
       colR = 255;
       colG = 0;
       colB = 255;
-      s.h_avatar.setFill(colR,colG,colB);
+      s.h_avatar.setFill(colR, colG, colB);
       break;
     }
   }
@@ -646,7 +646,7 @@ void checkSplat() {
 void animateSplat(FCircle bubble) {
   playAudio();
   if (splatshown == false) {
-    splats.add(new Splat(bubble.getX()*40, bubble.getY()*40));
+    splats.add(new Splat(bubble.getX()*40, bubble.getY()*40, 17));
     if (DEBUGPOS) {
       println(bubble.getX());
       println(bubble.getY());
@@ -665,7 +665,9 @@ void keyPressed() {
   }
   if (key == 'r') {
     loadBalloon = true;
-    println("balloon loaded");
+    if (DEBUG) {
+      println("balloon loaded");
+    }
   }
 }
 
@@ -689,12 +691,18 @@ boolean pulledBack() {
     return false;
   }
 }
-
+float x_vel, y_vel;
 boolean isReleased() {
 
   if (wasPulled & !pulledBack()) {
     wasPulled = false;
     released = true;
+    x_vel = s.h_avatar.getVelocityX();
+    y_vel = s.h_avatar.getVelocityY();
+    speed = Math.sqrt(Math.pow(x_vel,2) + Math.pow(y_vel,2));
+    if (DEBUGSPEED) {
+      println(speed);
+    }
     return true;
   } else 
   {
@@ -702,11 +710,21 @@ boolean isReleased() {
   }
 }
 
-void drawSplat()
+void drawSplat(double speed)
 {
   released = false;
   if (splatshown == false) {
-    splats.add(new Splat(s.h_avatar.getX()*40, s.h_avatar.getY()*40));
+    if(speed <50){
+      splats.add(new Splat(s.h_avatar.getX()*40, s.h_avatar.getY()*40, 10));
+    }
+    else if(speed <70){
+       splats.add(new Splat(s.h_avatar.getX()*40, s.h_avatar.getY()*40, 18));
+    }
+    else if(speed <100){
+      splats.add(new Splat(s.h_avatar.getX()*40, s.h_avatar.getY()*40, 22));
+      
+    }
+    
     playAudio();
     if (DEBUGPOS) {
       println(s.h_avatar.getX());
