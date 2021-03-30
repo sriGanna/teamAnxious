@@ -492,6 +492,13 @@ void createPalette() {
     .setColorBackground(color(255, 0, 255))
 
     ;
+  cp5.addButton("save")
+    .setLabel("save")
+    .setPosition(980, 650)
+    .setSize(100, 50)
+    .setColorBackground(color(255, 0, 255))
+
+    ;
 }
 
 void controlEvent(CallbackEvent event) {
@@ -538,6 +545,9 @@ void controlEvent(CallbackEvent event) {
       colG = 0;
       colB = 255;
       s.h_avatar.setFill(colR, colG, colB);
+      break;
+    case "/save":
+      save("./saved/test.png");
       break;
     }
   }
@@ -699,7 +709,7 @@ boolean isReleased() {
     released = true;
     x_vel = s.h_avatar.getVelocityX();
     y_vel = s.h_avatar.getVelocityY();
-    speed = Math.sqrt(Math.pow(x_vel,2) + Math.pow(y_vel,2));
+    speed = Math.sqrt(Math.pow(x_vel, 2) + Math.pow(y_vel, 2));
     if (DEBUGSPEED) {
       println(speed);
     }
@@ -714,17 +724,14 @@ void drawSplat(double speed)
 {
   released = false;
   if (splatshown == false) {
-    if(speed <50){
+    if (speed <70) {
       splats.add(new Splat(s.h_avatar.getX()*40, s.h_avatar.getY()*40, 10));
-    }
-    else if(speed <70){
-       splats.add(new Splat(s.h_avatar.getX()*40, s.h_avatar.getY()*40, 18));
-    }
-    else if(speed <100){
+    } else if (speed <110) {
+      splats.add(new Splat(s.h_avatar.getX()*40, s.h_avatar.getY()*40, 18));
+    } else {
       splats.add(new Splat(s.h_avatar.getX()*40, s.h_avatar.getY()*40, 22));
-      
     }
-    
+
     playAudio();
     if (DEBUGPOS) {
       println(s.h_avatar.getX());
