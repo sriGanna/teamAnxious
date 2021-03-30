@@ -292,11 +292,6 @@ void setup() {
   c5.setSensor(true);
   world.add(c5);
 
-
-  clearBlob();
-  clearLine();
-  clearBubble();
-
   /* Setup the Virtual Coupling Contact Rendering Technique */
   s                   = new HVirtualCoupling((0.75)); 
   s.h_avatar.setDensity(4); 
@@ -411,7 +406,7 @@ void hapticSimulationStep() {
   }
   torques.set(widgetOne.set_device_torques(fEE.array()));
   widgetOne.device_write_torques();
-  setAnimations();
+
 
   world.step(1.0f/1000.0f);
 
@@ -449,33 +444,7 @@ void getEndEffectorState() {
   }
 }
 
-void setAnimations() {
-  if (mode == 4) {
-    if ((s.h_avatar.isTouchingBody(c) && !file2.isPlaying())) {
-      s.h_avatar.setDamping(800);
-      file2.play();
-    } else {
-      s.h_avatar.setDamping(0);
-    }
-  }
-  if (mode ==5) {
-    if (s.h_avatar.isTouchingBody(bubble) && !file.isPlaying()) {
-      //file.play();
 
-      currentMillis = millis();
-      if (currentMillis - previousMillis > interval) {
-        playAudio();
-        done=true;
-        clearBubble();
-        if (DEBUG)
-          print("inside");
-      }
-    } else {
-      previousMillis = millis();
-      //circle2.setFill(0,0,0);
-    }
-  }
-}
 
 void createControls() {
   FPoly prev =  new FPoly();
