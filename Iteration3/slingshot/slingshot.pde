@@ -146,7 +146,7 @@ boolean loadBalloon = false;
 /* setup section *******************************************************************************************************/
 void setup() {
   /* put setup code here, run once: */
-  file = new SoundFile(this, "pop1.wav");
+  file = new SoundFile(this, "splat.mp3");
   //file.play();
 
   /* screen size definition */
@@ -433,69 +433,7 @@ void createSling() {
 }
 
 void createPalette() {
-  //  // red 
-  //  c1                   = new FBox(2,1);
-  //  c1.setPosition(10, 18);
-  //  c1.setStatic(true);
-  //  c1.setFill(255, 0, 0);
-  //  c1.setSensor(true);
-  //  c1.setNoStroke();
-  //  world.add(c1);
-
-  //  //orange 
-  //  c2                   = new FBox(2,1);
-  //  c2.setPosition(12, 18);
-  //  c2.setStatic(true);
-  //  c2.setFill(255, 128, 0);
-  //  c2.setSensor(true);
-  //  c2.setNoStroke();
-  //  world.add(c2);
-
-  //  //yellow 
-  //    c3                   = new FBox(2,1);
-  //  c3.setPosition(14, 18);
-  //  c3.setStatic(true);
-  //  c3.setSensor(true);
-  //  c3.setFill(255, 255,0);
-  //  c3.setNoStroke();
-  //  world.add(c3);
-
-  ////green
-  //  c4                   = new FBox(2,1);
-  //  c4.setPosition(16, 18);
-  //  c4.setStatic(true);
-  //  c4.setSensor(true);
-  //  c4.setFill(0, 255, 0);
-  //  c4.setNoStroke();
-  //  world.add(c4);
-
-  //  //light blue
-  //  c5                   = new FBox(2,1);
-  //  c5.setPosition(18, 18);
-  //  c5.setStatic(true);
-  //  c5.setSensor(true);
-  //  c5.setFill(0, 255, 255);
-  //  c5.setNoStroke();
-  //  world.add(c5);
-
-  //  //dark blue
-  //  c6                  = new FBox(2,1);
-  //  c6.setPosition(20, 18);
-  //  c6.setStatic(true);
-  //  c6.setSensor(true);
-  //  c6.setFill(0, 0, 255);
-  //  c6.setNoStroke();
-  //  world.add(c6);
-
-  //  //purple 
-  //  c7                   = new FBox(2,1);
-  //  c7.setPosition(22, 18);
-  //  c7.setStatic(true);
-  //  c7.setSensor(true);
-  //  c7.setFill(255, 0, 255);
-  //  c7.setNoStroke();
-  //  world.add(c7);
-  cp5 = new ControlP5(this);
+   cp5 = new ControlP5(this);
 
   PFont p = createFont("Verdana", 17); 
   ControlFont font = new ControlFont(p);
@@ -691,34 +629,6 @@ void selectColour_old() {
   }
 }
 
-void createBubbles() {
-  float x, y;
-  for (int i = 0; i<bubbleQuant; i++) {
-    bubbles[i] = new FCircle(1);
-    HashSet xSet = new HashSet();
-    HashSet ySet = new HashSet();
-    x = random(5, 21);
-    y = random(7, 10);
-    while (xSet.contains(x)) {
-      x = random(10, 23);
-    }
-    xSet.add(x);
-    while (ySet.contains(y)) {
-      y = random(3, 8);
-    }
-    ySet.add(y);
-    bubbles[i].setPosition(x, y);
-
-    bubbles[i].setFill(random(0, 255), random(0, 255), random(0, 255));
-
-    bubbles[i].setNoStroke();
-    bubbles[i].setStatic(true);
-    //bubbles[i].setSensor(true);
-    world.add(bubbles[i]);
-  }
-}
-
-
 void checkSplat() {
 
   isTouching = s.h_avatar.getTouching();
@@ -797,6 +707,7 @@ void drawSplat()
   released = false;
   if (splatshown == false) {
     splats.add(new Splat(s.h_avatar.getX()*40, s.h_avatar.getY()*40));
+    playAudio();
     if (DEBUGPOS) {
       println(s.h_avatar.getX());
       println(s.h_avatar.getY());
