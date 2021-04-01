@@ -210,7 +210,7 @@ void setup() {
 
   output = createGraphics(800, 800, JAVA2D);
   world.draw();
-  
+
 
 
   /* setup framerate speed */
@@ -230,33 +230,18 @@ void draw() {
   /* put graphical code here, runs repeatedly at defined framerate in setup, else default at 60fps: */
   if (renderingForce == false) {
     background(255);
-
-    for (Splat abs : splats) {
-      abs.display();
-    }
-    imageMode(CENTER);
-    image(output, x, y);
+    image(output, 0, 0);
     world.draw();
   }
 }
 /* end draw section ****************************************************************************************************/
 
 
-//void contactResult(FContactResult result) {
-//  // Draw an ellipse where the contact took place and as big as the normal impulse of the contact
-//  ellipse(result.getX(), result.getY(), result.getNormalImpulse(), result.getNormalImpulse());
-
-//  // Trigger your sound here
-//  // ...
-//  playAudio();
-//  done=true;
-//}
-
-
 /* Timer variables */
 long currentMillis = millis();
 long previousMillis = 0;
 float interval = 50;
+
 /* simulation section **************************************************************************************************/
 class SimulationThread implements Runnable {
 
@@ -381,12 +366,12 @@ class Splat {
     splat.endDraw();
   }
   void display() {
-   output.beginDraw();
+    output.beginDraw();
     output.imageMode(CENTER);
     output.image(splat, x, y);
     output.endDraw();
   }
-  void saveSplat(){
+  void saveSplat() {
     splat.save("./saved/test.png");
   }
 }
@@ -563,8 +548,6 @@ void controlEvent(CallbackEvent event) {
       s.h_avatar.setFill(colR, colG, colB);
       break;
     case "/save":
-      //removeSling();
-      //createSling();
       output.save("./saved/test.png");
       break;
     }
@@ -727,7 +710,7 @@ void drawSplat(double speed)
     } else {
       splats.add(new Splat(s.h_avatar.getX()*40, s.h_avatar.getY()*40, 22));
     }
-
+    splats.get(splats.size()-1).display();
     playAudio();
     if (DEBUGPOS) {
       println(s.h_avatar.getX());
