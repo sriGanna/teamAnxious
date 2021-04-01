@@ -298,7 +298,7 @@ class Splat {
     this.y = y;
     this.i = i;
     if (scene ==1) {
-      rad = i;
+      radi = i;
     } else if (scene ==2) {
       radi = rad[i]*10;
     }
@@ -321,7 +321,7 @@ class Splat {
       float angle = random(0, TWO_PI);
       float splatX = (splat.width-50)/2 + 25 + cos(angle)*2*i;
       float splatY = (splat.height-50)/2 + 25 + sin(angle)*3*i;
-      splat.ellipse(splatX, splatY, rad-i, rad-i+1.8);
+      splat.ellipse(splatX, splatY, radi-i, radi-i+1.8);
     }
     splat.endDraw();
   }
