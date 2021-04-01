@@ -38,6 +38,8 @@ boolean DEBUG = false;
 boolean DEBUGPOS = false;
 boolean DEBUGREL = false;
 boolean DEBUGSPEED = true;
+boolean DEBUGAUDIO = false;
+boolean DEBUGPOP = true;
 
 /* device block definitions ********************************************************************************************/
 Board             haplyBoard;
@@ -70,7 +72,7 @@ float             rEE                                 = 0.006;
 float             kWall                               = 2000;
 PVector           fWall                               = new PVector(0, 0);
 PVector           penWall                             = new PVector(0, 0);
-PVector           posWall                             = new PVector(0.01, 0.1);
+PVector           posWall                             = new PVector(0.01, 0.08);
 
 /* pantagraph link parameters in meters */
 float             l                                   = 0.07;
@@ -96,7 +98,7 @@ PShape pGraph, joint, endEffector;
 /* World boundaries */
 FWorld            world;
 float             worldWidth                          = 25.0;  
-float             worldHeight                         = 21.0; 
+float             worldHeight                         = 18.0; 
 
 float             edgeTopLeftX                        = 0.0; 
 float             edgeTopLeftY                        = 0.0; 
@@ -112,7 +114,7 @@ HVirtualCoupling  s;
 FCircle           circle1, bbody;
 FBox            anchor1, anchor2;
 FDistanceJoint    joint1, joint2;
-FCircle select, balloon,sqCirc1, sqCirc2;
+FCircle select, balloon, sqCirc1, sqCirc2;
 FBlob squish1, squish2;
 
 PShape wall;
@@ -140,6 +142,7 @@ ArrayList<FBody> isTouching;
 /* Initialization of virtual tool */
 PImage            colour;
 PGraphics output;
+PFont             F;
 
 /* end elements definition *********************************************************************************************/
 
@@ -151,15 +154,20 @@ boolean redraw = false;
 boolean wasPulled = false;
 boolean released = false;
 boolean loadBalloon = false;
+boolean Fisica = true;
 /* end elements definition *********************************************************************************************/
 
 int scene =0;
 int sceneNum =3;
+
 /* setup section *******************************************************************************************************/
 void setup() {
   /* put setup code here, run once: */
   file = new SoundFile(this, "splat.mp3");
-  //file.play();
+
+
+  /* set font type and size */
+  F                   = createFont("Arial", 16, true);
 
   /* screen size definition */
   size(1100, 700);
@@ -241,7 +249,7 @@ void draw() {
   if (renderingForce == false) {
     background(255);
     updateTitle();
-   // image(output, 0, 0);
+    image(output, 0, 0);
     world.draw();
   }
 }
@@ -258,67 +266,8 @@ class SimulationThread implements Runnable {
 
   public void run() {
     /* put haptic simulation code here, runs repeatedly at 1kHz as defined in setup */
-
-    renderingForce = true;
-    //file.play();
-
-    if (haplyBoard.data_available()) {
-      /* GET END-EFFECTOR STATE (TASK SPACE) */
-      widgetOne.device_read_data();
-      angles.set(widgetOne.get_device_angles()); 
-      posEE.set(widgetOne.get_device_position(angles.array()));
-
-      /* haptic wall force calculation */
-      fWall.set(0, 0);
-
-      penWall.set(0, (posWall.y - (posEE.y + rEE)));
-      if (DEBUG) {
-        println(penWall.y);
-      }
-
-      if (penWall.y < 0) {
-        fWall = fWall.add(penWall.mult(-kWall));
-      }
-
-      fEE = (fWall.copy()).mult(-1);
-      fEE.set(graphics_to_device(fEE));
-      /* end haptic wall force calculation */
-      posEE.set(posEE.copy().mult(175));
-    }
-    s.setToolPosition(edgeTopLeftX+worldWidth/2-(posEE).x, edgeTopLeftY+(posEE).y-7+6); 
-
-
-    s.updateCouplingForce();
-    //fEE.set(-s.getVirtualCouplingForceX(), s.getVirtualCouplingForceY());
-    //fEE.div(100000); //dynes to newtons
-
-    torques.set(widgetOne.set_device_torques(fEE.array()));
-    widgetOne.device_write_torques();
-    //keyPressed();
-    //if (selectCol) {
-    //  selectColour();
-    //} else {
-    //  hideSelect();
-    //}
-
-    //checkSplat();
-    isReleased();
-    if (DEBUGREL) {
-      println(pulledBack());
-    }
-    if (pulledBack()) {
-      wasPulled = true;
-    }
-    if (released && !isMoving()) {
-      if (DEBUG) {
-        println("drawing");
-      }
-      splatshown = false;
-      drawSplat(speed);
-    }
-
-    world.step(1.0f/1000.0f);
-    renderingForce = false;
+    getEndEffectorState();
+    sceneActions();
   }
 }
 /* end simulation section **********************************************************************************************/
@@ -330,19 +279,29 @@ void playAudio() {
   if (done==false)
   {
     file.play();
-    //print("here");
+    if (DEBUGAUDIO) {
+      print("here");
+    }
   }
 }
 
 class Splat {
-  float x, y;
-  float rad;
+   float x, y;
+  int i;
+  float radi;
   PGraphics splat;
+  boolean done;
+  boolean z;
 
-  Splat(float x, float y, float rad) {
+  Splat(float x, float y, int i) {
     this.x = x;
     this.y = y;
-    this.rad = rad;
+    this.i = i;
+    if (scene ==1) {
+      rad = i;
+    } else if (scene ==2) {
+      radi = rad[i]*10;
+    }
     splat = createGraphics(200, 200, JAVA2D);
     create();
   }
@@ -350,8 +309,13 @@ class Splat {
   void create() {
     splat.beginDraw();
     splat.smooth();
-    splat.colorMode(HSB, 360, 100, 100);
-    splat.fill(s.h_avatar.getFillColor());
+    if (scene ==1) {
+      splat.colorMode(HSB, 360, 100, 100);
+      splat.fill(s.h_avatar.getFillColor());
+    } else if (scene ==2) {
+      splat.colorMode(RGB, 255);
+      splat.fill(r[i], g[i], b[i]);
+    }
     splat.noStroke();
     for (float i=3; i<29; i+=.35) {
       float angle = random(0, TWO_PI);
@@ -454,7 +418,7 @@ void createControls() {
     .setColorBackground(color(255, 128, 0))
 
     ;
-  
+
   cp5.addButton("save")
     .setLabel("save")
     .setPosition(980, 650)
@@ -468,22 +432,20 @@ void controlEvent(CallbackEvent event) {
   if (event.getAction() == ControlP5.ACTION_CLICK) {
     switch(event.getController().getAddress()) {
     case "/Next":
-    if(scene<sceneNum+1){
-      scene++;
-      updateScene();
-    }
-    else{
-      scene = sceneNum;
-    }
+      if (scene<sceneNum+1) {
+        scene++;
+        updateScene();
+      } else {
+        scene = sceneNum;
+      }
       break;
     case "/Prev":
-    if(scene >0){
-      scene--;
-      updateScene();
-    }
-    else{
-      scene =0;
-    }
+      if (scene >0) {
+        scene--;
+        updateScene();
+      } else {
+        scene =0;
+      }
       break;
     case "/save":
       output.save("./saved/test.png");
@@ -498,18 +460,22 @@ void checkSplat() {
   if (DEBUG) {
     println(isTouching);
   }
-  for (int i =0; i<bubbleQuant; i++) {
-    if (isTouching.contains(bubbles[i])) {
-      splatshown = false;
-      animateSplat(bubbles[i]);
+  for (int i =0; i<10; i++) {
+    if (isTouching.contains(bub[i])) { 
+      currentMillis = millis();
+      if (currentMillis - previousMillis > interval) {         
+        splatshown = false;
+        animateSplat(bub[i], i); 
+        previousMillis = millis();
+      }
     }
   }
 }
 
-void animateSplat(FCircle bubble) {
+void animateSplat(FCircle bubble, int i) {
   playAudio();
   if (splatshown == false) {
-    splats.add(new Splat(bubble.getX()*40, bubble.getY()*40, 17));
+    splats.add(new Splat(bubble.getX()*40, bubble.getY()*40, i));
     if (DEBUGPOS) {
       println(bubble.getX());
       println(bubble.getY());
@@ -591,102 +557,96 @@ boolean isMoving() {
     return true;
   }
 }
-void updateScene(){
+void updateScene() {
   clearAll();
-  if(scene ==1){
+  if (scene ==1) {
     startSling();
-    
-  }
-  else if(scene ==2){
+    s.h_avatar.setFill(0, 255, 0);
+    Fisica = false;
+  } else if (scene ==2) {
     startPop();
-    
-  }
-  else if(scene ==3){
+    Fisica = true;
+  } else if (scene ==3) {
     startSquish();
+    Fisica = true;
   }
-  
-  
+  updateTitle();
 }
 
-void updateTitle(){
-  if(scene ==1){
-    
+void updateTitle() {
+  textAlign(CENTER);
+
+  if (scene ==1) {
+    text("Slingshot", width/4, 70);
+  } else if (scene ==2) {
+    text("Bubbles", width/4, 70);
+  } else if (scene ==3) {
+    text("Squish", width/4, 70);
+  } else {
+    text("choose a scene", width/4, 70);
   }
-  else if(scene ==2){
-    
-  }
-  else if(scene ==3){
-    
-  }
-  
-  
+  textFont(F, 22);
 }
 
-void clearAll(){
+void clearAll() {
   removeSling();
   removePop();
   removeSquish();
-  
 }
-void startSling(){
+void startSling() {
   createSling();
   createPalette();
-  
 }
 
-void startPop(){
+void startPop() {
   drawBub();
-  
 }
 
-void startSquish(){
-  drawBlob(squish1,25, 20, 21, 70);
-  drawBlob(squish2,10, 20, 21, 70);
-  drawCircle(sqCirc1,20,edgeTopLeftX+worldWidth/1.3-3, edgeTopLeftY+2*worldHeight/6.0+11);
-  drawCircle(sqCirc2,22,edgeTopLeftX+worldWidth/1.3-16,edgeTopLeftY+2*worldHeight/6.0+12);
+void startSquish() {
+  drawBlob(squish1, 25, 20, 21, 70);
+  drawBlob(squish2, 10, 20, 21, 70);
+  drawCircle(sqCirc1, 20, edgeTopLeftX+worldWidth/1.3-3, edgeTopLeftY+2*worldHeight/6.0+11);
+  drawCircle(sqCirc2, 22, edgeTopLeftX+worldWidth/1.3-16, edgeTopLeftY+2*worldHeight/6.0+12);
 }
 
-void createPalette(){
+void createPalette() {
 }
 
-void removePop(){
+void removePop() {
   splats.clear();
   removeBub();
 }
 
-void removeSquish(){
+void removeSquish() {
   world.remove(squish1);
   world.remove(squish2);
   world.remove(sqCirc1);
   world.remove(sqCirc2);
-  
 }
 
-void drawBub(){
-  for (int i=0;i<10;i++) {
-        randomize();
-        r[i]=c1;
-        g[i]=c2;
-        b[i]=c3;
-      }
-      for (int i=0; i<10; i++)
-      {
-        world.remove(bub[i]);
-        bub[i] = new FCircle(rad[i]);
-        bub[i].setPosition(xCord[i], yCord[i]);
-        bub[i].setStatic(true);
-        bub[i].setFill(r[i], g[i], b[i]);
-        bub[i].setNoStroke();
-        world.add(bub[i]);
-      } 
-  
-}
-void removeBub(){
+void drawBub() {
+  for (int i=0; i<10; i++) {
+    randomize();
+    r[i]=c1;
+    g[i]=c2;
+    b[i]=c3;
+  }
   for (int i=0; i<10; i++)
-      {
-        world.remove(bub[i]);
-      } 
-  
+  {
+    world.remove(bub[i]);
+    bub[i] = new FCircle(rad[i]);
+    bub[i].setPosition(xCord[i], yCord[i]);
+    bub[i].setStatic(true);
+    bub[i].setFill(r[i], g[i], b[i]);
+    bub[i].setNoStroke();
+    world.add(bub[i]);
+  }
+}
+void removeBub() {
+  for (int i=0; i<10; i++)
+  {
+    world.remove(bub[i]);
+  }
 }
 
 void randomize() {
@@ -695,7 +655,7 @@ void randomize() {
   c3=int(random(255));
 }
 
-void drawBlob(FBlob f, int x, int y, int v, int z){
+void drawBlob(FBlob f, int x, int y, int v, int z) {
   f                   = new FBlob();
   f.setAsCircle(x, y, v, z);
   f.setStroke(0);
@@ -707,10 +667,9 @@ void drawBlob(FBlob f, int x, int y, int v, int z){
   f.setSensor(true);
   f.setFill(random(255), random(255), random(255));
   world.add(f);
-  
 }
 
-void drawCircle(FCircle c, float size, float x, float y){
+void drawCircle(FCircle c, float size, float x, float y) {
   c                   = new FCircle(size);
   c.setPosition(x, y);
   c.setStatic(true);
@@ -718,5 +677,79 @@ void drawCircle(FCircle c, float size, float x, float y){
   c.setNoFill();
   c.setNoStroke();
   world.add(c);
+}
+void sceneActions() {
+  if (scene == 1) {
+    checkSling();
+  } else if (scene ==2) {
+    checkSplat();
+  } else if (scene ==3) {
+    checkSquish();
+  }
+}
+
+void checkSling() {
+  isReleased();
+  if (DEBUGREL) {
+    println(pulledBack());
+  }
+  if (pulledBack()) {
+    wasPulled = true;
+  }
+  if (released && !isMoving()) {
+    if (DEBUG) {
+      println("drawing");
+    }
+    splatshown = false;
+    drawSplat(speed);
+  }
+}
+
+void checkSquish() {
+  /* INSERT CODE HERE FOR SQUISH FORCE INTERACTION: */
+}
+void getEndEffectorState() {
+  renderingForce = true;
+
+  if (haplyBoard.data_available()) {
+    /* GET END-EFFECTOR STATE (TASK SPACE) */
+    widgetOne.device_read_data();
+    angles.set(widgetOne.get_device_angles()); 
+    posEE.set(widgetOne.get_device_position(angles.array()));
+    if (!Fisica) {
+      /* haptic wall force calculation */
+      fWall.set(0, 0);
+
+      penWall.set(0, (posWall.y - (posEE.y + rEE)));
+      if (DEBUG) {
+        println(penWall.y);
+      }
+
+      if (penWall.y < 0) {
+        fWall = fWall.add(penWall.mult(-kWall));
+      }
+
+      fEE = (fWall.copy()).mult(-1);
+      fEE.set(graphics_to_device(fEE));
+      /* end haptic wall force calculation */
+      posEE.set(posEE.copy().mult(175));
+    } else {
+      angles.set(widgetOne.get_device_angles()); 
+      posEE.set(widgetOne.get_device_position(angles.array()));
+      posEE.set(posEE.copy().mult(200));
+    }
+  }
+  s.setToolPosition(edgeTopLeftX+worldWidth/2-(posEE).x, edgeTopLeftY+(posEE).y-7+6); 
+  s.updateCouplingForce();
+  if (Fisica) {
+    fEE.set(-s.getVirtualCouplingForceX(), s.getVirtualCouplingForceY());
+    fEE.div(100000); //dynes to newtons
+  }
+
+  torques.set(widgetOne.set_device_torques(fEE.array()));
+  widgetOne.device_write_torques();
+
+  world.step(1.0f/1000.0f);
+  renderingForce = false;
 }
 /* end helper functions section ****************************************************************************************/
