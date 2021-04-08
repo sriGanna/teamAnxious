@@ -602,49 +602,49 @@ void createPalette() {
 
   cp5_col = new ControlP5(this);
 
-  cp5_col.addButton("red")
+  cp5_col.addButton("")
     .setLabel("red")
     .setPosition(980, 100)
     .setSize(100, 50)
     .setColorBackground(color(255, 0, 0))
 
     ;
-  cp5_col.addButton("orange")
+  cp5_col.addButton("")
     .setLabel("orange")
     .setPosition(980, 150)
     .setSize(100, 50)
     .setColorBackground(color(255, 128, 0))
 
     ;
-  cp5_col.addButton("yellow")
+  cp5_col.addButton("")
     .setLabel("yellow")
     .setPosition(980, 200)
     .setSize(100, 50)
     .setColorBackground(color(255, 255, 0))
 
     ;
-  cp5_col.addButton("green")
+  cp5_col.addButton("")
     .setLabel("green")
     .setPosition(980, 250)
     .setSize(100, 50)
     .setColorBackground(color(0, 255, 0))
 
     ;
-  cp5_col.addButton("lBlue")
-    .setLabel("light-blue")
+  cp5_col.addButton("")
+    .setLabel("lBlue")
     .setPosition(980, 300)
     .setSize(100, 50)
     .setColorBackground(color(0, 128, 255))
 
     ;
-  cp5_col.addButton("blue")
+  cp5_col.addButton("")
     .setLabel("blue")
     .setPosition(980, 350)
     .setSize(100, 50)
     .setColorBackground(color(0, 0, 255))
 
     ;
-  cp5_col.addButton("purple")
+  cp5_col.addButton("")
     .setLabel("purple")
     .setPosition(980, 400)
     .setSize(100, 50)
