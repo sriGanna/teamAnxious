@@ -323,7 +323,7 @@ class Splat {
       splat.fill(s.h_avatar.getFillColor());
     } else if (scene ==2) {
       splat.colorMode(RGB, 255);
-      splat.fill(s.h_avatar.getFillColor());//splat.fill(r[i], g[i], b[i]);
+      splat.fill(r[i], g[i], b[i]);
     }
     splat.noStroke();
     for (float i=3; i<29; i+=.35) {
@@ -397,9 +397,6 @@ void removeSling() {
   world.remove(joint2);
   world.remove(anchor1);
   world.remove(anchor2);
-  delay(500);
-  save("./saved/test.png");
-  delay(100);
   removePalette();
 }
 
@@ -484,6 +481,7 @@ void animateSplat(FCircle bubble, int i) {
       println(bubble.getX());
       println(bubble.getY());
     }
+    splats.get(splats.size()-1).display();
     splatshown = true;
     world.remove(bubble);
   }
@@ -684,7 +682,7 @@ void removeControls(){
   cp5.hide();
 }
 void removePop() {
-  splats.clear();
+  //splats.clear();
   removeBub();
 }
 
