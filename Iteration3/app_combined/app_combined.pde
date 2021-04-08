@@ -24,8 +24,9 @@ import java.util.*;
 import controlP5.*;
 
 
-SoundFile file;
+SoundFile slingAudio,popAudio;
 ControlP5 cp5;
+ControlP5 cp5_col;
 /* end library imports *************************************************************************************************/
 
 
@@ -126,7 +127,7 @@ int bubbleQuant = 4;
 double speed;
 
 //bubble locations
-int[] xCord={5, 7, 10, 13, 16, 18, 20, 22, 24, 26};
+int[] xCord={4, 6, 8, 10, 12, 14, 16, 18, 20, 22};
 int[] yCord={5, 14, 8, 14, 7, 16, 5, 12, 16, 4};
 float[] rad={4, 3, 2, 4, 3, 3, 2, 3, 2, 4};
 FCircle[] bub=new FCircle[10];
@@ -163,7 +164,8 @@ int sceneNum =3;
 /* setup section *******************************************************************************************************/
 void setup() {
   /* put setup code here, run once: */
-  file = new SoundFile(this, "splat.mp3");
+  slingAudio = new SoundFile(this, "splat.mp3");
+  popAudio = new SoundFile(this, "pop.wav");
 
 
   /* set font type and size */
@@ -213,6 +215,8 @@ void setup() {
 
   //createSling();
   createControls();
+  createPalette();
+  removePalette();
   //createBubbles();
 
   //cp5.setColorActive(0xffff0000);
@@ -278,7 +282,12 @@ class SimulationThread implements Runnable {
 void playAudio() {
   if (done==false)
   {
-    file.play();
+    if(scene ==1){
+    slingAudio.play();
+    }
+    else if(scene ==2){
+      popAudio.play();
+    }
     if (DEBUGAUDIO) {
       print("here");
     }
@@ -286,7 +295,7 @@ void playAudio() {
 }
 
 class Splat {
-   float x, y;
+  float x, y;
   int i;
   float radi;
   PGraphics splat;
@@ -314,7 +323,7 @@ class Splat {
       splat.fill(s.h_avatar.getFillColor());
     } else if (scene ==2) {
       splat.colorMode(RGB, 255);
-      splat.fill(r[i], g[i], b[i]);
+      splat.fill(s.h_avatar.getFillColor());//splat.fill(r[i], g[i], b[i]);
     }
     splat.noStroke();
     for (float i=3; i<29; i+=.35) {
@@ -391,6 +400,7 @@ void removeSling() {
   delay(500);
   save("./saved/test.png");
   delay(100);
+  removePalette();
 }
 
 void createControls() {
@@ -406,26 +416,20 @@ void createControls() {
 
   cp5.addButton("Next")
     .setLabel("Next")
-    .setPosition(980, 100)
-    .setSize(100, 50)
+    .setPosition(1035, 650)
+    .setSize(50, 50)
     .setColorBackground(color(255, 0, 0))
 
     ;
   cp5.addButton("Prev")
     .setLabel("Prev")
-    .setPosition(980, 200)
-    .setSize(100, 50)
+    .setPosition(975, 650)
+    .setSize(50, 50)
     .setColorBackground(color(255, 128, 0))
 
     ;
 
-  cp5.addButton("save")
-    .setLabel("save")
-    .setPosition(980, 650)
-    .setSize(100, 50)
-    .setColorBackground(color(255, 0, 255))
-
-    ;
+  
 }
 
 void controlEvent(CallbackEvent event) {
@@ -484,22 +488,6 @@ void animateSplat(FCircle bubble, int i) {
     world.remove(bubble);
   }
 }
-
-void keyPressed() {
-  if (key == 'q') {
-    selectCol = false;
-  }
-  if (key == 'w') {
-    selectCol = true;
-  }
-  if (key == 'r') {
-    loadBalloon = true;
-    if (DEBUG) {
-      println("balloon loaded");
-    }
-  }
-}
-
 
 boolean pulledBack() {
   currentPosY = s.h_avatar.getY()/150;
@@ -592,10 +580,13 @@ void clearAll() {
   removeSling();
   removePop();
   removeSquish();
+  removePalette();
+  showControls();
 }
 void startSling() {
   createSling();
-  createPalette();
+  //removeControls();
+  showPalette();
 }
 
 void startPop() {
@@ -610,8 +601,88 @@ void startSquish() {
 }
 
 void createPalette() {
+
+  cp5_col = new ControlP5(this);
+
+  cp5_col.addButton("red")
+    .setLabel("red")
+    .setPosition(980, 100)
+    .setSize(100, 50)
+    .setColorBackground(color(255, 0, 0))
+
+    ;
+  cp5_col.addButton("orange")
+    .setLabel("orange")
+    .setPosition(980, 150)
+    .setSize(100, 50)
+    .setColorBackground(color(255, 128, 0))
+
+    ;
+  cp5_col.addButton("yellow")
+    .setLabel("yellow")
+    .setPosition(980, 200)
+    .setSize(100, 50)
+    .setColorBackground(color(255, 255, 0))
+
+    ;
+  cp5_col.addButton("green")
+    .setLabel("green")
+    .setPosition(980, 250)
+    .setSize(100, 50)
+    .setColorBackground(color(0, 255, 0))
+
+    ;
+  cp5_col.addButton("lBlue")
+    .setLabel("light-blue")
+    .setPosition(980, 300)
+    .setSize(100, 50)
+    .setColorBackground(color(0, 128, 255))
+
+    ;
+  cp5_col.addButton("blue")
+    .setLabel("blue")
+    .setPosition(980, 350)
+    .setSize(100, 50)
+    .setColorBackground(color(0, 0, 255))
+
+    ;
+  cp5_col.addButton("purple")
+    .setLabel("purple")
+    .setPosition(980, 400)
+    .setSize(100, 50)
+    .setColorBackground(color(255, 0, 255))
+
+    ;
+  cp5_col.addButton("save")
+    .setLabel("save")
+    .setPosition(980, 590)
+    .setSize(100, 50)
+    .setColorBackground(color(255, 0, 255))
+
+    ;
 }
 
+void removePalette() {
+  cp5_col.hide();
+  //cp5.getController("orange").hide();
+  //cp5.getController("yellow").hide();
+  //cp5.getController("lBlue").hide();
+  //cp5.getController("blue").hide();
+  //cp5.getController("purple").hide();
+  //cp5.getController("green").hide();
+}
+
+void showPalette(){
+  cp5_col.show();
+}
+
+void showControls(){
+  cp5.show();
+}
+
+void removeControls(){
+  cp5.hide();
+}
 void removePop() {
   splats.clear();
   removeBub();
@@ -734,8 +805,8 @@ void getEndEffectorState() {
       /* end haptic wall force calculation */
       posEE.set(posEE.copy().mult(175));
     } else {
-      angles.set(widgetOne.get_device_angles()); 
-      posEE.set(widgetOne.get_device_position(angles.array()));
+      //angles.set(widgetOne.get_device_angles()); 
+      //posEE.set(widgetOne.get_device_position(angles.array()));
       posEE.set(posEE.copy().mult(200));
     }
   }
