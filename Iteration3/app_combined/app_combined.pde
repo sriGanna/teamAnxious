@@ -24,7 +24,7 @@ import java.util.*;
 import controlP5.*;
 
 
-SoundFile slingAudio,popAudio;
+SoundFile slingAudio, popAudio;
 ControlP5 cp5;
 ControlP5 cp5_col;
 /* end library imports *************************************************************************************************/
@@ -282,10 +282,9 @@ class SimulationThread implements Runnable {
 void playAudio() {
   if (done==false)
   {
-    if(scene ==1){
-    slingAudio.play();
-    }
-    else if(scene ==2){
+    if (scene ==1) {
+      slingAudio.play();
+    } else if (scene ==2) {
       popAudio.play();
     }
     if (DEBUGAUDIO) {
@@ -425,8 +424,6 @@ void createControls() {
     .setColorBackground(color(255, 128, 0))
 
     ;
-
-  
 }
 
 void controlEvent(CallbackEvent event) {
@@ -575,6 +572,9 @@ void updateTitle() {
 }
 
 void clearAll() {
+  output.beginDraw(); 
+  output.clear();
+  output.endDraw();
   removeSling();
   removePop();
   removeSquish();
@@ -670,15 +670,15 @@ void removePalette() {
   //cp5.getController("green").hide();
 }
 
-void showPalette(){
+void showPalette() {
   cp5_col.show();
 }
 
-void showControls(){
+void showControls() {
   cp5.show();
 }
 
-void removeControls(){
+void removeControls() {
   cp5.hide();
 }
 void removePop() {
