@@ -25,7 +25,7 @@ import controlP5.*;
 
 
 SoundFile slingAudio, popAudio;
-ControlP5 cp5;
+ControlP5 cp5_next, cp5_prev;
 ControlP5 cp5_col;
 /* end library imports *************************************************************************************************/
 
@@ -40,7 +40,8 @@ boolean DEBUGPOS = false;
 boolean DEBUGREL = false;
 boolean DEBUGSPEED = true;
 boolean DEBUGAUDIO = false;
-boolean DEBUGPOP = true;
+boolean DEBUGPOP = false;
+boolean DEBUGCLEAR = true;
 
 /* device block definitions ********************************************************************************************/
 Board             haplyBoard;
@@ -392,32 +393,45 @@ void createSling() {
 }
 
 void removeSling() {
+  if(DEBUGCLEAR){
+    println("deleting sling: ......");
+  }
   world.remove(joint1);
   world.remove(joint2);
   world.remove(anchor1);
   world.remove(anchor2);
   removePalette();
+  if(DEBUGCLEAR){
+    println("deleted sling!");
+  }
 }
 
 void createControls() {
-  cp5 = new ControlP5(this);
+  cp5_next = new ControlP5(this);
 
   PFont p = createFont("Verdana", 17); 
   ControlFont font = new ControlFont(p);
 
   // change the original colors
-  cp5.setColorForeground(color(0, 0, 0));
-  cp5.setColorBackground(color(0, 0, 0));
-  cp5.setFont(font);
+  cp5_next.setColorForeground(color(0, 0, 0));
+  cp5_next.setColorBackground(color(0, 0, 0));
+  cp5_next.setFont(font);
 
-  cp5.addButton("Next")
+  cp5_next.addButton("Next")
     .setLabel("Next")
     .setPosition(1035, 650)
     .setSize(50, 50)
     .setColorBackground(color(255, 0, 0))
 
     ;
-  cp5.addButton("Prev")
+
+  cp5_prev = new ControlP5(this);
+
+
+  cp5_prev.setColorForeground(color(0, 0, 0));
+  cp5_prev.setColorBackground(color(0, 0, 0));
+  cp5_prev.setFont(font);
+  cp5_prev.addButton("Prev")
     .setLabel("Prev")
     .setPosition(975, 650)
     .setSize(50, 50)
@@ -430,19 +444,23 @@ void controlEvent(CallbackEvent event) {
   if (event.getAction() == ControlP5.ACTION_CLICK) {
     switch(event.getController().getAddress()) {
     case "/Next":
-      if (scene<sceneNum+1) {
+      if (scene<sceneNum) {
+        cp5_next.show();
         scene++;
         updateScene();
       } else {
         scene = sceneNum;
+        cp5_next.hide();
       }
       break;
     case "/Prev":
       if (scene >0) {
+        cp5_prev.show();
         scene--;
         updateScene();
       } else {
         scene =0;
+        cp5_prev.hide();
       }
       break;
     case "/save":
@@ -541,6 +559,10 @@ boolean isMoving() {
   }
 }
 void updateScene() {
+  if(DEBUG || DEBUGCLEAR){
+    print("Moving to scene:  ");
+    println(scene);
+  }
   clearAll();
   if (scene ==1) {
     startSling();
@@ -580,6 +602,10 @@ void clearAll() {
   removeSquish();
   removePalette();
   showControls();
+  
+  if(DEBUG || DEBUGCLEAR){
+    println("cleared all");
+  }
 }
 void startSling() {
   createSling();
@@ -602,50 +628,50 @@ void createPalette() {
 
   cp5_col = new ControlP5(this);
 
-  cp5_col.addButton("")
-    .setLabel("red")
+  cp5_col.addButton("red")
+    .setLabel("")
     .setPosition(980, 100)
     .setSize(100, 50)
     .setColorBackground(color(255, 0, 0))
 
     ;
-  cp5_col.addButton("")
-    .setLabel("orange")
+  cp5_col.addButton("orange")
+    .setLabel("")
     .setPosition(980, 150)
     .setSize(100, 50)
     .setColorBackground(color(255, 128, 0))
 
     ;
-  cp5_col.addButton("")
-    .setLabel("yellow")
+  cp5_col.addButton("yellow")
+    .setLabel("")
     .setPosition(980, 200)
     .setSize(100, 50)
     .setColorBackground(color(255, 255, 0))
 
     ;
-  cp5_col.addButton("")
-    .setLabel("green")
+  cp5_col.addButton("green")
+    .setLabel("")
     .setPosition(980, 250)
     .setSize(100, 50)
     .setColorBackground(color(0, 255, 0))
 
     ;
-  cp5_col.addButton("")
-    .setLabel("lBlue")
+  cp5_col.addButton("lBlue")
+    .setLabel("")
     .setPosition(980, 300)
     .setSize(100, 50)
     .setColorBackground(color(0, 128, 255))
 
     ;
-  cp5_col.addButton("")
-    .setLabel("blue")
+  cp5_col.addButton("blue")
+    .setLabel("")
     .setPosition(980, 350)
     .setSize(100, 50)
     .setColorBackground(color(0, 0, 255))
 
     ;
-  cp5_col.addButton("")
-    .setLabel("purple")
+  cp5_col.addButton("purple")
+    .setLabel("")
     .setPosition(980, 400)
     .setSize(100, 50)
     .setColorBackground(color(255, 0, 255))
@@ -675,22 +701,26 @@ void showPalette() {
 }
 
 void showControls() {
-  cp5.show();
+  cp5_next.show();
+  cp5_prev.show();
 }
 
-void removeControls() {
-  cp5.hide();
-}
 void removePop() {
   //splats.clear();
   removeBub();
 }
 
 void removeSquish() {
+  if(DEBUGCLEAR){
+    println("deleting squish.....");
+  }
   world.remove(squish1);
   world.remove(squish2);
-  world.remove(sqCirc1);
-  world.remove(sqCirc2);
+  //world.remove(sqCirc1);
+  //world.remove(sqCirc2);
+  if(DEBUGCLEAR){
+    println("deleted squish");
+  }
 }
 
 void drawBub() {

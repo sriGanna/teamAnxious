@@ -101,6 +101,7 @@ int time = -1;
 /* Initialization of virtual tool */
 HVirtualCoupling  s;
 PImage            haplyAvatar, pac2, bubble;
+PGraphics output;
 
 /* end elements definition *********************************************************************************************/
 
@@ -188,7 +189,7 @@ void setup() {
     bub[i].setFill(r[i], g[i], b[i]);
     bub[i].setNoStroke();
     world.add(bub[i]);
-    burst[i] = new FCircle(rad[i]+2);
+    burst[i] = new FCircle(rad[i]+1);
     burst[i].setPosition(xCord[i], yCord[i]);
     burst[i].setStatic(true);
     burst[i].setNoFill();
@@ -219,7 +220,7 @@ void setup() {
   world.setEdgesRestitution(0.4);
   world.setEdgesFriction(1.2);
 
-
+  output = createGraphics(800, 800, JAVA2D);
   world.draw();
 
 
@@ -240,13 +241,13 @@ void draw() {
     background(255);
 
 
-    for (Splat s : splats) {
-      if (splatshown==true) {
-        s.display();
-      }
-      //abc.display();
-    }    
-
+    //for (Splat s : splats) {
+    //  if (splatshown==true) {
+    //    s.display();
+    //  }
+    //  //abc.display();
+    //}    
+    image(output, 0, 0);
 
     world.draw();
   }
@@ -312,7 +313,7 @@ public void Reset() {
     bub[i].setFill(r[i], g[i], b[i]);
     bub[i].setNoStroke();
     world.add(bub[i]);
-       burst[i] = new FCircle(rad[i]+2);
+    burst[i] = new FCircle(rad[i]+3);
     burst[i].setPosition(xCord[i], yCord[i]);
     burst[i].setStatic(true);
     burst[i].setNoFill();
@@ -367,8 +368,10 @@ class Splat {
     splat.endDraw();
   }
   void display() {
-    imageMode(CENTER);
-    image(splat, x, y);
+    output.beginDraw();
+    output.imageMode(CENTER);
+    output.image(splat, x, y);
+    output.endDraw();
   }
 }
 
@@ -387,7 +390,7 @@ void checkSplat() {
         previousMillis = millis();
       }
     }
-    if (splatshown && timer_passed(100)) {
+    if (splatshown && timer_passed(100)&&burst[i] != null) {
       world.remove(burst[i]);
     }
   }
@@ -401,9 +404,14 @@ void animateSplat(FCircle bubble, FCircle burstCirc, int i) {
       println(bubble.getX());
       println(bubble.getY());
     }
+    splats.get(splats.size()-1).display();
     splatshown = true;
-    world.remove(bubble);
+    if(bubble != null){
     world.add(burstCirc);
+    println("added burst");
+    }
+    world.remove(bubble);
+    
   }
 }
 
