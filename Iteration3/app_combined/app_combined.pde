@@ -38,10 +38,10 @@ private final ScheduledExecutorService scheduler      = Executors.newScheduledTh
 boolean DEBUG = false;
 boolean DEBUGPOS = false;
 boolean DEBUGREL = false;
-boolean DEBUGSPEED = true;
+boolean DEBUGSPEED = false;
 boolean DEBUGAUDIO = false;
 boolean DEBUGPOP = false;
-boolean DEBUGCLEAR = true;
+boolean DEBUGCLEAR = false;
 
 /* device block definitions ********************************************************************************************/
 Board             haplyBoard;
@@ -114,10 +114,10 @@ HVirtualCoupling  s;
 
 /* Initialization of elements */
 FCircle           circle1, bbody;
-FBox            anchor1, anchor2;
+FBox            anchor1, anchor2, base;
 FDistanceJoint    joint1, joint2;
 FCircle select, balloon, sqCirc1, sqCirc2;
-FBlob squish1, squish2;
+FBlob squish1, squish2,squish3;
 
 PShape wall;
 FCircle[] bubbles = new FCircle[28];
@@ -618,10 +618,18 @@ void startPop() {
 }
 
 void startSquish() {
-  drawBlob(squish1, 25, 20, 21, 70);
-  drawBlob(squish2, 10, 20, 21, 70);
+   base              = new FBox(26, 1);
+  base.setFill(255,0,0);
+  base.setPosition(12,16);
+  base.setStatic(true);
+  world.add(base);
+  
+  drawBlob(squish1, 25, 2, 15, 50);
+  drawBlob(squish2, 10, 20, 15, 50);
   drawCircle(sqCirc1, 20, edgeTopLeftX+worldWidth/1.3-3, edgeTopLeftY+2*worldHeight/6.0+11);
   drawCircle(sqCirc2, 22, edgeTopLeftX+worldWidth/1.3-16, edgeTopLeftY+2*worldHeight/6.0+12);
+  
+  
 }
 
 void createPalette() {
@@ -805,7 +813,16 @@ void checkSling() {
 }
 
 void checkSquish() {
-  /* INSERT CODE HERE FOR SQUISH FORCE INTERACTION: */
+  
+   if (s.h_avatar.isTouchingBody(sqCirc1) || s.h_avatar.isTouchingBody(sqCirc2)){
+      s.h_avatar.setDamping(800);
+      //file.play();
+        
+    }else{
+      s.h_avatar.setDamping(0);
+    }
+    
+
 }
 void getEndEffectorState() {
   renderingForce = true;
