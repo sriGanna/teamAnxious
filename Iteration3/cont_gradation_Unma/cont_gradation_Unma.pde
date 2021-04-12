@@ -77,6 +77,16 @@ PVector           fEE                                 = new PVector(0, 0);
 /* device graphical position */
 PVector           deviceOrigin                        = new PVector(0, 0);
 
+/* World boundaries in centimeters */
+FWorld            world;
+float             worldWidth                          = 35.0;  
+float             worldHeight                         = 25.0; 
+
+float             edgeTopLeftX                        = 0.0; 
+float             edgeTopLeftY                        = 0.0; 
+float             edgeBottomRightX                    = worldWidth; 
+float             edgeBottomRightY                    = worldHeight;
+
 /* World boundaries reference */
 final int         worldPixelWidth                     = 1000;
 final int         worldPixelHeight                    = 650;
@@ -98,7 +108,7 @@ float cumerrory = 0;
 // for D
 float oldex = 0.0f;
 float oldey = 0.0f;
-float D = 0;
+float D = 0.00;
 
 //for exponential filter on differentiation
 float diffx = 0;
@@ -111,7 +121,7 @@ float xr = 0;
 float yr = 0;
 long currentMillis = millis();
 long previousMillis = 0;
-float interval = 2000;
+float interval = 100;
 
 
 // checking everything run in less than 1ms
@@ -119,6 +129,9 @@ long timetaken= 0;
 
 // set loop time in usec (note from Antoine, 500 is about the limit of my computer max CPU usage)
 int looptime = 500;
+
+/* Initialization of virtual tool */
+HVirtualCoupling  s;
 
 
 /* graphical elements */
@@ -132,7 +145,7 @@ int w;              // Width of entire wave
 
 int x=0;
 float theta = 0.0;  // Start angle at 0
-float amplitude = 75.0;  // Height of wave
+float amplitude = 150.0;  // Height of wave
 float period = 500.0;  // How many pixels before the wave repeats
 float dx;  // Value for incrementing X, a function of period and xspacing
 float[] yvalues;  // Using an array to store height values for the wave
@@ -262,6 +275,18 @@ void setup() {
   widgetOne.device_set_parameters();
 
 
+    
+  /* 2D physics scaling and world creation */
+  //hAPI_Fisica.init(this);
+  //hAPI_Fisica.setScale(pixelsPerCentimeter); 
+  //world               = new FWorld();
+  
+  //s                   = new HVirtualCoupling((1)); 
+  //s.h_avatar.setDensity(4); 
+  //s.h_avatar.setNoStroke();
+  //s.h_avatar.setFill(0,0,0);
+  //s.init(world, edgeTopLeftX+worldWidth/2, edgeTopLeftY+2); 
+
   /* visual elements setup */
   background(0);
   deviceOrigin.add(worldPixelWidth/2, 0);
@@ -340,6 +365,7 @@ void draw() {
     //background(255); 
     calcWave();
     //renderWave();
+    //s.h_avatar.setFill(255,0,0);
     update_animation(angles.x*radsPerDegree, angles.y*radsPerDegree, posEE.x, posEE.y);
   }
 }
@@ -383,18 +409,22 @@ public void SimulationThread() {
 
       posEE.set(device_to_graphics(posEE)); 
       
-        
+      currentMillis = millis();
+      if (currentMillis - previousMillis > interval) {  
         if(x<yvalues.length) {
           xr=x*xspacing;
           yr=height/2+yvalues[x];
-          //print("here "+xr+" "+yr+"\n");
+          print("here "+xr+" "+yr+"\n");
           x++;
         }
         else
         {
           x=0;
         }
-  
+        previousMillis = currentMillis;
+      }
+      
+      
         x_m = xr; 
         y_m = yr;
         //print("here "+xr+" "+yr+"\n");
@@ -467,7 +497,7 @@ public void SimulationThread() {
 
     pGraph = createShape();
     pGraph.beginShape();
-    pGraph.fill(255);
+    //pGraph.fill(255);
     pGraph.stroke(0);
     pGraph.strokeWeight(2);
 
@@ -478,10 +508,11 @@ public void SimulationThread() {
     pGraph.endShape(CLOSE);
 
     joint = createShape(ELLIPSE, deviceOrigin.x, deviceOrigin.y, rEEAni, rEEAni);
-    joint.setStroke(color(0));
+    //joint.setStroke(color(0));
 
     endEffector = createShape(ELLIPSE, deviceOrigin.x, deviceOrigin.y, 2*rEEAni, 2*rEEAni);
-    endEffector.setStroke(color(0));
+    endEffector.setStroke(color(255,0,0));
+    endEffector.setFill(color(255,0,0));
     strokeWeight(5);
   }
 
@@ -499,7 +530,7 @@ public void SimulationThread() {
 
 
   void update_animation(float th1, float th2, float xE, float yE) {
-    background(255);
+    //background(255);
     pushMatrix();
     float lAni = pixelsPerMeter * l;
     float LAni = pixelsPerMeter * L;
@@ -580,7 +611,7 @@ void calcWave() {
 void renderWave() {
   //noStroke();
   fill(255);
-  print("here");
+  //print("here");
   // A simple way to draw the wave with an ellipse at each location
   for (int x = 0; x < yvalues.length; x++) {
     xr=x*xspacing;
