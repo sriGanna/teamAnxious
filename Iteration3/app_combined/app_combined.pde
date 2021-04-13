@@ -263,6 +263,7 @@ void draw() {
   if (renderingForce == false) {
     background(255);
     updateTitle();
+    checkChangeColor();
     image(output, 0, 0);
     world.draw();
   }
@@ -591,7 +592,6 @@ void updateScene() {
   clearAll();
   if (scene ==1) {
     startSling();
-    s.h_avatar.setFill(0, 255, 0);
     Fisica = false;
   } else if (scene ==2) {
     startPop();
@@ -691,10 +691,12 @@ void createPalette() {
 
 void removePalette() {
   cp5_col.hide();
+  hideColorPicker();
 }
 
 void showPalette() {
   cp5_col.show();
+  showColorPicker();
 }
 
 void showControls() {
