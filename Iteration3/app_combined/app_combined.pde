@@ -617,6 +617,8 @@ void updateTitle() {
   } else if (scene ==2) {
     text("Bubbles", width/4, 70);
   } else if (scene ==3) {
+    text("Guide", width/4, 70);
+  } else if (scene ==4) {
     text("Squish", width/4, 70);
   } else {
     text("choose a scene", width/4, 70);
