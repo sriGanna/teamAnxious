@@ -149,6 +149,7 @@ FBox[] colorSwatch = new FBox[6];
 ArrayList<ColorPalette> palettes;
 int paletteIndex;
 
+FBox[][] walls=new FBox[35][25];
 
 /* Initialization of virtual tool */
 PImage            colour;
@@ -169,7 +170,7 @@ boolean Fisica = true;
 /* end elements definition *********************************************************************************************/
 
 int scene =0;
-int sceneNum =3;
+int sceneNum =4;
 
 /* setup section *******************************************************************************************************/
 void setup() {
@@ -227,6 +228,8 @@ void setup() {
   createControls();
   createPalette();
   removePalette();
+  createSquish();
+  removeSquish();
   //createBubbles();
 
   //cp5.setColorActive(0xffff0000);
@@ -263,7 +266,7 @@ void draw() {
   if (renderingForce == false) {
     background(255);
     updateTitle();
-    checkChangeColor();
+
     image(output, 0, 0);
     world.draw();
   }
@@ -597,6 +600,9 @@ void updateScene() {
     startPop();
     Fisica = true;
   } else if (scene ==3) {
+    createGuidance();
+    Fisica = true;
+  } else if (scene ==4) {
     startSquish();
     Fisica = true;
   }
@@ -643,17 +649,35 @@ void startPop() {
 }
 
 void startSquish() {
+  //world.remove(squish1);
+  //world.add(squish1);
+  //world.remove(squish2);
+  //world.add(squish2);
+  squish1.setFill(255, 0, 0);
+  squish1.setStroke(0);
+  squish2.setFill(0, 255, 0);
+  squish2.setStroke(0);
+}
+
+void createSquish() {
   // base              = new FBox(26, 1);
   //base.setFill(255,0,0);
   //base.setPosition(12,16);
   //base.setStatic(true);
   //world.add(base);
 
-  drawBlob(squish1, 20, 16, 17, 70);
-  drawBlob(squish2, 8, 16, 17, 70);
+  squish1 = drawBlob(20, 16, 17, 70);
+  world.add(squish1);
+  squish2 = drawBlob(8, 16, 17, 70);
+  world.add(squish2);
   //drawBlob(squish3, 2, 15, 15, 50);
-  drawCircle(sqCirc1, 22, edgeTopLeftX+worldWidth/1.3-3, edgeTopLeftY+2*worldHeight/6.0+11);
+  //drawCircle(sqCirc1, 22, edgeTopLeftX+worldWidth/1.3-3, edgeTopLeftY+2*worldHeight/6.0+11);
   //drawCircle(sqCirc2, 22, edgeTopLeftX+worldWidth/1.3-16, edgeTopLeftY+2*worldHeight/6.0+12);
+
+  //squish1.setNoFill();
+  //squish1.setNoStroke();
+  //squish2.setNoFill();
+  //squish2.setNoStroke();
 }
 
 void createPalette() {
@@ -662,14 +686,14 @@ void createPalette() {
 
   cp5_col.addButton("NextPalette")
     .setLabel("Next Palette")
-    .setPosition(980, 50)
+    .setPosition(980, 110)
     .setSize(100, 50)
     .setColorBackground(color(0, 0, 255))
 
     ;
   cp5_col.addButton("PrevPalette")
     .setLabel("PrevPalette")
-    .setPosition(980, 500)
+    .setPosition(980, 530)
     .setSize(100, 50)
     .setColorBackground(color(255, 0, 255))
 
@@ -713,7 +737,11 @@ void removeSquish() {
   if (DEBUGCLEAR) {
     println("deleting squish.....");
   }
-  world.remove(squish1);
+  squish1.setNoFill();
+  squish1.setNoStroke();
+  squish2.setNoFill();
+  squish2.setNoStroke();
+  //world.remove(squish1);
   //world.remove(squish2);
   //world.remove(sqCirc1);
   //world.remove(sqCirc2);
@@ -753,7 +781,8 @@ void randomize() {
   c3=int(random(255));
 }
 
-void drawBlob(FBlob f, int x, int y, int v, int z) {
+FBlob drawBlob( int x, int y, int v, int z) {
+  FBlob f;
   f                   = new FBlob();
   f.setAsCircle(x, y, v, z);
   f.setStroke(0);
@@ -764,7 +793,7 @@ void drawBlob(FBlob f, int x, int y, int v, int z) {
   f.setDensity(100);
   f.setSensor(true);
   f.setFill(random(255), random(255), random(255));
-  world.add(f);
+  return f;
 }
 
 void drawCircle(FCircle c, float size, float x, float y) {
@@ -779,9 +808,12 @@ void drawCircle(FCircle c, float size, float x, float y) {
 void sceneActions() {
   if (scene == 1) {
     checkSling();
+    checkChangeColor();
   } else if (scene ==2) {
     checkSplat();
   } else if (scene ==3) {
+    checkGuide();
+  } else if (scene ==4) {
     checkSquish();
   }
 }
@@ -995,7 +1027,7 @@ void updateColorPicker(ColorPalette palette) {
 
 float createColorPicker(ColorPalette palette) {
   float x = 25.2+.5;
-  float y = 4-2;
+  float y = 4-0.5;
   ColorSwatch swatch;
   for (Integer i=0; i< 6; i++) {
     y = y + PALETTE_SPACER;
@@ -1029,4 +1061,48 @@ void hideColorPicker() {
   }
 }
 
+void createGuidance() {
+
+  for (int i=0; i<35; i++) {
+    for (int j=0; j<25; j++) {
+      walls[i][j] = new FBox(1, 1);
+      walls[i][j].setPosition(i, j);
+      walls[i][j].setNoStroke();
+      walls[i][j].setNoFill();
+      walls[i][j].setSensor(true);
+      walls[i][j].setStatic(true);
+      world.add(walls[i][j]);
+    }
+  }
+}
+
+void removeGuidance() {
+  for (int i=0; i<35; i++) {
+    for (int j=0; j<25; j++) {
+      world.remove(walls[i][j]);
+    }
+  }
+}
+void checkGuide() {
+  for (int i=0; i<35; i++) {
+    for (int j=0; j<25; j++) {
+      if (s.h_avatar.isTouchingBody(walls[i][j])) {
+        s.h_avatar.setDamping(600);
+        if (i>0 && i<=20 && j>0 && j<=9) {
+          s.h_avatar.setVelocity(50, 0);
+          s.h_avatar.setFill(random(255), random(255), random(255));
+        } else if (i>15 && i<35 && j>0 && j<=20) {
+          s.h_avatar.setVelocity(0, 50);
+          s.h_avatar.setFill(random(255), random(255), random(255));
+        } else if (i>11 && i<35 && j>13 && j<25) {
+          s.h_avatar.setVelocity(-50, 0);
+          s.h_avatar.setFill(random(255), random(255), random(255));
+        } else if (i>0 && i<=15 && j>8 && j<25) {
+          s.h_avatar.setVelocity(0, -50);
+          s.h_avatar.setFill(random(255), random(255), random(255));
+        }
+      }
+    }
+  }
+}
 /* end helper functions section ****************************************************************************************/
