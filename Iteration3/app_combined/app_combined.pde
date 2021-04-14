@@ -26,7 +26,7 @@ import controlP5.*;
 
 SoundFile slingAudio, popAudio;
 ControlP5 cp5_next, cp5_prev;
-ControlP5 cp5_col;
+ControlP5 cp5_col, cp5_start;
 /* end library imports *************************************************************************************************/
 
 
@@ -167,6 +167,8 @@ boolean wasPulled = false;
 boolean released = false;
 boolean loadBalloon = false;
 boolean Fisica = true;
+boolean guided = false;
+boolean freeHand = false;
 /* end elements definition *********************************************************************************************/
 
 int scene =0;
@@ -223,13 +225,14 @@ void setup() {
   s.h_avatar.setStroke(0);
   s.h_avatar.setFill(255);
   s.init(world, edgeTopLeftX+worldWidth/2, edgeTopLeftY+2); 
-
+  createStartScreen();
   //createSling();
   createControls();
+  removeControls();
   createPalette();
   removePalette();
-  createSquish();
-  removeSquish();
+  //createSquish();
+  //removeSquish();
   //createBubbles();
 
   //cp5.setColorActive(0xffff0000);
@@ -265,7 +268,7 @@ void draw() {
   /* put graphical code here, runs repeatedly at defined framerate in setup, else default at 60fps: */
   if (renderingForce == false) {
     background(255);
-    updateTitle();
+
 
     image(output, 0, 0);
     world.draw();
@@ -466,6 +469,7 @@ void controlEvent(CallbackEvent event) {
         cp5_next.show();
         scene++;
         updateScene();
+        updateTitle();
       } else {
         scene = sceneNum;
         cp5_next.hide();
@@ -476,6 +480,7 @@ void controlEvent(CallbackEvent event) {
         cp5_prev.show();
         scene--;
         updateScene();
+        updateTitle();
       } else {
         scene =0;
         cp5_prev.hide();
@@ -495,6 +500,16 @@ void controlEvent(CallbackEvent event) {
     case "/save":
       output.save("./saved/test.png");
       break;
+    case "/Guided":
+    guided = true;
+    showControls();
+    removeStartScreen();
+    break;
+    case "/freeHand":
+    freeHand = true;
+    showControls();
+    removeStartScreen();
+    break;
     }
   }
 }
@@ -581,7 +596,7 @@ void drawSplat(double speed)
 
 boolean isMoving() {
 
-  if (abs(s.h_avatar.getVelocityX())<.05 && abs(s.h_avatar.getVelocityY())<.05) {
+  if (abs(s.h_avatar.getVelocityX())<.1 && abs(s.h_avatar.getVelocityY())<.1) {
     return false;
   } else {
     return true;
@@ -595,6 +610,7 @@ void updateScene() {
   clearAll();
   if (scene ==1) {
     startSling();
+    
     Fisica = false;
   } else if (scene ==2) {
     startPop();
@@ -739,8 +755,8 @@ void removeSquish() {
   if (DEBUGCLEAR) {
     println("deleting squish.....");
   }
-  squish1.setNoFill();
-  squish1.setNoStroke();
+  //squish1.setNoFill();
+  //squish1.setNoStroke();
   //squish2.setNoFill();
   //squish2.setNoStroke();
   //world.remove(squish1);
@@ -1106,5 +1122,31 @@ void checkGuide() {
       }
     }
   }
+}
+
+void createStartScreen() {
+  cp5_start = new ControlP5(this);
+  PFont p = createFont("Verdana", 25); 
+  ControlFont font = new ControlFont(p);
+  
+  cp5_start.addButton("Guided")
+    .setLabel("Guided")
+    .setPosition(600, 250)
+    .setSize(200, 100)
+    .setColorBackground(color(0,0,80));
+
+  cp5_start.addButton("freeHand")
+    .setLabel("Freehanded")
+    .setPosition(350, 250)
+    .setSize(200, 100)
+    .setColorBackground(color(0,0,80));
+}
+
+void removeStartScreen() {
+  cp5_start.hide();
+}
+void removeControls(){
+  cp5_next.hide();
+  cp5_prev.hide();
 }
 /* end helper functions section ****************************************************************************************/
