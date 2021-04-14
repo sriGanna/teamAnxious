@@ -657,8 +657,8 @@ void startSquish() {
   //world.add(squish2);
   squish1.setFill(255, 0, 0);
   squish1.setStroke(0);
-  squish2.setFill(0, 255, 0);
-  squish2.setStroke(0);
+  //squish2.setFill(0, 255, 0);
+  //squish2.setStroke(0);
 }
 
 void createSquish() {
@@ -670,8 +670,8 @@ void createSquish() {
 
   squish1 = drawBlob(20, 16, 17, 70);
   world.add(squish1);
-  squish2 = drawBlob(8, 16, 17, 70);
-  world.add(squish2);
+  //squish2 = drawBlob(8, 16, 17, 70);
+  //world.add(squish2);
   //drawBlob(squish3, 2, 15, 15, 50);
   //drawCircle(sqCirc1, 22, edgeTopLeftX+worldWidth/1.3-3, edgeTopLeftY+2*worldHeight/6.0+11);
   //drawCircle(sqCirc2, 22, edgeTopLeftX+worldWidth/1.3-16, edgeTopLeftY+2*worldHeight/6.0+12);
@@ -741,8 +741,8 @@ void removeSquish() {
   }
   squish1.setNoFill();
   squish1.setNoStroke();
-  squish2.setNoFill();
-  squish2.setNoStroke();
+  //squish2.setNoFill();
+  //squish2.setNoStroke();
   //world.remove(squish1);
   //world.remove(squish2);
   //world.remove(sqCirc1);
