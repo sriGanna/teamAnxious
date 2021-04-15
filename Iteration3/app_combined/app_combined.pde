@@ -26,7 +26,7 @@ import controlP5.*;
 
 SoundFile slingAudio, popAudio;
 ControlP5 cp5_next, cp5_prev;
-ControlP5 cp5_col, cp5_start,cp5_pop;
+ControlP5 cp5_col, cp5_start, cp5_pop;
 /* end library imports *************************************************************************************************/
 
 
@@ -226,18 +226,14 @@ void setup() {
   s.h_avatar.setFill(255);
   s.init(world, edgeTopLeftX+worldWidth/2, edgeTopLeftY+2); 
   createStartScreen();
-  //createSling();
   createControls();
   removeControls();
   createPalette();
   removePalette();
   createPopButtons();
+  createSquish();
+  removeSquish();
   cp5_pop.hide();
-  //createSquish();
-  //removeSquish();
-  //createBubbles();
-
-  //cp5.setColorActive(0xffff0000);
 
 
   wall = create_wall(posWall.x-0.2, posWall.y+rEE+.01, posWall.x+0.2, posWall.y+rEE+.01);
@@ -269,7 +265,9 @@ void setup() {
 void draw() {
   /* put graphical code here, runs repeatedly at defined framerate in setup, else default at 60fps: */
   if (renderingForce == false) {
-    background(255);
+    if (scene < 3) {
+      background(255);
+    }
 
 
     image(output, 0, 0);
@@ -503,15 +501,15 @@ void controlEvent(CallbackEvent event) {
       output.save("./saved/test.png");
       break;
     case "/Guided":
-    guided = true;
-    showControls();
-    removeStartScreen();
-    break;
+      guided = true;
+      showControls();
+      removeStartScreen();
+      break;
     case "/freeHand":
-    guided = false;
-    showControls();
-    removeStartScreen();
-    break;
+      guided = false;
+      showControls();
+      removeStartScreen();
+      break;
     }
   }
 }
@@ -612,7 +610,7 @@ void updateScene() {
   clearAll();
   if (scene ==1) {
     startSling();
-    
+
     Fisica = false;
   } else if (scene ==2) {
     startPop();
@@ -758,8 +756,8 @@ void removeSquish() {
   if (DEBUGCLEAR) {
     println("deleting squish.....");
   }
-  //squish1.setNoFill();
-  //squish1.setNoStroke();
+  squish1.setNoFill();
+  squish1.setNoStroke();
   //squish2.setNoFill();
   //squish2.setNoStroke();
   //world.remove(squish1);
@@ -833,11 +831,9 @@ void sceneActions() {
   } else if (scene ==2) {
     checkSplat();
   } else if (scene ==3) {
-    if(guided){
-    checkGuide();
-    }
-    else{
-      
+    if (guided) {
+      checkGuide();
+    } else {
     }
   } else if (scene ==4) {
     checkSquish();
@@ -1136,35 +1132,34 @@ void createStartScreen() {
   cp5_start = new ControlP5(this);
   PFont p = createFont("Verdana", 25); 
   ControlFont font = new ControlFont(p);
-  
+
   cp5_start.addButton("Guided")
     .setLabel("Guided")
     .setPosition(600, 250)
     .setSize(200, 100)
-    .setColorBackground(color(0,0,80));
+    .setColorBackground(color(0, 0, 80));
 
   cp5_start.addButton("freeHand")
     .setLabel("Freehanded")
     .setPosition(350, 250)
     .setSize(200, 100)
-    .setColorBackground(color(0,0,80));
+    .setColorBackground(color(0, 0, 80));
 }
 
 void removeStartScreen() {
   cp5_start.hide();
 }
-void removeControls(){
+void removeControls() {
   cp5_next.hide();
   cp5_prev.hide();
 }
 
-createPopButtons(){
+void createPopButtons() {
   cp5_pop =new ControlP5(this);
-   cp5_pop.addButton("Reset")
+  cp5_pop.addButton("Reset")
     .setLabel("Reset")
-    .setPosition(600, 250)
-    .setSize(200, 100)
-    .setColorBackground(color(0,0,80));
-
+    .setPosition(900, 250)
+    .setSize(150, 100)
+    .setColorBackground(color(0, 0, 80));
 }
 /* end helper functions section ****************************************************************************************/
