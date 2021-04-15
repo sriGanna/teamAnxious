@@ -26,7 +26,7 @@ import controlP5.*;
 
 SoundFile slingAudio, popAudio;
 ControlP5 cp5_next, cp5_prev;
-ControlP5 cp5_col, cp5_start;
+ControlP5 cp5_col, cp5_start,cp5_pop;
 /* end library imports *************************************************************************************************/
 
 
@@ -231,6 +231,8 @@ void setup() {
   removeControls();
   createPalette();
   removePalette();
+  createPopButtons();
+  cp5_pop.hide();
   //createSquish();
   //removeSquish();
   //createBubbles();
@@ -506,7 +508,7 @@ void controlEvent(CallbackEvent event) {
     removeStartScreen();
     break;
     case "/freeHand":
-    freeHand = true;
+    guided = false;
     showControls();
     removeStartScreen();
     break;
@@ -664,6 +666,7 @@ void startSling() {
 
 void startPop() {
   drawBub();
+  cp5_pop.show();
 }
 
 void startSquish() {
@@ -830,7 +833,12 @@ void sceneActions() {
   } else if (scene ==2) {
     checkSplat();
   } else if (scene ==3) {
+    if(guided){
     checkGuide();
+    }
+    else{
+      
+    }
   } else if (scene ==4) {
     checkSquish();
   }
@@ -1148,5 +1156,15 @@ void removeStartScreen() {
 void removeControls(){
   cp5_next.hide();
   cp5_prev.hide();
+}
+
+createPopButtons(){
+  cp5_pop =new ControlP5(this);
+   cp5_pop.addButton("Reset")
+    .setLabel("Reset")
+    .setPosition(600, 250)
+    .setSize(200, 100)
+    .setColorBackground(color(0,0,80));
+
 }
 /* end helper functions section ****************************************************************************************/
