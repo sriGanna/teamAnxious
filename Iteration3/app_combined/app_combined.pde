@@ -281,7 +281,7 @@ void draw() {
 long currentMillis = millis();
 long previousMillis = 0;
 float interval = 50;
-
+int time = -1;
 /* simulation section **************************************************************************************************/
 class SimulationThread implements Runnable {
 
@@ -459,6 +459,16 @@ void createControls() {
     .setColorBackground(color(255, 128, 0))
 
     ;
+    
+      cp5 = new ControlP5(this);
+    
+     cp5.addButton("save")
+    .setLabel("save")
+    .setPosition(980, 590)
+    .setSize(100, 50)
+    .setColorBackground(color(255, 0, 255))
+
+    ;
 }
 
 void controlEvent(CallbackEvent event) {
@@ -620,6 +630,7 @@ void updateScene() {
     createGuidance();
     removeBg = true;
     Fisica = true;
+    timer_reset();
   } else if (scene ==4) {
     startSquish();
     Fisica = true;
@@ -695,7 +706,7 @@ void createSquish() {
   //squish2 = drawBlob(8, 16, 17, 70);
   //world.add(squish2);
   //drawBlob(squish3, 2, 15, 15, 50);
-  sqCirc1 = drawCircle(22, edgeTopLeftX+worldWidth/1.3-3, edgeTopLeftY+2*worldHeight/6.0+11);
+  sqCirc1 = drawCircle(20, edgeTopLeftX+worldWidth/1.3-3, edgeTopLeftY+2*worldHeight/6.0+11);
   //drawCircle(sqCirc2, 22, edgeTopLeftX+worldWidth/1.3-16, edgeTopLeftY+2*worldHeight/6.0+12);
 
   //squish1.setNoFill();
@@ -722,13 +733,7 @@ void createPalette() {
     .setColorBackground(color(255, 0, 255))
 
     ;
-  cp5_col.addButton("save")
-    .setLabel("save")
-    .setPosition(980, 590)
-    .setSize(100, 50)
-    .setColorBackground(color(255, 0, 255))
-
-    ;
+ 
 
   createPalettes();
   paletteIndex = 0;
@@ -827,7 +832,7 @@ FCircle drawCircle(float size, float x, float y) {
   c.setPosition(x, y);
   c.setStatic(true);
   c.setSensor(true);
-  c.setNoFill;
+  c.setNoFill();
   c.setNoStroke();
   //world.add(c);
   return c;
@@ -1169,4 +1174,13 @@ void createPopButtons() {
     .setSize(150, 100)
     .setColorBackground(color(0, 0, 80));
 }
+
+void timer_reset() {
+  time = millis();
+}
+ 
+boolean timer_passed(int mseconds) {
+  return ( millis() - time > mseconds );
+}
+ 
 /* end helper functions section ****************************************************************************************/
