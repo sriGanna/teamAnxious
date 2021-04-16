@@ -169,6 +169,7 @@ boolean loadBalloon = false;
 boolean Fisica = true;
 boolean guided = false;
 boolean freeHand = false;
+boolean removeBg = false;
 /* end elements definition *********************************************************************************************/
 
 int scene =0;
@@ -265,12 +266,11 @@ void setup() {
 void draw() {
   /* put graphical code here, runs repeatedly at defined framerate in setup, else default at 60fps: */
   if (renderingForce == false) {
-    if (scene < 3) {
+    if (!removeBg) {
       background(255);
     }
-
-
     image(output, 0, 0);
+    //shape(wall);
     world.draw();
   }
 }
@@ -615,8 +615,10 @@ void updateScene() {
   } else if (scene ==2) {
     startPop();
     Fisica = true;
+    removeBg = false;
   } else if (scene ==3) {
     createGuidance();
+    removeBg = true;
     Fisica = true;
   } else if (scene ==4) {
     startSquish();
@@ -643,6 +645,7 @@ void updateTitle() {
 }
 
 void clearAll() {
+  //removeBg = false;
   output.beginDraw(); 
   output.clear();
   output.endDraw();
@@ -651,6 +654,7 @@ void clearAll() {
   removeSquish();
   removePalette();
   showControls();
+  cp5_pop.hide();
 
   if (DEBUG || DEBUGCLEAR) {
     println("cleared all");
@@ -676,6 +680,7 @@ void startSquish() {
   squish1.setStroke(0);
   //squish2.setFill(0, 255, 0);
   //squish2.setStroke(0);
+  world.add(sqCirc1);
 }
 
 void createSquish() {
@@ -685,12 +690,12 @@ void createSquish() {
   //base.setStatic(true);
   //world.add(base);
 
-  squish1 = drawBlob(20, 16, 17, 70);
+  squish1 = drawBlob(20, 14, 17, 70);
   world.add(squish1);
   //squish2 = drawBlob(8, 16, 17, 70);
   //world.add(squish2);
   //drawBlob(squish3, 2, 15, 15, 50);
-  //drawCircle(sqCirc1, 22, edgeTopLeftX+worldWidth/1.3-3, edgeTopLeftY+2*worldHeight/6.0+11);
+  sqCirc1 = drawCircle(22, edgeTopLeftX+worldWidth/1.3-3, edgeTopLeftY+2*worldHeight/6.0+11);
   //drawCircle(sqCirc2, 22, edgeTopLeftX+worldWidth/1.3-16, edgeTopLeftY+2*worldHeight/6.0+12);
 
   //squish1.setNoFill();
@@ -758,11 +763,12 @@ void removeSquish() {
   }
   squish1.setNoFill();
   squish1.setNoStroke();
+  squish1.setPosition (200,200);
   //squish2.setNoFill();
   //squish2.setNoStroke();
   //world.remove(squish1);
   //world.remove(squish2);
-  //world.remove(sqCirc1);
+  world.remove(sqCirc1);
   //world.remove(sqCirc2);
   if (DEBUGCLEAR) {
     println("deleted squish");
@@ -815,14 +821,16 @@ FBlob drawBlob( int x, int y, int v, int z) {
   return f;
 }
 
-void drawCircle(FCircle c, float size, float x, float y) {
+FCircle drawCircle(float size, float x, float y) {
+  FCircle c;
   c                   = new FCircle(size);
   c.setPosition(x, y);
   c.setStatic(true);
   c.setSensor(true);
-  c.setNoFill();
+  c.setNoFill;
   c.setNoStroke();
-  world.add(c);
+  //world.add(c);
+  return c;
 }
 void sceneActions() {
   if (scene == 1) {
@@ -833,7 +841,6 @@ void sceneActions() {
   } else if (scene ==3) {
     if (guided) {
       checkGuide();
-    } else {
     }
   } else if (scene ==4) {
     checkSquish();
@@ -859,7 +866,7 @@ void checkSling() {
 
 void checkSquish() {
 
-  if (s.h_avatar.isTouchingBody(sqCirc1) || s.h_avatar.isTouchingBody(sqCirc2)) {
+  if (s.h_avatar.isTouchingBody(sqCirc1)) {
     s.h_avatar.setDamping(800);
     //file.play();
   } else {
