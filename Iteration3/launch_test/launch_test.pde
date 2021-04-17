@@ -1,0 +1,18 @@
+void setup() {
+  size(200, 200);
+}
+
+void draw() { 
+  // draw() must be present for mousePressed() to work
+}
+
+void mousePressed() {
+  println("Opening Process_4");
+  //launch("bubble.png");
+  //launch(".\application.windows64\slingshot_Unma.exe");
+  String path = dataPath("C:/Users/Lakshmi/Documents/GitHub/teamAnxious/Iteration3/launch_test");
+  launch(path+"bubbles.png");
+  //launch(path+"/application.windows64/slingshot_Unma.exe");
+  //launch("C:\Users\Lakshmi\Documents\GitHub\teamAnxious\Iteration3\launch_test\application.windows64\slingshot_Unma.exe");
+  println("launched");
+}

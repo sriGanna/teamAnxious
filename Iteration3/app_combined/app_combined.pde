@@ -25,7 +25,7 @@ import controlP5.*;
 
 
 SoundFile slingAudio, popAudio;
-ControlP5 cp5_next, cp5_prev;
+ControlP5 cp5_next, cp5_prev,cp5;
 ControlP5 cp5_col, cp5_start, cp5_pop;
 /* end library imports *************************************************************************************************/
 
