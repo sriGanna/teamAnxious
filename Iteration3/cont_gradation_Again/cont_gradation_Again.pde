@@ -174,25 +174,30 @@ void setup() {
       //if (i>0 && i<=15 && j>13 && j<25) {
       //  walls[i][j].setFill(0,0,255);
       //}
+      walls[i][j].setNoFill();
+      if (i==18 && j==2) {
+        walls[i][j].setFill(0,0,255);
+      }
       //walls[i][j].setFill(random(255), random(255), random(255));
       walls[i][j].setNoStroke();
-      walls[i][j].setNoFill();
+      
       walls[i][j].setSensor(true);
       walls[i][j].setStatic(true);
       world.add(walls[i][j]);
     }
   }
 
-  
+
 
 
   /* Haptic Tool Initialization */
   s                   = new HVirtualCoupling((1)); 
   s.h_avatar.setDensity(4); 
   s.h_avatar.setNoStroke();
-  //s.h_avatar.setFill(255, 255, 255);
+  s.h_avatar.setFill(0, 255, 255);
   s.h_avatar.setSensor(false);
-  s.init(world, edgeTopLeftX+worldWidth/2, edgeTopLeftY+2); 
+  //s.init(world, edgeTopLeftX+worldWidth/2, edgeTopLeftY+2); 
+  s.init(world, 18, 4); 
 
   /* world conditions setup */
   world.setGravity((0.0), (0.0)); //1000 cm/(s^2)
@@ -200,7 +205,7 @@ void setup() {
   world.setEdgesRestitution(.4);
   world.setEdgesFriction(0.5);
 
-  background(255);
+  //background(255);
 
   world.draw();
 
@@ -247,8 +252,8 @@ class SimulationThread implements Runnable {
       posEE.set(posEE.copy().mult(200));
     }
 
-    s.setToolPosition(edgeTopLeftX+worldWidth/2-(posEE).x, edgeTopLeftY+(posEE).y-7); 
-
+    //s.setToolPosition(edgeTopLeftX+worldWidth/2-(posEE).x, edgeTopLeftY+(posEE).y-7); 
+    //s.setToolPosition(18, 4); 
 
     s.updateCouplingForce();
     fEE.set(-s.getVirtualCouplingForceX(), s.getVirtualCouplingForceY());
@@ -290,61 +295,174 @@ class SimulationThread implements Runnable {
     //}
 
     //try2
-    for (int i=0; i<35; i++) {
-      for (int j=0; j<25; j++) {
-        if (s.h_avatar.isTouchingBody(walls[i][j])) {
-          s.h_avatar.setDamping(600);
-          if (i>0 && i<=20 && j>0 && j<=9) {
-            s.h_avatar.setVelocity(50, 0);
-            s.h_avatar.setFill(random(255),random(255),random(255));
-          }
-          else if (i>15 && i<35 && j>0 && j<=20) {
-            s.h_avatar.setVelocity(0, 50);
-            s.h_avatar.setFill(random(255),random(255),random(255));
-          }
-          else if (i>11 && i<35 && j>13 && j<25) {
-            s.h_avatar.setVelocity(-50, 0);
-            s.h_avatar.setFill(random(255),random(255),random(255));
-          }
-          else if (i>0 && i<=15 && j>8 && j<25) {
-            s.h_avatar.setVelocity(0, -50);
-            s.h_avatar.setFill(random(255),random(255),random(255));
-          }
-          //if(i>0 && i<35 && j>0 && j<25)
-          //{
-          //  //int randomX=int(random(-9,10));
-          //  //int randomY=int(random(-9,10));
-          //  //int c=0;
-          //  int c=int(random(0,4));
-          //  if(c==0) {
-          //    s.h_avatar.setVelocity(50,0);
-          //  }
-          //  else if(c==1) {
-          //    s.h_avatar.setVelocity(0,50);
-          //  }
-          //  else if(c==2) {
-          //    s.h_avatar.setVelocity(-50,0);
-          //  }
-          //  else if(c==3) {
-          //    s.h_avatar.setVelocity(0,-50);
-          //  }
-          //  //print(randomX, randomY);
-            
-          //}
-          //else {
-          //  randomX=0;
-          //  randomY=0;
-          //}
-        }
-      }
-    }
-    
+    //for (int i=0; i<35; i++) {
+    //  for (int j=0; j<25; j++) {
+    //    if (s.h_avatar.isTouchingBody(walls[i][j])) {
+    //      s.h_avatar.setDamping(600);
+    //      if (i>0 && i<=20 && j>0 && j<=9) {
+    //        s.h_avatar.setVelocity(50, 0);
+    //        s.h_avatar.setFill(random(255),random(255),random(255));
+    //      }
+    //      else if (i>15 && i<35 && j>0 && j<=20) {
+    //        s.h_avatar.setVelocity(0, 50);
+    //        s.h_avatar.setFill(random(255),random(255),random(255));
+    //      }
+    //      else if (i>11 && i<35 && j>13 && j<25) {
+    //        s.h_avatar.setVelocity(-50, 0);
+    //        s.h_avatar.setFill(random(255),random(255),random(255));
+    //      }
+    //      else if (i>0 && i<=15 && j>8 && j<25) {
+    //        s.h_avatar.setVelocity(0, -50);
+    //        s.h_avatar.setFill(random(255),random(255),random(255));
+    //      }
+    //      //if(i>0 && i<35 && j>0 && j<25)
+    //      //{
+    //      //  //int randomX=int(random(-9,10));
+    //      //  //int randomY=int(random(-9,10));
+    //      //  //int c=0;
+    //      //  int c=int(random(0,4));
+    //      //  if(c==0) {
+    //      //    s.h_avatar.setVelocity(50,0);
+    //      //  }
+    //      //  else if(c==1) {
+    //      //    s.h_avatar.setVelocity(0,50);
+    //      //  }
+    //      //  else if(c==2) {
+    //      //    s.h_avatar.setVelocity(-50,0);
+    //      //  }
+    //      //  else if(c==3) {
+    //      //    s.h_avatar.setVelocity(0,-50);
+    //      //  }
+    //      //  //print(randomX, randomY);
+
+    //      //}
+    //      //else {
+    //      //  randomX=0;
+    //      //  randomY=0;
+    //      //}
+    //    }
+    //  }
+    //}
+
     ////try3
     //currentMillis = millis();
     //if (currentMillis - previousMillis > interval) {
     //      s.h_avatar.setVelocity(50,0);
     //      previousMillis = currentMillis; 
     //}
+
+
+    ////try 4
+    //int i,j=0;
+    //int c=18;
+    //s.h_avatar.setDamping(600);
+    ////loop1
+    //while(s.h_avatar.isTouchingBody(walls[c][4]) && c>3)
+    //{
+    //    s.h_avatar.setVelocity(-50, 0);
+    //    s.h_avatar.setFill(random(255),random(255),random(255));
+    //    c--;
+    //}
+    //while(s.h_avatar.isTouchingBody(walls[4][c]) && c<21)
+    //{
+    //    s.h_avatar.setVelocity(0, 50);
+    //    s.h_avatar.setFill(random(255),random(255),random(255));
+    //    c++;
+    //}
+    //c=4;
+    //while(s.h_avatar.isTouchingBody(walls[c][20]) && c<31)
+    //{
+    //    s.h_avatar.setVelocity(50, 0);
+    //    s.h_avatar.setFill(random(255),random(255),random(255));
+    //    c++;
+    //}
+    //c=20;
+    //while(s.h_avatar.isTouchingBody(walls[30][c]) && c>5)
+    //{
+    //    s.h_avatar.setVelocity(0, -50);
+    //    s.h_avatar.setFill(random(255),random(255),random(255));
+    //    c--;
+    //}
+    ////loop2
+    //c=30;
+    //while(s.h_avatar.isTouchingBody(walls[c][6]) && c>5)
+    //{
+    //    s.h_avatar.setVelocity(-50, 0);
+    //    s.h_avatar.setFill(random(255),random(255),random(255));
+    //    c--;
+    //}
+    //while(s.h_avatar.isTouchingBody(walls[6][c]) && c<19)
+    //{
+    //    s.h_avatar.setVelocity(0, 50);
+    //    s.h_avatar.setFill(random(255),random(255),random(255));
+    //    c++;
+    //}
+    //c=6;
+    //while(s.h_avatar.isTouchingBody(walls[c][18]) && c<29)
+    //{
+    //    s.h_avatar.setVelocity(50, 0);
+    //    s.h_avatar.setFill(random(255),random(255),random(255));
+    //    c++;
+    //}
+    //c=18;
+    //while(s.h_avatar.isTouchingBody(walls[28][c]) && c>7)
+    //{
+    //    s.h_avatar.setVelocity(0, -50);
+    //    s.h_avatar.setFill(random(255),random(255),random(255));
+    //    c--;
+    //}
+
+
+    //try5
+    int c=18;
+    //s.h_avatar.adjustPosition(18,4);
+    print("hereeee");
+    while (s.h_avatar.isTouchingBody(walls[c][4]) && c>3)
+    {
+      //s.h_avatar.adjustPosition(18,4);
+      s.h_avatar.setVelocity(-50, 0);
+      print("here");
+      s.h_avatar.setFill(random(255), random(255), random(255));
+      c--;
+    }  
+    int x=4;
+    int y=20;
+    int z=30;
+    int a=6;
+    for (int i=0; i<4; i++)
+    {
+      while (s.h_avatar.isTouchingBody(walls[x][c]) && c<21)
+      {
+        s.h_avatar.setVelocity(0, 50);
+        s.h_avatar.setFill(random(255), random(255), random(255));
+        c++;
+      }
+      c=x;
+      while (s.h_avatar.isTouchingBody(walls[c][y]) && c<31)
+      {
+        s.h_avatar.setVelocity(50, 0);
+        s.h_avatar.setFill(random(255), random(255), random(255));
+        c++;
+      }
+      c=y;
+      while (s.h_avatar.isTouchingBody(walls[z][c]) && c>5)
+      {
+        s.h_avatar.setVelocity(0, -50);
+        s.h_avatar.setFill(random(255), random(255), random(255));
+        c--;
+      }
+      c=z;
+      while (s.h_avatar.isTouchingBody(walls[c][a]) && c>5)
+      {
+        s.h_avatar.setVelocity(-50, 0);
+        s.h_avatar.setFill(random(255), random(255), random(255));
+        c--;
+      }
+      x=x+2;
+      y=y-2;
+      z=z-2;
+      a=a+2;
+    }
 
     torques.set(widgetOne.set_device_torques(fEE.array()));
     widgetOne.device_write_torques();
