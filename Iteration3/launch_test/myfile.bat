@@ -1,2 +1,2 @@
-cd C:\Users\rbree\OneDrive\Documents\GitHub\teamAnxious\Iteration3\launch_test\application.windows64\
-paintball_explode_multi.exe
+cd C:\Users\Lakshmi\Documents\GitHub\teamAnxious\Iteration3\launch_test\application.windows64\
+slingshot_Unma.exe
