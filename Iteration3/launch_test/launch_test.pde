@@ -115,51 +115,6 @@ void draw() {
 //  //  //println("launched");
 //}
 
-public void Squish() {
-  PrintWriter output=null;
-  output = createWriter("myfile.bat");
-  output.println("cd C:\\Users\\Lakshmi\\Documents\\GitHub\\teamAnxious\\Iteration3\\launch_test\\application.windows64\\");
-  output.println("squish.exe");
-  output.flush();
-  output.close();
-  output=null;
-  //launch(sketchPath("")+"myfile.bat");
-}
-
-public void Slingshot() {
-  PrintWriter output=null;
-  output = createWriter("myfile.bat");
-  output.println("cd C:\\Users\\Lakshmi\\Documents\\GitHub\\teamAnxious\\Iteration3\\launch_test\\application.windows64\\");
-  output.println("slingshot_Unma.exe");
-  output.flush();
-  output.close();
-  output=null;
-  //launch(sketchPath("")+"myfile.bat");
-}
-
-public void Popped() {
-  PrintWriter output=null;
-  output = createWriter("myfile.bat");
-  //output.println("cd C:\\Users\\Lakshmi\\Documents\\GitHub\\teamAnxious\\Iteration3\\launch_test\\application.windows64\\");
-  output.println(myPath);
-  output.println("paintball_explode_multi.exe");
-  output.flush();
-  output.close();
-  output=null;
-  //launch(sketchPath("")+"myfile.bat");
-}
-
-public void Guided() {
-  PrintWriter output=null;
-  output = createWriter("myfile.bat");
-  output.println("cd C:\\Users\\Lakshmi\\Documents\\GitHub\\teamAnxious\\Iteration3\\launch_test\\application.windows64\\");
-  output.println(myPath);
-  output.println("cont_gradation_Again.exe");
-  output.flush();
-  output.close();
-  output=null;
-  //launch(sketchPath("")+"myfile.bat");
-}
 
 void controlEvent(CallbackEvent event) {
   if (event.getAction() == ControlP5.ACTION_CLICK) {
@@ -171,15 +126,15 @@ void controlEvent(CallbackEvent event) {
       //launch(sketchPath("./application.windows64/squish.exe"));
       break;
     case "/Slingshot":
-      Slingshot();
+      printPath("slingshot_Unma.exe");
       launch(sketchPath("")+"myfile.bat");
       break;
     case "/Popped":
-      Popped();
+      printPath("paintball_explode_multi.exe");
       launch(sketchPath("")+"myfile.bat");
       break;
     case "/Guided":
-      Guided();
+      printPath("cont_gradation_Again.exe");
       launch(sketchPath("")+"myfile.bat");
       break;
     case "/Submit":
