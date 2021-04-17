@@ -1,9 +1,21 @@
 import controlP5.*;
-ControlP5 cp5, cp6, cp7, cp8;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.UnsupportedFlavorException;
+
+ControlP5 cp4, cp5, cp6, cp7, cp8;
+Button bA, bB, bC;
+Button sub;
+Textfield sysPath; 
+String myPath;
+String a1=""; 
+Boolean hideButton = false;
 
 void setup() {
   size(550, 75);
   smooth();
+  cp4 = new ControlP5(this);
   cp5 = new ControlP5(this);
   cp6 = new ControlP5(this);
   cp7 = new ControlP5(this);
@@ -36,11 +48,27 @@ void setup() {
   cp8.setColorActive(0xffff0000);
 
   //buttons
+
+  sysPath = cp4.addTextfield("input")
+    .setPosition(20, 10)
+    .setSize(200, 40)
+    .setFont(font)
+    .setFocus(true)
+    .setColor(color(255, 0, 0))
+    ;
+
+  sub = cp4.addButton("Submit")
+    .setValue(0)
+    .setPosition(300, 10)
+    .setSize(100, 30)
+    ;
+
   cp5.addButton("Squish")
     .setValue(0)
     .setPosition(0, 0)
     .setSize(100, 30)
     ;
+
   cp6.addButton("Slingshot")
     .setValue(0)
     .setPosition(150, 0)
@@ -56,10 +84,16 @@ void setup() {
     .setPosition(450, 0)
     .setSize(100, 30)
     ;
+  a1 = GetTextFromClipboard();
+  cp5.hide();
+  cp6.hide();
+  cp7.hide();
+  cp8.hide();
 }
 
 void draw() { 
   // draw() must be present for mousePressed() to work
+  background(255);
 }
 
 //void mousePressed() {
@@ -106,7 +140,8 @@ public void Slingshot() {
 public void Popped() {
   PrintWriter output=null;
   output = createWriter("myfile.bat");
-  output.println("cd C:\\Users\\Lakshmi\\Documents\\GitHub\\teamAnxious\\Iteration3\\launch_test\\application.windows64\\");
+  //output.println("cd C:\\Users\\Lakshmi\\Documents\\GitHub\\teamAnxious\\Iteration3\\launch_test\\application.windows64\\");
+  output.println(myPath);
   output.println("paintball_explode_multi.exe");
   output.flush();
   output.close();
@@ -118,6 +153,7 @@ public void Guided() {
   PrintWriter output=null;
   output = createWriter("myfile.bat");
   output.println("cd C:\\Users\\Lakshmi\\Documents\\GitHub\\teamAnxious\\Iteration3\\launch_test\\application.windows64\\");
+  output.println(myPath);
   output.println("cont_gradation_Again.exe");
   output.flush();
   output.close();
@@ -129,8 +165,10 @@ void controlEvent(CallbackEvent event) {
   if (event.getAction() == ControlP5.ACTION_CLICK) {
     switch(event.getController().getAddress()) {
     case "/Squish":
-      Squish();
+      //Squish();
+      printPath("squish.exe");
       launch(sketchPath("")+"myfile.bat");
+      //launch(sketchPath("./application.windows64/squish.exe"));
       break;
     case "/Slingshot":
       Slingshot();
@@ -140,6 +178,89 @@ void controlEvent(CallbackEvent event) {
       Popped();
       launch(sketchPath("")+"myfile.bat");
       break;
+    case "/Guided":
+      Guided();
+      launch(sketchPath("")+"myfile.bat");
+      break;
+    case "/Submit":
+      cp5.show();
+      cp6.show();
+      cp7.show();
+      cp8.show();
+
+      cp4.remove("input"); 
+      sub.hide();
+      //cp5.get(Textfield.class, "Handle").setText(theEvent.getStringValue());
+     myPath = sysPath.getText();
+     println(myPath);
+      break;
     }
   }
 }
+
+void keyPressed() {
+  if (key==' ') {
+    a1 = GetTextFromClipboard ();
+    sysPath.setText(a1);
+  }
+}
+
+void printPath(String app){
+   PrintWriter output=null;
+  output = createWriter("myfile.bat");
+  output.print("cd ");
+  output.println(myPath);
+  output.println(app);
+  output.flush();
+  output.close();
+  output=null;
+  
+}
+
+String GetTextFromClipboard () {
+  String text = (String) GetFromClipboard(DataFlavor.stringFlavor);
+ 
+  if (text==null) 
+    return "";
+ 
+  return text;
+}
+ 
+Object GetFromClipboard (DataFlavor flavor) {
+ 
+  Clipboard clipboard = getJFrame(getSurface()).getToolkit().getSystemClipboard();
+ 
+  Transferable contents = clipboard.getContents(null);
+  Object object = null; // the potential result 
+ 
+  if (contents != null && contents.isDataFlavorSupported(flavor)) {
+    try
+    {
+      object = contents.getTransferData(flavor);
+      println ("Clipboard.GetFromClipboard() >> Object transferred from clipboard.");
+    }
+ 
+    catch (UnsupportedFlavorException e1) // Unlikely but we must catch it
+    {
+      println("Clipboard.GetFromClipboard() >> Unsupported flavor: " + e1);
+      e1.printStackTrace();
+    }
+ 
+    catch (java.io.IOException e2)
+    {
+      println("Clipboard.GetFromClipboard() >> Unavailable data: " + e2);
+      e2.printStackTrace() ;
+    }
+  }
+ 
+  return object;
+}
+static final javax.swing.JFrame getJFrame(final PSurface surf) {
+  return
+    (javax.swing.JFrame)
+    ((processing.awt.PSurfaceAWT.SmoothCanvas)
+    surf.getNative()).getFrame();
+}
+
+
+ 
