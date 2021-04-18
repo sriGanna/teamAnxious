@@ -1,2 +1,2 @@
-cd C:\Users\Lakshmi\Documents\GitHub\teamAnxious\Iteration3\squish\application.windows64\
-squish,exe
+cd D:\UBC\CPSC 543\final code\teamAnxious\Iteration3\paintball_explode_multi\application.windows64\
+paintball_explode_multi.exe
