@@ -90,7 +90,7 @@ float             edgeBottomRightY                    = worldHeight;
 /* Initialization of interative shapes */
 FCircle           c, c2;
 FPoly             t;
-FCircle           g;
+FCircle           ge;
 FCircle           e;
 FBlob             f, f2;
 FBox              menu;
@@ -99,7 +99,7 @@ FBox              menu;
 /* Initialization of virtual tool */
 HVirtualCoupling  s;
 PImage            haplyAvatar;
-
+public PGraphics         blobs;
 ControlP5 cp5,cp6, cp7;
 
 /* end elements definition *********************************************************************************************/ 
@@ -112,7 +112,7 @@ void setup(){
   //file = new SoundFile(this, "squish.mp3");
   /* screen size definition */
   size(1200,800);
-  
+  PGraphics blobs  = createGraphics(1200, 800);
    smooth();
   cp5 = new ControlP5(this);
   cp6 = new ControlP5(this);
@@ -181,7 +181,49 @@ void setup(){
     .setSize(90, 30)
     ;
 
-
+blobs.beginDraw();
+    f                   = new FBlob();
+  //f.setAsCircle(16, 7, 20, 70);
+  f.setAsCircle(25, 20, 21, 70);
+  f.setStroke(0);
+  f.setStrokeWeight(2);
+  //f.setFill(255);
+  f.setStatic(true);
+  f.setFriction(20);
+  f.setDensity(100);
+  f.setSensor(true);
+  f.setFill(random(255), random(255), random(255));
+  world.add(f);
+  
+    f2                   = new FBlob();
+  //f.setAsCircle(16, 7, 20, 70);
+  f2.setAsCircle(10, 20, 21, 70);
+  f2.setStroke(0);
+  f2.setStrokeWeight(2);
+  //f.setFill(255);
+  f2.setStatic(true);
+  f2.setFriction(20);
+  f2.setDensity(100);
+  f2.setSensor(true);
+  f2.setFill(random(255), random(255), random(255));
+  world.add(f2);
+  
+  c                   = new FCircle(20.0);
+  c.setPosition(edgeTopLeftX+worldWidth/1.3-3, edgeTopLeftY+2*worldHeight/6.0+11);
+  c.setStatic(true);
+  c.setSensor(true);
+  c.setNoFill();
+  c.setNoStroke();
+  world.add(c);
+  
+    c2                   = new FCircle(22.0);
+  c2.setPosition(edgeTopLeftX+worldWidth/1.3-16, edgeTopLeftY+2*worldHeight/6.0+12);
+  c2.setStatic(true);
+  c2.setSensor(true);
+  c2.setNoFill();
+  c2.setNoStroke();
+  world.add(c2);
+  blobs.endDraw();
   createObjects();
   createMenu();
   
@@ -218,6 +260,7 @@ void draw(){
   /* put graphical code here, runs repeatedly at defined framerate in setup, else default at 60fps: */
   if(renderingForce == false){
     //background(255);
+    //image(blobs, 0, 0);
     world.draw();
   }
 }
@@ -269,8 +312,19 @@ class SimulationThread implements Runnable{
 }
 /* end simulation section **********************************************************************************************/
 
+void Save(){
+  //blobs.clear();
+  save("./saved/test.png");//
+  
+}
 
-
+void Return(){
+   printPath("launch_test.pde");
+//      launch(sketchPath("")+"myfile.bat");
+//      delay(500);
+//      exit();
+  
+}
 /* helper functions section, place helper functions here ***************************************************************/
 //public void Save(int theValue) {
 //  s.h_avatar.setFill(255,0,0);
@@ -314,62 +368,23 @@ void printPath(String app) {
   output=null;
 }
 
-void controlEvent(CallbackEvent event) {
-  if (event.getAction() == ControlP5.ACTION_CLICK) {
-    switch(event.getController().getAddress()) {
-    case "/Save":
-      //output.save("./saved/test.png");
-      break;
-    case "/Return":
-      printPath("launch_test.pde");
-      launch(sketchPath("")+"myfile.bat");
-      delay(500);
-      exit();
-      break;
-    }
-  }
-}
+//void controlEvent(CallbackEvent event) {
+//  if (event.getAction() == ControlP5.ACTION_CLICK) {
+//    switch(event.getController().getAddress()) {
+//    case "/Save":
+//      save("./saved/test.png");//
+//      break;
+//    case "/Return":
+//      printPath("launch_test.pde");
+//      launch(sketchPath("")+"myfile.bat");
+//      delay(500);
+//      exit();
+//      break;
+//    }
+//  }
+//}
 
 void createObjects(){
-    f                   = new FBlob();
-  //f.setAsCircle(16, 7, 20, 70);
-  f.setAsCircle(25, 20, 21, 70);
-  f.setStroke(0);
-  f.setStrokeWeight(2);
-  //f.setFill(255);
-  f.setStatic(true);
-  f.setFriction(20);
-  f.setDensity(100);
-  f.setSensor(true);
-  f.setFill(random(255), random(255), random(255));
-  world.add(f);
   
-    f2                   = new FBlob();
-  //f.setAsCircle(16, 7, 20, 70);
-  f2.setAsCircle(10, 20, 21, 70);
-  f2.setStroke(0);
-  f2.setStrokeWeight(2);
-  //f.setFill(255);
-  f2.setStatic(true);
-  f2.setFriction(20);
-  f2.setDensity(100);
-  f2.setSensor(true);
-  f2.setFill(random(255), random(255), random(255));
-  world.add(f2);
   
-  c                   = new FCircle(20.0);
-  c.setPosition(edgeTopLeftX+worldWidth/1.3-3, edgeTopLeftY+2*worldHeight/6.0+11);
-  c.setStatic(true);
-  c.setSensor(true);
-  c.setNoFill();
-  c.setNoStroke();
-  world.add(c);
-  
-    c2                   = new FCircle(22.0);
-  c2.setPosition(edgeTopLeftX+worldWidth/1.3-16, edgeTopLeftY+2*worldHeight/6.0+12);
-  c2.setStatic(true);
-  c2.setSensor(true);
-  c2.setNoFill();
-  c2.setNoStroke();
-  world.add(c2);
 }
