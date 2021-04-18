@@ -110,7 +110,7 @@ int time = -1;
 /* Initialization of virtual tool */
 HVirtualCoupling  s;
 PImage            haplyAvatar, pac2, bubble;
-PGraphics output;
+PGraphics outputSplat;
 
 /* end elements definition *********************************************************************************************/
 
@@ -206,7 +206,7 @@ void setup() {
 
   //initial=palettes.get(0);   
   selected=palettes.get(0);
-  
+
   for (int i=0; i<10; i++) {
     shade=int(random(6));
     setDrawingColor(selected.getSwatch(shade).getColor());
@@ -214,9 +214,9 @@ void setup() {
     g[i]=c2;
     b[i]=c3;
   }
-  
- 
-  
+
+
+
   //creating field of bubbles
   for (int i =0; i<10; i++)
   {
@@ -257,10 +257,10 @@ void setup() {
   world.setEdgesRestitution(0.4);
   world.setEdgesFriction(1.2);
 
-  output = createGraphics(800, 800, JAVA2D);
-  
+  outputSplat = createGraphics(800, 800, JAVA2D);
+
   background(255);
-  
+
   world.draw();
 
 
@@ -287,7 +287,7 @@ void draw() {
     //  }
     //  //abc.display();
     //}    
-    image(output, 0, 0);
+    image(outputSplat, 0, 0);
 
     world.draw();
     checkChangeColor();
@@ -361,6 +361,7 @@ public void Reset() {
     burst[i].setNoFill();
     burst[i].setNoStroke();
   } 
+  outputSplat.clear();
   reset=false;
 }
 
@@ -414,10 +415,10 @@ class Splat {
     splat.endDraw();
   }
   void display() {
-    output.beginDraw();
-    output.imageMode(CENTER);
-    output.image(splat, x, y);
-    output.endDraw();
+    outputSplat.beginDraw();
+    outputSplat.imageMode(CENTER);
+    outputSplat.image(splat, x, y);
+    outputSplat.endDraw();
   }
 }
 
@@ -452,12 +453,11 @@ void animateSplat(FCircle bubble, FCircle burstCirc, int i) {
     }
     splats.get(splats.size()-1).display();
     splatshown = true;
-    if(bubble != null){
-    world.add(burstCirc);
-    println("added burst");
+    if (bubble != null) {
+      world.add(burstCirc);
+      println("added burst");
     }
     world.remove(bubble);
-    
   }
 }
 
@@ -583,7 +583,7 @@ void checkChangeColor() {
   //  //    setDrawingColor(palette.getSwatch(i).getColor());
   //  //}
   //}
-  if(change==1) {
+  if (change==1) {
     print("here");
     Reset();
     change=0;
@@ -631,18 +631,17 @@ float createColorPicker(ColorPalette palette) {
 
     //world.draw();
   }
-  
+
   return x;
 }  
 
-void createMenu(){
-  
+void createMenu() {
+
   menu              = new FBox(4, 20);
-  menu.setFill(100,100,100);
-  menu.setPosition(28,10);
+  menu.setFill(100, 100, 100);
+  menu.setPosition(28, 10);
   menu.setStatic(true);
   world.add(menu);
-  
 }
 
 void controlEvent(CallbackEvent event) {
@@ -664,13 +663,16 @@ void controlEvent(CallbackEvent event) {
       print("next");
       break;
     case "/save":
-      output.save("./saved/test.png");
+      outputSplat.save("./saved/test.png");
       break;
     case "/Return":
       printPath("launch_test.pde");
       launch(sketchPath("")+"myfile.bat");
       delay(500);
       exit();
+      break;
+    case "/Reset": 
+        Reset();
       break;
     }
   }
@@ -688,6 +690,14 @@ void createPalette() {
   cp5.setColorBackground(color(0, 0, 0));
   cp5.setFont(font);
 
+  cp5.addButton("Reset")
+    .setLabel("Reset")
+    .setPosition(1075, 550)
+    .setSize(100, 50)
+    .setColorBackground(color(65, 60, 88))
+
+    ;
+
   cp5.addButton("save")
     .setLabel("save")
     .setPosition(1075, 610)
@@ -695,7 +705,7 @@ void createPalette() {
     .setColorBackground(color(65, 60, 88))
 
     ;
-   cp5.addButton("Return")
+  cp5.addButton("Return")
     .setLabel("Return")
     .setPosition(1075, 670)
     .setSize(100, 50)
@@ -706,14 +716,14 @@ void createPalette() {
     .setLabel("prev")
     .setPosition(1075, 120)
     .setSize(100, 30)
-    .setColorBackground(color(47,0,79))
+    .setColorBackground(color(47, 0, 79))
 
     ;
   cp5.addButton("next")
     .setLabel("next")
     .setPosition(1075, 160)
     .setSize(100, 30)
-    .setColorBackground(color(47,0,79))
+    .setColorBackground(color(47, 0, 79))
 
     ;
 }
