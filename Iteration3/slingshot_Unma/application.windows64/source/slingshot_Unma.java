@@ -139,8 +139,8 @@ PShape pGraph, joint, endEffector;
 
 /* World boundaries */
 FWorld            world;
-float             worldWidth                          = 27.5f;  
-float             worldHeight                         = 17.5f; 
+float             worldWidth                          = 30;  
+float             worldHeight                         = 20; 
 
 float             edgeTopLeftX                        = 0.0f; 
 float             edgeTopLeftY                        = 0.0f; 
@@ -164,6 +164,7 @@ FBox            anchor1, anchor2;
 FDistanceJoint    joint1, joint2;
 FBox          c1, c2, c3, c4, c5, c6, c7;
 FCircle select, balloon;
+FBox menu;
 
 PShape wall;
 FCircle[] bubbles = new FCircle[28];
@@ -201,7 +202,7 @@ public void setup() {
   //file.play();
 
   /* screen size definition */
-  
+   
 
   /* device setup */
 
@@ -245,6 +246,7 @@ public void setup() {
   createSling();
   createPalette();
   createPalettes();
+  createMenu();
   paletteIndex = 0;
   float x = createColorPicker(palettes.get(paletteIndex)) - BUTTON_SPACER;
   float y = edgeBottomRightY - 1.5f;
@@ -492,21 +494,28 @@ public void createPalette() {
 
   cp5.addButton("save")
     .setLabel("save")
-    .setPosition(960, 610)
+    .setPosition(1075, 610)
+    .setSize(100, 50)
+    .setColorBackground(color(65, 60, 88))
+
+    ;
+   cp5.addButton("Return")
+    .setLabel("Return")
+    .setPosition(1075, 670)
     .setSize(100, 50)
     .setColorBackground(color(65, 60, 88))
 
     ;
   cp5.addButton("prev")
     .setLabel("prev")
-    .setPosition(960, 120)
+    .setPosition(1075, 120)
     .setSize(100, 30)
     .setColorBackground(color(47,0,79))
 
     ;
   cp5.addButton("next")
     .setLabel("next")
-    .setPosition(960, 160)
+    .setPosition(1075, 160)
     .setSize(100, 30)
     .setColorBackground(color(47,0,79))
 
@@ -529,6 +538,12 @@ public void controlEvent(CallbackEvent event) {
       break;
     case "/save":
       output.save("./saved/test.png");
+      break;
+    case "/Return":
+      printPath("launch_test.pde");
+      launch(sketchPath("")+"myfile.bat");
+      delay(500);
+      exit();
       break;
     }
   }
@@ -772,7 +787,7 @@ public void updateColorPicker(ColorPalette palette) {
 }
 
 public float createColorPicker(ColorPalette palette) {
-  float x = 25.2f;
+  float x = 25.2f+3;
   float y = 4;
   ColorSwatch swatch;
   for (Integer i=0; i< 6; i++) {
@@ -795,8 +810,35 @@ public float createColorPicker(ColorPalette palette) {
   return x;
 }  
 
+public void createMenu(){
+  
+  menu              = new FBox(4, 20);
+  menu.setFill(100,100,100);
+  menu.setPosition(28,10);
+  menu.setStatic(true);
+  world.add(menu);
+  
+}
+
+public void printPath(String app) {
+  PrintWriter output=null;
+  output = createWriter("myfile.bat");
+  output.print("cd ");
+  // output.println(myPath);
+  String myPath = sketchPath("");
+  String newPath = myPath.substring(0, myPath.lastIndexOf('\\'));
+  newPath = newPath.substring(0, newPath.lastIndexOf('\\'));
+  output.print(newPath);
+  output.println("\\launch_test\\application.windows64\\");
+  output.println("launch_test.exe");
+  //output.println(app);
+  output.flush();
+  output.close();
+  output=null;
+}
+
 /* end helper functions section ****************************************************************************************/
-  public void settings() {  size(1100, 700); }
+  public void settings() {  size(1200, 800); }
   static public void main(String[] passedArgs) {
     String[] appletArgs = new String[] { "slingshot_Unma" };
     if (passedArgs != null) {

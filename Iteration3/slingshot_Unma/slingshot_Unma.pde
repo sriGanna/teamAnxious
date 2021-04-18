@@ -787,9 +787,11 @@ void printPath(String app) {
   output.print("cd ");
   // output.println(myPath);
   String myPath = sketchPath("");
-  String newPath = path.substring(0, path.lastIndexOf('\\'));
+  String newPath = myPath.substring(0, myPath.lastIndexOf('\\'));
+  newPath = newPath.substring(0, newPath.lastIndexOf('\\'));
   output.print(newPath);
-  //output.println("application.windows64\\");
+  output.println("\\launch_test\\application.windows64\\");
+  output.println("launch_test.exe");
   //output.println(app);
   output.flush();
   output.close();
