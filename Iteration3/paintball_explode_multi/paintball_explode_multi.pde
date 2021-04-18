@@ -95,7 +95,10 @@ int[] b=new int[10];
 int colR, colG, colB;
 FBox menu;
 
+int paletteNum =6;
+int curPal = 0;
 int change=0;
+int currBurst=0;
 
 ArrayList<FBody> isTouching;
 /* Initialization of elements */
@@ -119,6 +122,7 @@ int c1, c2, c3;
 boolean done=false;
 boolean splatshown=false;
 boolean reset=false;
+boolean burstActive = false;
 
 
 FBox[] colorSwatch = new FBox[6];
@@ -278,16 +282,9 @@ void setup() {
 void draw() {
   /* put graphical code here, runs repeatedly at defined framerate in setup, else default at 60fps: */
   if (renderingForce == false) {
-    background(255);
-
-
-    //for (Splat s : splats) {
-    //  if (splatshown==true) {
-    //    s.display();
-    //  }
-    //  //abc.display();
-    //}    
-    image(outputSplat, -10, 0);
+    background(255);   
+    //imageMode(CORNERS);
+    image(outputSplat, 0, 0);
     world.draw();
     checkChangeColor();
   }
@@ -337,7 +334,7 @@ public void Reset() {
   //print("reset");
   done=false;
   splatshown=false;
-   outputSplat.beginDraw();
+  outputSplat.beginDraw();
   outputSplat.clear();
   outputSplat.endDraw();
   //world.clear();
@@ -362,7 +359,7 @@ public void Reset() {
     burst[i].setNoFill();
     burst[i].setNoStroke();
   } 
- 
+
   reset=false;
 }
 
@@ -435,13 +432,16 @@ void checkSplat() {
       if (currentMillis - previousMillis > interval) {         
         splatshown = false;
         animateSplat(bub[i], burst[i], i); 
+        currBurst = i;
         previousMillis = millis();
       }
     }
-    if (splatshown && timer_passed(100)&&burst[i] != null) {
-      world.remove(burst[i]);
-    }
   }
+  if (burstActive && timer_passed(100)) { //&& burst[i] != null
+      println("removed burst");
+      world.remove(burst[currBurst]);
+      burstActive = false;
+    }
 }
 
 void animateSplat(FCircle bubble, FCircle burstCirc, int i) {
@@ -458,8 +458,9 @@ void animateSplat(FCircle bubble, FCircle burstCirc, int i) {
       world.add(burstCirc);
       println("added burst");
       world.remove(bubble);
+      burstActive = true;
+      timer_reset();
     }
-    
   }
 }
 
@@ -579,12 +580,6 @@ ColorPalette createPalette(int index) {
 
 //check color
 void checkChangeColor() {
-  //ColorPalette palette = palettes.get(paletteIndex);
-  //for (int i=0; i<palette.getLength(); i++) {
-  //  //if (colorSwatch[i].isTouchingBody(s.h_avatar)) {
-  //  //    setDrawingColor(palette.getSwatch(i).getColor());
-  //  //}
-  //}
   if (change==1) {
     print("here");
     Reset();
@@ -650,18 +645,24 @@ void controlEvent(CallbackEvent event) {
   if (event.getAction() == ControlP5.ACTION_CLICK) {
     switch(event.getController().getAddress()) {
     case "/prev":
+      cp5.getController("prev").show();
       paletteIndex = (paletteIndex - 1 ) % (NUM_PALETTES);
       if (paletteIndex < 0) {
         paletteIndex = NUM_PALETTES - 1;
+        cp5.getController("prev").hide();
       }
       updateColorPicker(palettes.get(paletteIndex));
       change=1;
       print("prev");
       break;
     case "/next":
+      cp5.getController("prev").show();
       paletteIndex = (paletteIndex + 1) % (NUM_PALETTES);
       updateColorPicker(palettes.get(paletteIndex));
       change=1;
+      if (paletteIndex > NUM_PALETTES) {
+        cp5.getController("next").hide();
+      }
       print("next");
       break;
     case "/save":
@@ -674,7 +675,7 @@ void controlEvent(CallbackEvent event) {
       exit();
       break;
     case "/Reset": 
-        Reset();
+      Reset();
       break;
     }
   }
@@ -728,6 +729,8 @@ void createPalette() {
     .setColorBackground(color(47, 0, 79))
 
     ;
+
+  cp5.getController("prev").hide();
 }
 
 
