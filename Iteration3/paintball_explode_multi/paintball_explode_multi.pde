@@ -69,8 +69,8 @@ PVector           fEE                                = new PVector(0, 0);
 
 /* World boundaries in centimeters */
 FWorld            world;
-float             worldWidth                          = 30.0;  
-float             worldHeight                         = 20.0; 
+float             worldWidth                          = 27.5;  
+27float             worldHeight                         = 17.5; 
 
 float             edgeTopLeftX                        = 0.0; 
 float             edgeTopLeftY                        = 0.0; 

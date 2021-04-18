@@ -31,15 +31,15 @@ void setup() {
   PFont p3 = createFont("Verdana", 12); 
 
 
-  cp4.addTextlabel("Title", "Anxious", 10, 10)
-    .setColor(color(0, 0, 0))
-    .setFont(p);
-  cp4.addTextlabel("Instructions", "Please copy and paste your path in the textbox", 10, 40)
-    .setColor(color(0, 0, 0))
-    .setFont(p);
-  cp4.addTextlabel("Example", "example: C:\\Users\\rbree\\OneDrive\\Documents\\GitHub\\teamAnxious\\Iteration3\\launch_test\\application.windows64\\", 10, 75 )
-    .setColor(color(0, 0, 0))
-    .setFont(p3);
+  //cp4.addTextlabel("Title", "Anxious", 10, 10)
+  //  .setColor(color(0, 0, 0))
+  //  .setFont(p);
+  //cp4.addTextlabel("Instructions", "Please copy and paste your path in the textbox", 10, 40)
+  //  .setColor(color(0, 0, 0))
+  //  .setFont(p);
+  //cp4.addTextlabel("Example", "example: C:\\Users\\rbree\\OneDrive\\Documents\\GitHub\\teamAnxious\\Iteration3\\launch_test\\application.windows64\\", 10, 75 )
+  //  .setColor(color(0, 0, 0))
+  //  .setFont(p3);
   // change the original colors
   cp5.setColorForeground(0xffaa0000);
   cp5.setColorBackground(color(22, 100, 0));
@@ -66,24 +66,24 @@ void setup() {
 
   //buttons
 
-  sysPath = cp4.addTextfield("input")
-    .setPosition(50, 130)
-    .setSize(450, 50)
-    .setFont(font)
-    .setFocus(true)
-    .setColor(color(255, 0, 0))
-    ;
+  //sysPath = cp4.addTextfield("input")
+  //  .setPosition(50, 130)
+  //  .setSize(450, 50)
+  //  .setFont(font)
+  //  .setFocus(true)
+  //  .setColor(color(255, 0, 0))
+  //  ;
 
-  sub = cp4.addButton("Submit")
-    .setValue(0)
-    .setPosition(225, 200)
-    .setSize(100, 30)
-    ;
-  sub = cp4.addButton("Skip")
-    .setValue(0)
-    .setPosition(400, 200)
-    .setSize(100, 30)
-    ;
+  //sub = cp4.addButton("Submit")
+  //  .setValue(0)
+  //  .setPosition(225, 200)
+  //  .setSize(100, 30)
+  //  ;
+  //sub = cp4.addButton("Skip")
+  //  .setValue(0)
+  //  .setPosition(400, 200)
+  //  .setSize(100, 30)
+  //  ;
 
   cp5.addTextlabel("Description", "Please ensure your Haply is in the Home Position", 50, 200)
     .setColor(color(0, 0, 0))
@@ -111,10 +111,6 @@ void setup() {
     .setSize(100, 30)
     ;
   a1 = GetTextFromClipboard();
-  cp5.hide();
-  cp6.hide();
-  cp7.hide();
-  cp8.hide();
 }
 
 void draw() { 
@@ -126,31 +122,34 @@ void controlEvent(CallbackEvent event) {
   if (event.getAction() == ControlP5.ACTION_CLICK) {
     switch(event.getController().getAddress()) {
     case "/Squish":
-      //Squish();
-      
+
       printPath("squish.exe");
-      launch(myPath+"myfile.bat");
+      println(sketchPath(""));
+
+      launch(sketchPath("")+"myfile.bat"); //
+      delay(500);
       exit();
-      //launch(sketchPath("./application.windows64/squish.exe"));
       break;
     case "/Slingshot":
+
       printPath("slingshot_Unma.exe");
       launch(sketchPath("")+"myfile.bat");
+      delay(500);
+      exit();
       break;
     case "/Popped":
+      //exit();
       printPath("paintball_explode_multi.exe");
       launch(sketchPath("")+"myfile.bat");
+      delay(500);
+      exit();
       break;
     case "/Guided":
+      //exit();
       printPath("cont_gradation_Again.exe");
       launch(sketchPath("")+"myfile.bat");
-      break;
-    case "/Submit":
-      clearPathScreen();
-      saveMyPath();
-      break;
-    case "/Skip":
-      clearPathScreen();
+      delay(500);
+      exit();
       break;
     }
   }
@@ -167,7 +166,9 @@ void printPath(String app) {
   PrintWriter output=null;
   output = createWriter("myfile.bat");
   output.print("cd ");
-  output.println(myPath);
+  // output.println(myPath);
+  output.print(sketchPath(""));
+  output.println("application.windows64\\");
   output.println(app);
   output.flush();
   output.close();
