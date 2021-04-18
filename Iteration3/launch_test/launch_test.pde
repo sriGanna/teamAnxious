@@ -8,12 +8,13 @@ ControlP5 cp4, cp5, cp6, cp7, cp8;
 Button bA, bB, bC;
 Button sub;
 Textfield sysPath; 
+Textlabel title;
 String myPath;
 String a1=""; 
 Boolean hideButton = false;
 
 void setup() {
-  size(550, 75);
+  size(550, 250);
   smooth();
   cp4 = new ControlP5(this);
   cp5 = new ControlP5(this);
@@ -22,7 +23,19 @@ void setup() {
   cp8 = new ControlP5(this);
   PFont p = createFont("Verdana", 17); 
   ControlFont font = new ControlFont(p);
+  
+  PFont p3 = createFont("Verdana", 12); 
 
+
+  cp4.addTextlabel("Title", "Anxious", 10, 10)
+    .setColor(color(0, 0, 0))
+    .setFont(p);
+  cp4.addTextlabel("Instructions", "Please copy and paste your path in the textbox", 10, 40)
+    .setColor(color(0, 0, 0))
+    .setFont(p);
+cp4.addTextlabel("Example", "example: C:\\Users\\rbree\\OneDrive\\Documents\\GitHub\\teamAnxious\\Iteration3\\launch_test\\application.windows64\\", 10,75 )
+    .setColor(color(0, 0, 0))
+    .setFont(p3);
   // change the original colors
   cp5.setColorForeground(0xffaa0000);
   cp5.setColorBackground(color(22, 100, 0));
@@ -50,8 +63,8 @@ void setup() {
   //buttons
 
   sysPath = cp4.addTextfield("input")
-    .setPosition(20, 10)
-    .setSize(200, 40)
+    .setPosition(50, 130)
+    .setSize(450, 50)
     .setFont(font)
     .setFocus(true)
     .setColor(color(255, 0, 0))
@@ -59,7 +72,7 @@ void setup() {
 
   sub = cp4.addButton("Submit")
     .setValue(0)
-    .setPosition(300, 10)
+    .setPosition(225, 200)
     .setSize(100, 30)
     ;
 
@@ -99,7 +112,7 @@ void draw() {
 //void mousePressed() {
 //  //  PrintWriter output=null;
 //  //  output = createWriter("myfile.bat");
-//  //  output.println("cd C:\\Users\\rbree\\OneDrive\\Documents\\GitHub\\teamAnxious\\Iteration3\\launch_test\\application.windows64\\");
+//  //  output.println("cd C:\\Users\\lakshmi\\Documents\\GitHub\\teamAnxious\\Iteration3\\launch_test\\application.windows64\\");
 //  //  output.println("squish.exe");
 //  //  output.flush();
 //  //  output.close();
@@ -143,11 +156,15 @@ void controlEvent(CallbackEvent event) {
       cp7.show();
       cp8.show();
 
-      cp4.remove("input"); 
-      sub.hide();
-      //cp5.get(Textfield.class, "Handle").setText(theEvent.getStringValue());
-     myPath = sysPath.getText();
-     println(myPath);
+      //cp4.remove("input"); 
+      //sub.hide();
+      cp4.hide();
+      myPath = sysPath.getText();
+      //myPath = myPath.replace("\", "\\\\");
+      myPath = myPath.trim();
+      myPath = myPath+("\\application.windows64\\");
+      println(myPath);
+      println("C:\\Users\\lakshmi\\Documents\\GitHub\\teamAnxious\\Iteration3\\launch_test\\application.windows64\\");
       break;
     }
   }
@@ -160,8 +177,8 @@ void keyPressed() {
   }
 }
 
-void printPath(String app){
-   PrintWriter output=null;
+void printPath(String app) {
+  PrintWriter output=null;
   output = createWriter("myfile.bat");
   output.print("cd ");
   output.println(myPath);
@@ -169,45 +186,44 @@ void printPath(String app){
   output.flush();
   output.close();
   output=null;
-  
 }
 
 String GetTextFromClipboard () {
   String text = (String) GetFromClipboard(DataFlavor.stringFlavor);
- 
+
   if (text==null) 
     return "";
- 
+
   return text;
 }
- 
+
 Object GetFromClipboard (DataFlavor flavor) {
- 
+
   Clipboard clipboard = getJFrame(getSurface()).getToolkit().getSystemClipboard();
- 
+
   Transferable contents = clipboard.getContents(null);
   Object object = null; // the potential result 
- 
+
   if (contents != null && contents.isDataFlavorSupported(flavor)) {
     try
     {
       object = contents.getTransferData(flavor);
       println ("Clipboard.GetFromClipboard() >> Object transferred from clipboard.");
     }
- 
+
     catch (UnsupportedFlavorException e1) // Unlikely but we must catch it
     {
       println("Clipboard.GetFromClipboard() >> Unsupported flavor: " + e1);
       e1.printStackTrace();
     }
- 
+
     catch (java.io.IOException e2)
     {
       println("Clipboard.GetFromClipboard() >> Unavailable data: " + e2);
       e2.printStackTrace() ;
     }
   }
- 
+
   return object;
 }
 static final javax.swing.JFrame getJFrame(final PSurface surf) {
@@ -216,6 +232,3 @@ static final javax.swing.JFrame getJFrame(final PSurface surf) {
     ((processing.awt.PSurfaceAWT.SmoothCanvas)
     surf.getNative()).getFrame();
 }
-
-
- 
