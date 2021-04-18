@@ -10,6 +10,8 @@ import processing.sound.*;
 import ddf.minim.*; 
 import java.util.*; 
 import controlP5.*; 
+import static java.util.concurrent.TimeUnit.*; 
+import java.util.concurrent.*; 
 
 import co.haply.hphysics.*; 
 import org.jbox2d.collision.*; 
@@ -177,7 +179,7 @@ ArrayList<FBody> isTouching;
 
 /* Initialization of virtual tool */
 PImage            colour;
-PGraphics output;
+PGraphics outputSplat;
 
 /* end elements definition *********************************************************************************************/
 
@@ -202,7 +204,7 @@ public void setup() {
   //file.play();
 
   /* screen size definition */
-   
+  
 
   /* device setup */
 
@@ -260,7 +262,7 @@ public void setup() {
   world.setEdgesRestitution(0.4f);
   world.setEdgesFriction(1.2f);
 
-  output = createGraphics(800, 800, JAVA2D);
+  outputSplat = createGraphics(800, 800, JAVA2D);
   world.draw();
 
 
@@ -282,7 +284,7 @@ public void draw() {
   /* put graphical code here, runs repeatedly at defined framerate in setup, else default at 60fps: */
   if (renderingForce == false) {
     background(255);
-    image(output, 0, 0);
+    image(outputSplat, 0, 0);
     //checkChangeColor();
     world.draw();
     checkChangeColor();
@@ -337,7 +339,7 @@ class SimulationThread implements Runnable {
 
     torques.set(widgetOne.set_device_torques(fEE.array()));
     widgetOne.device_write_torques();
-    
+
     //checkSplat();
     isReleased();
     if (DEBUGREL) {
@@ -353,7 +355,7 @@ class SimulationThread implements Runnable {
       splatshown = false;
       drawSplat(speed);
     }
-    
+
     world.step(1.0f/1000.0f);
     renderingForce = false;
   }
@@ -363,6 +365,7 @@ class SimulationThread implements Runnable {
 
 
 /* helper functions section, place helper functions here ***************************************************************/
+
 public void playAudio() {
   if (done==false)
   {
@@ -386,6 +389,10 @@ public void addPoly(FPoly p) {
   world.add(p);
 }
 
+
+
+
+
 class Splat {
   float x, y;
   float rad;
@@ -395,7 +402,7 @@ class Splat {
     this.x = x;
     this.y = y;
     this.rad = rad;
-    splat = createGraphics(200, 200, JAVA2D);
+    splat = createGraphics(200, 200, JAVA2D); //change size!! 
     create();
   }
 
@@ -414,13 +421,10 @@ class Splat {
     splat.endDraw();
   }
   public void display() {
-    output.beginDraw();
-    output.imageMode(CENTER);
-    output.image(splat, x, y);
-    output.endDraw();
-  }
-  public void saveSplat() {
-    splat.save("./saved/test.png");
+    outputSplat.beginDraw();
+    outputSplat.imageMode(CENTER);
+    outputSplat.image(splat, x, y);
+    outputSplat.endDraw();
   }
 }
 
@@ -469,9 +473,9 @@ public void removeSling() {
   world.remove(joint2);
   world.remove(anchor1);
   world.remove(anchor2);
-  for(int i=0;i<palettes.size();i++)
+  for (int i=0; i<palettes.size(); i++)
   {
-    for(int j=0;j<6;i++)
+    for (int j=0; j<6; i++)
     {
       world.remove(colorSwatch[j]);
     }
@@ -499,7 +503,7 @@ public void createPalette() {
     .setColorBackground(color(65, 60, 88))
 
     ;
-   cp5.addButton("Return")
+  cp5.addButton("Return")
     .setLabel("Return")
     .setPosition(1075-115, 670)
     .setSize(100, 50)
@@ -510,14 +514,14 @@ public void createPalette() {
     .setLabel("prev")
     .setPosition(1075-115, 120)
     .setSize(100, 30)
-    .setColorBackground(color(47,0,79))
+    .setColorBackground(color(47, 0, 79))
 
     ;
   cp5.addButton("next")
     .setLabel("next")
     .setPosition(1075-115, 160)
     .setSize(100, 30)
-    .setColorBackground(color(47,0,79))
+    .setColorBackground(color(47, 0, 79))
 
     ;
 }
@@ -537,7 +541,7 @@ public void controlEvent(CallbackEvent event) {
       updateColorPicker(palettes.get(paletteIndex));
       break;
     case "/save":
-      output.save("./saved/test.png");
+      outputSplat.save("./saved/test.png");
       break;
     case "/Return":
       printPath("launch_test.pde");
@@ -649,7 +653,7 @@ public boolean isMoving() {
     return true;
   }
 }
-  
+
 //palettes
 public void createPalettes() {
   palettes = new ArrayList<ColorPalette>();
@@ -760,7 +764,7 @@ public void checkChangeColor() {
   ColorPalette palette = palettes.get(paletteIndex);
   for (int i=0; i<palette.getLength(); i++) {
     if (colorSwatch[i].isTouchingBody(s.h_avatar)) {
-        setDrawingColor(palette.getSwatch(i).getColor());
+      setDrawingColor(palette.getSwatch(i).getColor());
     }
   }
 }
@@ -806,19 +810,18 @@ public float createColorPicker(ColorPalette palette) {
 
     //world.draw();
   }
-  
+
   return x;
 }  
 
-public void createMenu(){
-  
+public void createMenu() {
+
   menu              = new FBox(4, 20);
-  menu.setFill(100,100,100);
-  menu.setPosition(26,10);
+  menu.setFill(100, 100, 100);
+  menu.setPosition(26, 10);
   menu.setStatic(true);
   menu.setSensor(true);
   world.add(menu);
-  
 }
 
 public void printPath(String app) {
