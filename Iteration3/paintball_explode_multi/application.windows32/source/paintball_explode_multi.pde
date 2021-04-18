@@ -114,6 +114,8 @@ int time = -1;
 HVirtualCoupling  s;
 PImage            haplyAvatar, pac2, bubble;
 PGraphics outputSplat;
+int graphW = 1200;
+int graphH  = 1200;
 
 /* end elements definition *********************************************************************************************/
 
@@ -261,7 +263,7 @@ void setup() {
   world.setEdgesRestitution(0.4);
   world.setEdgesFriction(1.2);
 
-  outputSplat = createGraphics(800, 800, JAVA2D);
+  outputSplat = createGraphics(graphW, graphH, JAVA2D);
 
   background(255);
   outputSplat.beginDraw();
@@ -396,7 +398,7 @@ class Splat {
     this.y = y*40;
     this.i = i;
     radi = rad[i]*10;
-    splat = createGraphics(600, 600, JAVA2D);
+    splat = createGraphics(graphW, graphH, JAVA2D);
     create();
   }
 
@@ -440,10 +442,10 @@ void checkSplat() {
     }
   }
   if (burstActive && timer_passed(100)) { //&& burst[i] != null
-      println("removed burst");
-      world.remove(burst[currBurst]);
-      burstActive = false;
-    }
+    println("removed burst");
+    world.remove(burst[currBurst]);
+    burstActive = false;
+  }
 }
 
 void animateSplat(FCircle bubble, FCircle burstCirc, int i) {
