@@ -828,6 +828,7 @@ public void printPath(String app) {
   String myPath = sketchPath("");
   String newPath = myPath.substring(0, myPath.lastIndexOf('\\'));
   newPath = newPath.substring(0, newPath.lastIndexOf('\\'));
+  newPath = newPath.substring(0, newPath.lastIndexOf('\\')); // uncomment when exporting!!
   output.print(newPath);
   output.println("\\launch_test\\application.windows64\\");
   output.println("launch_test.exe");

@@ -145,7 +145,7 @@ public void controlEvent(CallbackEvent event) {
     switch(event.getController().getAddress()) {
     case "/Squish":
 
-      printPath("squish.exe");
+      printPath("\\squish\\application.windows64\\","squish,exe");
       println(sketchPath(""));
 
       launch(sketchPath("")+"myfile.bat"); //
@@ -154,21 +154,21 @@ public void controlEvent(CallbackEvent event) {
       break;
     case "/Slingshot":
 
-      printPath("slingshot_Unma.exe");
+      printPath("\\slingshot_Unma\\application.windows64\\","slingshot_Unma.exe");
       launch(sketchPath("")+"myfile.bat");
       delay(500);
       exit();
       break;
     case "/Popped":
       //exit();
-      printPath("paintball_explode_multi.exe");
+      printPath("\\paintball_explode_multi\\application.windows64\\","paintball_explode_multi.exe");
       launch(sketchPath("")+"myfile.bat");
       delay(500);
       exit();
       break;
     case "/Guided":
       //exit();
-      printPath("cont_gradation_Again.exe");
+      printPath("\\cont_gradation_Again.exe\\application.windows64\\","cont_gradation_Again.exe");
       launch(sketchPath("")+"myfile.bat");
       delay(500);
       exit();
@@ -184,13 +184,19 @@ public void keyPressed() {
   }
 }
 
-public void printPath(String app) {
+public void printPath(String path, String app) {
   PrintWriter output=null;
   output = createWriter("myfile.bat");
   output.print("cd ");
   // output.println(myPath);
-  output.print(sketchPath(""));
-  output.println("application.windows64\\");
+  //output.print(sketchPath(""));
+  String myPath = sketchPath("");
+  String newPath = myPath.substring(0, myPath.lastIndexOf('\\'));
+  newPath = newPath.substring(0, newPath.lastIndexOf('\\'));
+  newPath = newPath.substring(0, newPath.lastIndexOf('\\'));
+  //output.println("application.windows64\\");
+  output.print(newPath);
+  output.println(path); //
   output.println(app);
   output.flush();
   output.close();
