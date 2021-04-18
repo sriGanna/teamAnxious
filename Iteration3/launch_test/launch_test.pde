@@ -146,7 +146,7 @@ void controlEvent(CallbackEvent event) {
       break;
     case "/Guided":
       //exit();
-      printPath("\\cont_gradation_Again.exe\\application.windows64\\", "cont_gradation_Again.exe");
+      printPath("\\cont_gradation_Again\\application.windows64\\", "cont_gradation_Again.exe");
       launch(sketchPath("")+"myfile.bat");
       delay(500);
       exit();
