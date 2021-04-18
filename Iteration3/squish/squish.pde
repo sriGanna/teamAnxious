@@ -14,20 +14,20 @@
 
 
 
-/* library imports *****************************************************************************************************/ 
+/* library imports *****************************************************************************************************/
 import processing.serial.*;
 import static java.util.concurrent.TimeUnit.*;
 import java.util.concurrent.*;
 import processing.sound.*;
 SoundFile file;
 import controlP5.*;
-/* end library imports *************************************************************************************************/  
+/* end library imports *************************************************************************************************/
 
 
 
-/* scheduler definition ************************************************************************************************/ 
+/* scheduler definition ************************************************************************************************/
 private final ScheduledExecutorService scheduler      = Executors.newScheduledThreadPool(1);
-/* end scheduler definition ********************************************************************************************/ 
+/* end scheduler definition ********************************************************************************************/
 
 
 
@@ -58,7 +58,7 @@ float             rEE                                 = 0.006;
 
 /* framerate definition ************************************************************************************************/
 long              baseFrameRate                       = 120;
-/* end framerate definition ********************************************************************************************/ 
+/* end framerate definition ********************************************************************************************/
 
 
 
@@ -100,20 +100,20 @@ FBox              menu;
 HVirtualCoupling  s;
 PImage            haplyAvatar;
 public PGraphics         blobs;
-ControlP5 cp5,cp6, cp7;
+ControlP5 cp5, cp6, cp7;
 
-/* end elements definition *********************************************************************************************/ 
+/* end elements definition *********************************************************************************************/
 
 
 
 /* setup section *******************************************************************************************************/
-void setup(){
+void setup() {
   /* put setup code here, run once: */
   //file = new SoundFile(this, "squish.mp3");
   /* screen size definition */
-  size(1200,800);
+  size(1200, 800);
   PGraphics blobs  = createGraphics(1200, 800);
-   smooth();
+  smooth();
   cp5 = new ControlP5(this);
   cp6 = new ControlP5(this);
 
@@ -122,23 +122,23 @@ void setup(){
   ControlFont font = new ControlFont(p);
 
   // change the original colors
- 
+
   cp5.setColorForeground(0xffaa0000);
-  cp5.setColorBackground(color(255,0,0));
+  cp5.setColorBackground(color(255, 0, 0));
   cp5.setFont(font);
   cp5.setColorActive(0xffff0000);
-  
-    // change the original colors
+
+  // change the original colors
   cp6.setColorForeground(0xffaa0000);
-  cp6.setColorBackground(color(0,0,255));
+  cp6.setColorBackground(color(0, 0, 255));
   cp6.setFont(font);
   cp6.setColorActive(0xffff0000);
-  
-  
 
-  
+
+
+
   /* device setup */
-  
+
   /**  
    * The board declaration needs to be changed depending on which USB serial port the Haply board is connected.
    * In the base example, a connection is setup to the first detected serial device, this parameter can be changed
@@ -147,32 +147,32 @@ void setup(){
    *      windows:      haplyBoard = new Board(this, "COM10", 0);
    *      linux:        haplyBoard = new Board(this, "/dev/ttyUSB0", 0);
    *      mac:          haplyBoard = new Board(this, "/dev/cu.usbmodem1411", 0);
-   */ 
+   */
   haplyBoard          = new Board(this, Serial.list()[0], 0);
   widgetOne           = new Device(widgetOneID, haplyBoard);
   pantograph          = new Pantograph();
-  
+
   widgetOne.set_mechanism(pantograph);
 
   widgetOne.add_actuator(1, CCW, 2);
   widgetOne.add_actuator(2, CW, 1);
- 
+
   widgetOne.add_encoder(1, CCW, 241, 10752, 2);
   widgetOne.add_encoder(2, CW, -61, 10752, 1);
-    
+
   widgetOne.device_set_parameters();
-  
-  
+
+
   /* 2D physics scaling and world creation */
   hAPI_Fisica.init(this); 
   hAPI_Fisica.setScale(pixelsPerCentimeter); 
   world               = new FWorld();
-  
- 
-    //buttons
+
+
+  //buttons
   cp5.addButton("Save")
     .setValue(0)
-    .setPosition(1075,  110)
+    .setPosition(1075, 110)
     .setSize(90, 30)
     ;
   cp6.addButton("Return")
@@ -181,8 +181,8 @@ void setup(){
     .setSize(90, 30)
     ;
 
-blobs.beginDraw();
-    f                   = new FBlob();
+  blobs.beginDraw();
+  f                   = new FBlob();
   //f.setAsCircle(16, 7, 20, 70);
   f.setAsCircle(25, 20, 21, 70);
   f.setStroke(0);
@@ -194,8 +194,8 @@ blobs.beginDraw();
   f.setSensor(true);
   f.setFill(random(255), random(255), random(255));
   world.add(f);
-  
-    f2                   = new FBlob();
+
+  f2                   = new FBlob();
   //f.setAsCircle(16, 7, 20, 70);
   f2.setAsCircle(10, 20, 21, 70);
   f2.setStroke(0);
@@ -207,7 +207,7 @@ blobs.beginDraw();
   f2.setSensor(true);
   f2.setFill(random(255), random(255), random(255));
   world.add(f2);
-  
+
   c                   = new FCircle(20.0);
   c.setPosition(edgeTopLeftX+worldWidth/1.3-3, edgeTopLeftY+2*worldHeight/6.0+11);
   c.setStatic(true);
@@ -215,8 +215,8 @@ blobs.beginDraw();
   c.setNoFill();
   c.setNoStroke();
   world.add(c);
-  
-    c2                   = new FCircle(22.0);
+
+  c2                   = new FCircle(22.0);
   c2.setPosition(edgeTopLeftX+worldWidth/1.3-16, edgeTopLeftY+2*worldHeight/6.0+12);
   c2.setStatic(true);
   c2.setSensor(true);
@@ -226,28 +226,28 @@ blobs.beginDraw();
   blobs.endDraw();
   createObjects();
   createMenu();
-  
+
   /* Haptic Tool Initialization */
   s                   = new HVirtualCoupling((1)); 
   s.h_avatar.setDensity(4); 
   s.h_avatar.setNoStroke();
-  s.h_avatar.setFill(0,0,0);
+  s.h_avatar.setFill(0, 0, 0);
   s.init(world, edgeTopLeftX+worldWidth/2, edgeTopLeftY+2); 
 
   world.setEdges((edgeTopLeftX), (edgeTopLeftY), (edgeBottomRightX), (edgeBottomRightY)); 
   world.setEdgesRestitution(.4);
   world.setEdgesFriction(0.5);
 
-  
-  
+
+
   world.draw();
-  
-  
+
+
   /* setup framerate speed */
   frameRate(baseFrameRate);
-  
 
-  /* setup simulation thread to run at 1kHz */ 
+
+  /* setup simulation thread to run at 1kHz */
   SimulationThread st = new SimulationThread();
   scheduler.scheduleAtFixedRate(st, 1, 1, MILLISECONDS);
 }
@@ -256,9 +256,9 @@ blobs.beginDraw();
 
 
 /* draw section ********************************************************************************************************/
-void draw(){
+void draw() {
   /* put graphical code here, runs repeatedly at defined framerate in setup, else default at 60fps: */
-  if(renderingForce == false){
+  if (renderingForce == false) {
     //background(255);
     //image(blobs, 0, 0);
     world.draw();
@@ -269,61 +269,58 @@ void draw(){
 
 
 /* simulation section **************************************************************************************************/
-class SimulationThread implements Runnable{
-  
-  public void run(){
+class SimulationThread implements Runnable {
+
+  public void run() {
     /* put haptic simulation code here, runs repeatedly at 1kHz as defined in setup */
-    
+
     renderingForce = true;
-    
-    if(haplyBoard.data_available()){
+
+    if (haplyBoard.data_available()) {
       /* GET END-EFFECTOR STATE (TASK SPACE) */
       widgetOne.device_read_data();
-    
+
       angles.set(widgetOne.get_device_angles()); 
       posEE.set(widgetOne.get_device_position(angles.array()));
       posEE.set(posEE.copy().mult(200));  
-      //posEE.set(device_to_graphics(posEE)); 
+      //posEE.set(device_to_graphics(posEE));
     }
-    
+
     s.setToolPosition(edgeTopLeftX+worldWidth/2-(posEE).x, edgeTopLeftY+(posEE).y-7); 
-    
-    
+
+
     s.updateCouplingForce();
     fEE.set(-s.getVirtualCouplingForceX(), s.getVirtualCouplingForceY());
     fEE.div(100000); //dynes to newtons
-    
 
-    
+
+
     torques.set(widgetOne.set_device_torques(fEE.array()));
     widgetOne.device_write_torques();
-    if (s.h_avatar.isTouchingBody(c) || s.h_avatar.isTouchingBody(c2)){
+    if (s.h_avatar.isTouchingBody(c) || s.h_avatar.isTouchingBody(c2)) {
       s.h_avatar.setDamping(800);
       //file.play();
-        
-    }else{
+    } else {
       s.h_avatar.setDamping(0);
     }
-    
-    
+
+
     renderingForce = false;
     world.step(1.0f/1000.0f);
   }
 }
 /* end simulation section **********************************************************************************************/
 
-void Save(){
+void Save() {
   //blobs.clear();
   save("./saved/test.png");//
-  
 }
 
-void Return(){
-   printPath("launch_test.pde");
-//      launch(sketchPath("")+"myfile.bat");
-//      delay(500);
-//      exit();
-  
+void Return() {
+  printPath("launch_test.pde");
+  launch(sketchPath("")+"myfile.bat");
+  delay(500);
+  exit();
 }
 /* helper functions section, place helper functions here ***************************************************************/
 //public void Save(int theValue) {
@@ -340,14 +337,13 @@ void Return(){
 /* end helper functions section ****************************************************************************************/
 
 
-void createMenu(){
-  
+void createMenu() {
+
   menu              = new FBox(4, 20);
-  menu.setFill(100,100,100);
-  menu.setPosition(28,10);
+  menu.setFill(100, 100, 100);
+  menu.setPosition(28, 10);
   menu.setStatic(true);
   world.add(menu);
-  
 }
 
 void printPath(String app) {
@@ -384,7 +380,5 @@ void printPath(String app) {
 //  }
 //}
 
-void createObjects(){
-  
-  
+void createObjects() {
 }
