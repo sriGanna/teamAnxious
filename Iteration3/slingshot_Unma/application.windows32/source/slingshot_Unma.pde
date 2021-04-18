@@ -163,7 +163,7 @@ void setup() {
   //file.play();
 
   /* screen size definition */
-   size(1200, 800);
+   size(1075, 800);
 
   /* device setup */
 
@@ -455,28 +455,28 @@ void createPalette() {
 
   cp5.addButton("save")
     .setLabel("save")
-    .setPosition(1075, 610)
+    .setPosition(1075-115, 610)
     .setSize(100, 50)
     .setColorBackground(color(65, 60, 88))
 
     ;
    cp5.addButton("Return")
     .setLabel("Return")
-    .setPosition(1075, 670)
+    .setPosition(1075-115, 670)
     .setSize(100, 50)
     .setColorBackground(color(65, 60, 88))
 
     ;
   cp5.addButton("prev")
     .setLabel("prev")
-    .setPosition(1075, 120)
+    .setPosition(1075-115, 120)
     .setSize(100, 30)
     .setColorBackground(color(47,0,79))
 
     ;
   cp5.addButton("next")
     .setLabel("next")
-    .setPosition(1075, 160)
+    .setPosition(1075-115, 160)
     .setSize(100, 30)
     .setColorBackground(color(47,0,79))
 
@@ -748,7 +748,7 @@ void updateColorPicker(ColorPalette palette) {
 }
 
 float createColorPicker(ColorPalette palette) {
-  float x = 25.2+3;
+  float x = 25.2;
   float y = 4;
   ColorSwatch swatch;
   for (Integer i=0; i< 6; i++) {
@@ -775,8 +775,9 @@ void createMenu(){
   
   menu              = new FBox(4, 20);
   menu.setFill(100,100,100);
-  menu.setPosition(28,10);
+  menu.setPosition(26,10);
   menu.setStatic(true);
+  menu.setSensor(true);
   world.add(menu);
   
 }

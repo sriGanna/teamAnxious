@@ -494,28 +494,28 @@ public void createPalette() {
 
   cp5.addButton("save")
     .setLabel("save")
-    .setPosition(1075, 610)
+    .setPosition(1075-115, 610)
     .setSize(100, 50)
     .setColorBackground(color(65, 60, 88))
 
     ;
    cp5.addButton("Return")
     .setLabel("Return")
-    .setPosition(1075, 670)
+    .setPosition(1075-115, 670)
     .setSize(100, 50)
     .setColorBackground(color(65, 60, 88))
 
     ;
   cp5.addButton("prev")
     .setLabel("prev")
-    .setPosition(1075, 120)
+    .setPosition(1075-115, 120)
     .setSize(100, 30)
     .setColorBackground(color(47,0,79))
 
     ;
   cp5.addButton("next")
     .setLabel("next")
-    .setPosition(1075, 160)
+    .setPosition(1075-115, 160)
     .setSize(100, 30)
     .setColorBackground(color(47,0,79))
 
@@ -787,7 +787,7 @@ public void updateColorPicker(ColorPalette palette) {
 }
 
 public float createColorPicker(ColorPalette palette) {
-  float x = 25.2f+3;
+  float x = 25.2f;
   float y = 4;
   ColorSwatch swatch;
   for (Integer i=0; i< 6; i++) {
@@ -814,8 +814,9 @@ public void createMenu(){
   
   menu              = new FBox(4, 20);
   menu.setFill(100,100,100);
-  menu.setPosition(28,10);
+  menu.setPosition(26,10);
   menu.setStatic(true);
+  menu.setSensor(true);
   world.add(menu);
   
 }
@@ -839,7 +840,7 @@ public void printPath(String app) {
 }
 
 /* end helper functions section ****************************************************************************************/
-  public void settings() {  size(1200, 800); }
+  public void settings() {  size(1075, 800); }
   static public void main(String[] passedArgs) {
     String[] appletArgs = new String[] { "slingshot_Unma" };
     if (passedArgs != null) {
