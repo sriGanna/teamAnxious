@@ -287,8 +287,7 @@ void draw() {
     //  }
     //  //abc.display();
     //}    
-    image(outputSplat, 0, 0);
-
+    image(outputSplat, -10, 0);
     world.draw();
     checkChangeColor();
   }
@@ -338,7 +337,9 @@ public void Reset() {
   //print("reset");
   done=false;
   splatshown=false;
-  splats.clear();
+   outputSplat.beginDraw();
+  outputSplat.clear();
+  outputSplat.endDraw();
   //world.clear();
   for (int i=0; i<10; i++) {
     randomize();
@@ -361,7 +362,7 @@ public void Reset() {
     burst[i].setNoFill();
     burst[i].setNoStroke();
   } 
-  outputSplat.clear();
+ 
   reset=false;
 }
 
@@ -456,8 +457,9 @@ void animateSplat(FCircle bubble, FCircle burstCirc, int i) {
     if (bubble != null) {
       world.add(burstCirc);
       println("added burst");
+      world.remove(bubble);
     }
-    world.remove(bubble);
+    
   }
 }
 
