@@ -440,7 +440,8 @@ void removeSling() {
     }
   }
   delay(500);
-  save("./saved/test.png");
+  //save("./saved/test.png");
+  save("./saved/art-"+year() + nf(month(), 2) + nf(day(), 2) + "-" + nf(hour(), 2) + nf(minute(), 2) + nf(second(), 2) + ".png");
   delay(100);
 }
 
@@ -500,7 +501,8 @@ void controlEvent(CallbackEvent event) {
       updateColorPicker(palettes.get(paletteIndex));
       break;
     case "/save":
-      outputSplat.save("./saved/test.png");
+      //outputSplat.save("./saved/test.png");
+      outputSplat.save("./saved/art-"+year() + nf(month(), 2) + nf(day(), 2) + "-" + nf(hour(), 2) + nf(minute(), 2) + nf(second(), 2) + ".png");
       break;
     case "/Return":
       printPath("launch_test.pde");

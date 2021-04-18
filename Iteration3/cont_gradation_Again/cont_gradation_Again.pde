@@ -99,12 +99,12 @@ int defaultcp=0;
 /* Initialization of virtual tool */
 HVirtualCoupling  s;
 PImage            haplyAvatar, pac2;
-PGraphics output;
-
+//PGraphics outputSplat;
+//int graphW = 1200;
+//int graphH  = 800;
 /* end elements definition *********************************************************************************************/
 
 float threshold = 20;
-
 
 
 /* Timer variables */
@@ -121,6 +121,8 @@ ArrayList<ColorPalette> palettes;
 ColorPalette selected=null;
 int shade=0;
 int paletteIndex;
+
+//PGraphics splat;
 
 /* setup section *******************************************************************************************************/
 void setup() {
@@ -222,8 +224,12 @@ void setup() {
   world.setEdgesRestitution(.4);
   world.setEdgesFriction(0.5);
 
-  background(255);
+  //outputSplat = createGraphics(graphW, graphH, JAVA2D);
 
+  background(255);
+  //outputSplat.beginDraw();
+  //outputSplat.endDraw();
+  
   world.draw();
 
 
@@ -243,8 +249,9 @@ void setup() {
 void draw() {
   /* put graphical code here, runs repeatedly at defined framerate in setup, else default at 60fps: */
   if (renderingForce == false) {
-    //background(0);
+    //background(255);
     //world.setFill(color(0,0,0));
+    //image(outputSplat, 0, 0);
     world.draw();
     checkChangeColor();
   }
@@ -525,6 +532,17 @@ void setDrawingColor(int r, int g, int b) {
   colG = g;
   colB = b;
   s.h_avatar.setFill(colR, colG, colB);
+  //print("here");
+  //splat = createGraphics(graphW, graphH, JAVA2D);
+  //splat.beginDraw();
+  //splat.colorMode(RGB, 255);
+  //splat.fill(colR,colG,colB);
+  //splat.noStroke();
+  //splat.ellipse(s.h_avatar.getX()*40, s.h_avatar.getY()*40, 10,10);
+  //splat.endDraw();
+  //outputSplat.beginDraw();
+  //outputSplat.image(splat, s.h_avatar.getX(), s.h_avatar.getY());
+  //outputSplat.endDraw();
 }
 
 void setDrawingColor(int[] rgb) {
@@ -589,8 +607,14 @@ void controlEvent(CallbackEvent event) {
       updateColorPicker(palettes.get(paletteIndex));
       break;
     case "/save":
-      output.save("./saved/test.png");
+      //outputSplat.endDraw();
+      removepalette();
+      //output.save("./saved/test"+year()+month()+day()+"-"+hour()+minute()+second()+".png");
+      save("./saved/art-"+year() + nf(month(), 2) + nf(day(), 2) + "-" + nf(hour(), 2) + nf(minute(), 2) + nf(second(), 2) + ".png");      
+      //outputSplat.beginDraw();
+      addpalette();
       break;
+      
     case "/Return":
       printPath("launch_test.pde");
       launch(sketchPath("")+"myfile.bat");
@@ -662,5 +686,42 @@ void printPath(String app) {
   output=null;
 }
 
+void removepalette() {  
+   for(int j=0;j<10;j++) {
+     disappear(palettes.get(j));
+   }
+   //cp5.getController("prev").hide();
+   //cp5.getController("next").hide();
+   //cp5.getController("save").hide();
+   //cp5.getController("Return").hide();
+   ////cp5.getController("prev").hide();
+   //world.remove(menu);    
+}
+
+void disappear(ColorPalette palette)
+{
+  for(int i=0;i<6;i++) {
+    world.remove(colorSwatch[i]);
+  }
+}
+
+void addpalette() {
+  for(int j=0;j<10;j++) {
+     appear(palettes.get(j));
+   }
+   cp5.getController("prev").show();
+   cp5.getController("next").show();
+   cp5.getController("save").show();
+   cp5.getController("Return").show();
+   //cp5.getController("prev").hide();
+   world.add(menu);
+}
+
+void appear(ColorPalette palette)
+{
+  for(int i=0;i<6;i++) {
+    world.add(colorSwatch[i]);
+  }
+}
 
 /* end helper functions section ****************************************************************************************/

@@ -671,7 +671,8 @@ void controlEvent(CallbackEvent event) {
       print("next");
       break;
     case "/save":
-      outputSplat.save("./saved/test.png");
+      //outputSplat.save("./saved/test.png");
+      outputSplat.save("./saved/art-"+year() + nf(month(), 2) + nf(day(), 2) + "-" + nf(hour(), 2) + nf(minute(), 2) + nf(second(), 2) + ".png");
       //outputSplat.save("./saved/file"+Float(random(100))+ ".png");
       break;
     case "/Return":
