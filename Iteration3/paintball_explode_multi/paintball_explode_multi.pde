@@ -264,6 +264,8 @@ void setup() {
   outputSplat = createGraphics(800, 800, JAVA2D);
 
   background(255);
+  outputSplat.beginDraw();
+  outputSplat.endDraw();
 
   world.draw();
 
