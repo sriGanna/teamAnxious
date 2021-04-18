@@ -4,6 +4,10 @@ import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.UnsupportedFlavorException;
 
+
+boolean DEBUG = true;
+
+
 ControlP5 cp4, cp5, cp6, cp7, cp8;
 Button bA, bB, bC;
 Button sub;
@@ -23,7 +27,7 @@ void setup() {
   cp8 = new ControlP5(this);
   PFont p = createFont("Verdana", 17); 
   ControlFont font = new ControlFont(p);
-  
+
   PFont p3 = createFont("Verdana", 12); 
 
 
@@ -33,7 +37,7 @@ void setup() {
   cp4.addTextlabel("Instructions", "Please copy and paste your path in the textbox", 10, 40)
     .setColor(color(0, 0, 0))
     .setFont(p);
-cp4.addTextlabel("Example", "example: C:\\Users\\rbree\\OneDrive\\Documents\\GitHub\\teamAnxious\\Iteration3\\launch_test\\application.windows64\\", 10,75 )
+  cp4.addTextlabel("Example", "example: C:\\Users\\rbree\\OneDrive\\Documents\\GitHub\\teamAnxious\\Iteration3\\launch_test\\application.windows64\\", 10, 75 )
     .setColor(color(0, 0, 0))
     .setFont(p3);
   // change the original colors
@@ -75,6 +79,15 @@ cp4.addTextlabel("Example", "example: C:\\Users\\rbree\\OneDrive\\Documents\\Git
     .setPosition(225, 200)
     .setSize(100, 30)
     ;
+  sub = cp4.addButton("Skip")
+    .setValue(0)
+    .setPosition(400, 200)
+    .setSize(100, 30)
+    ;
+
+  cp5.addTextlabel("Description", "Please ensure your Haply is in the Home Position", 50, 200)
+    .setColor(color(0, 0, 0))
+    .setFont(p);
 
   cp5.addButton("Squish")
     .setValue(0)
@@ -109,33 +122,15 @@ void draw() {
   background(255);
 }
 
-//void mousePressed() {
-//  //  PrintWriter output=null;
-//  //  output = createWriter("myfile.bat");
-//  //  output.println("cd C:\\Users\\lakshmi\\Documents\\GitHub\\teamAnxious\\Iteration3\\launch_test\\application.windows64\\");
-//  //  output.println("squish.exe");
-//  //  output.flush();
-//  //  output.close();
-//  //  output=null;
-//  //  //launch
-//  //  //println("Opening Process_4");
-//  //  //launch("bubble.png");
-//  //  //launch(".\application.windows64\slingshot_Unma.exe");
-//  //  //String path = dataPath("C:/Users/rbree/OneDrive/Documents/GitHub/teamAnxious/Iteration3/launch_test");
-//  launch(sketchPath("")+"myfile.bat");
-//  //  //launch(path+"/application.windows64/slingshot_Unma.exe");
-//  //  //launch("C:\Users\Lakshmi\Documents\GitHub\teamAnxious\Iteration3\launch_test\application.windows64\slingshot_Unma.exe");
-//  //  //println("launched");
-//}
-
-
 void controlEvent(CallbackEvent event) {
   if (event.getAction() == ControlP5.ACTION_CLICK) {
     switch(event.getController().getAddress()) {
     case "/Squish":
       //Squish();
+      
       printPath("squish.exe");
-      launch(sketchPath("")+"myfile.bat");
+      launch(myPath+"myfile.bat");
+      exit();
       //launch(sketchPath("./application.windows64/squish.exe"));
       break;
     case "/Slingshot":
@@ -151,20 +146,11 @@ void controlEvent(CallbackEvent event) {
       launch(sketchPath("")+"myfile.bat");
       break;
     case "/Submit":
-      cp5.show();
-      cp6.show();
-      cp7.show();
-      cp8.show();
-
-      //cp4.remove("input"); 
-      //sub.hide();
-      cp4.hide();
-      myPath = sysPath.getText();
-      //myPath = myPath.replace("\", "\\\\");
-      myPath = myPath.trim();
-      myPath = myPath+("\\application.windows64\\");
-      println(myPath);
-      println("C:\\Users\\lakshmi\\Documents\\GitHub\\teamAnxious\\Iteration3\\launch_test\\application.windows64\\");
+      clearPathScreen();
+      saveMyPath();
+      break;
+    case "/Skip":
+      clearPathScreen();
       break;
     }
   }
@@ -231,4 +217,25 @@ static final javax.swing.JFrame getJFrame(final PSurface surf) {
     (javax.swing.JFrame)
     ((processing.awt.PSurfaceAWT.SmoothCanvas)
     surf.getNative()).getFrame();
+}
+
+void clearPathScreen() {
+  cp5.show();
+  cp6.show();
+  cp7.show();
+  cp8.show();
+  //cp4.remove("input"); 
+  //sub.hide();
+  cp4.hide();
+}
+
+void saveMyPath() {
+  myPath = sysPath.getText();
+  //myPath = myPath.replace("\", "\\\\");
+  myPath = myPath.trim();
+  myPath = myPath+("\\application.windows64\\");
+  if (DEBUG) {
+    println(myPath);
+    println("C:\\Users\\lakshmi\\Documents\\GitHub\\teamAnxious\\Iteration3\\launch_test\\application.windows64\\");
+  }
 }
