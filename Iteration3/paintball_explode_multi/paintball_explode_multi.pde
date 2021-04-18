@@ -132,6 +132,7 @@ ArrayList<ColorPalette> palettes;
 ColorPalette selected=null;
 int shade=0;
 int paletteIndex;
+String saveName = "";
 
 
 Splat abc;
@@ -671,6 +672,7 @@ void controlEvent(CallbackEvent event) {
       break;
     case "/save":
       outputSplat.save("./saved/test.png");
+      //outputSplat.save("./saved/file"+Float(random(100))+ ".png");
       break;
     case "/Return":
       printPath("launch_test.pde");
