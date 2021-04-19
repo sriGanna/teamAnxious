@@ -376,8 +376,10 @@ public void Return(int theValue) {
 }
 
 public void Save(int theValue) {
-  if (actNum >0) {
-    save("./saved/test.png");
+  if (actNum >1) {
+    PImage temp = get(0, 0, 1040, 800);
+      temp.save("./saved/test"+year()+month()+day()+"-"+hour()+minute()+second()+".png");
+    //save("./saved/test.png");
   }
   actNum++;
   println(actNum);
