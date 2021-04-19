@@ -121,7 +121,7 @@ ArrayList<ColorPalette> palettes;
 ColorPalette selected=null;
 int shade=0;
 int paletteIndex;
-boolean removed = false;
+
 
 PGraphics splat;
 
@@ -253,7 +253,7 @@ void draw() {
     //background(255);
     //world.setFill(color(0,0,0));
     //image(outputSplat, 0, 0);
-    
+
     world.draw();
     checkChangeColor();
   }
@@ -383,12 +383,6 @@ class SimulationThread implements Runnable {
     }
 
 
-    if (removed) {
-      save("./saved/art-"+year() + nf(month(), 2) + nf(day(), 2) + "-" + nf(hour(), 2) + nf(minute(), 2) + nf(second(), 2) + ".png");   
-      addpalette();
-
-      removed = false;
-    }
     //if(!removed && noPalette()){
     //  addpalette();
     //}
@@ -615,14 +609,8 @@ void controlEvent(CallbackEvent event) {
       updateColorPicker(palettes.get(paletteIndex));
       break;
     case "/save":
-      //outputSplat.endDraw();
-      removepalette();
-      delay(500);
-      //output.save("./saved/test"+year()+month()+day()+"-"+hour()+minute()+second()+".png");
-      //save("./saved/art-"+year() + nf(month(), 2) + nf(day(), 2) + "-" + nf(hour(), 2) + nf(minute(), 2) + nf(second(), 2) + ".png");   
-      removed = true;
-      //outputSplat.beginDraw();
-      //addpalette();
+      PImage temp = get(0, 0, 1040, 800);
+      temp.save("./saved/test"+year()+month()+day()+"-"+hour()+minute()+second()+".png");
       break;
 
     case "/Return":
