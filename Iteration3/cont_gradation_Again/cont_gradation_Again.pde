@@ -121,8 +121,9 @@ ArrayList<ColorPalette> palettes;
 ColorPalette selected=null;
 int shade=0;
 int paletteIndex;
+boolean removed = false;
 
-//PGraphics splat;
+PGraphics splat;
 
 /* setup section *******************************************************************************************************/
 void setup() {
@@ -143,7 +144,7 @@ void setup() {
    *      linux:        haplyBoard = new Board(this, "/dev/ttyUSB0", 0);
    *      mac:          haplyBoard = new Board(this, "/dev/cu.usbmodem1411", 0);
    */
-  haplyBoard          = new Board(this,Serial.list()[0], 0);
+  haplyBoard          = new Board(this, Serial.list()[0], 0);
   widgetOne           = new Device(widgetOneID, haplyBoard);
   pantograph          = new Pantograph();
 
@@ -207,7 +208,7 @@ void setup() {
     }
   }
 
-  
+
 
 
   /* Haptic Tool Initialization */
@@ -229,7 +230,7 @@ void setup() {
   background(255);
   //outputSplat.beginDraw();
   //outputSplat.endDraw();
-  
+
   world.draw();
 
 
@@ -252,6 +253,7 @@ void draw() {
     //background(255);
     //world.setFill(color(0,0,0));
     //image(outputSplat, 0, 0);
+    
     world.draw();
     checkChangeColor();
   }
@@ -332,22 +334,19 @@ class SimulationThread implements Runnable {
             shade=int(random(6));
             setDrawingColor(selected.getSwatch(shade).getColor());
             //s.h_avatar.setFill(random(255),random(255),random(255));
-          }
-          else if (i>15 && i<35 && j>0 && j<=20) {
+          } else if (i>15 && i<35 && j>0 && j<=20) {
             s.h_avatar.setVelocity(0, 50);
             selected=palettes.get(paletteIndex);
             shade=int(random(6));
             setDrawingColor(selected.getSwatch(shade).getColor());
             //s.h_avatar.setFill(random(255),random(255),random(255));
-          }
-          else if (i>11 && i<35 && j>13 && j<25) {
+          } else if (i>11 && i<35 && j>13 && j<25) {
             s.h_avatar.setVelocity(-50, 0);
             selected=palettes.get(paletteIndex);
             shade=int(random(6));
             setDrawingColor(selected.getSwatch(shade).getColor());
             //s.h_avatar.setFill(random(255),random(255),random(255));
-          }
-          else if (i>0 && i<=15 && j>8 && j<25) {
+          } else if (i>0 && i<=15 && j>8 && j<25) {
             s.h_avatar.setVelocity(0, -50);
             selected=palettes.get(paletteIndex);
             shade=int(random(6));
@@ -373,7 +372,7 @@ class SimulationThread implements Runnable {
           //    s.h_avatar.setVelocity(0,-50);
           //  }
           //  //print(randomX, randomY);
-            
+
           //}
           //else {
           //  randomX=0;
@@ -382,7 +381,17 @@ class SimulationThread implements Runnable {
         }
       }
     }
-    
+
+
+    if (removed) {
+      save("./saved/art-"+year() + nf(month(), 2) + nf(day(), 2) + "-" + nf(hour(), 2) + nf(minute(), 2) + nf(second(), 2) + ".png");   
+      addpalette();
+
+      removed = false;
+    }
+    //if(!removed && noPalette()){
+    //  addpalette();
+    //}
     ////try3
     //currentMillis = millis();
     //if (currentMillis - previousMillis > interval) {
@@ -578,18 +587,17 @@ float createColorPicker(ColorPalette palette) {
 
     //world.draw();
   }
-  
+
   return x;
 }  
 
-void createMenu(){
-  
+void createMenu() {
+
   menu              = new FBox(4, 20);
-  menu.setFill(100,100,100);
-  menu.setPosition(28,10);
+  menu.setFill(100, 100, 100);
+  menu.setPosition(28, 10);
   menu.setStatic(true);
   world.add(menu);
-  
 }
 
 void controlEvent(CallbackEvent event) {
@@ -609,12 +617,14 @@ void controlEvent(CallbackEvent event) {
     case "/save":
       //outputSplat.endDraw();
       removepalette();
+      delay(500);
       //output.save("./saved/test"+year()+month()+day()+"-"+hour()+minute()+second()+".png");
-      save("./saved/art-"+year() + nf(month(), 2) + nf(day(), 2) + "-" + nf(hour(), 2) + nf(minute(), 2) + nf(second(), 2) + ".png");      
+      //save("./saved/art-"+year() + nf(month(), 2) + nf(day(), 2) + "-" + nf(hour(), 2) + nf(minute(), 2) + nf(second(), 2) + ".png");   
+      removed = true;
       //outputSplat.beginDraw();
-      addpalette();
+      //addpalette();
       break;
-      
+
     case "/Return":
       printPath("launch_test.pde");
       launch(sketchPath("")+"myfile.bat");
@@ -644,7 +654,7 @@ void createPalette() {
     .setColorBackground(color(65, 60, 88))
 
     ;
-   cp5.addButton("Return")
+  cp5.addButton("Return")
     .setLabel("Return")
     .setPosition(1075, 670)
     .setSize(100, 50)
@@ -655,14 +665,14 @@ void createPalette() {
     .setLabel("prev")
     .setPosition(1075, 120)
     .setSize(100, 30)
-    .setColorBackground(color(47,0,79))
+    .setColorBackground(color(47, 0, 79))
 
     ;
   cp5.addButton("next")
     .setLabel("next")
     .setPosition(1075, 160)
     .setSize(100, 30)
-    .setColorBackground(color(47,0,79))
+    .setColorBackground(color(47, 0, 79))
 
     ;
 }
@@ -687,39 +697,39 @@ void printPath(String app) {
 }
 
 void removepalette() {  
-   for(int j=0;j<10;j++) {
-     disappear(palettes.get(j));
-   }
-   //cp5.getController("prev").hide();
-   //cp5.getController("next").hide();
-   //cp5.getController("save").hide();
-   //cp5.getController("Return").hide();
-   ////cp5.getController("prev").hide();
-   //world.remove(menu);    
+  for (int j=0; j<10; j++) {
+    disappear(palettes.get(j));
+  }
+  //cp5.getController("prev").hide();
+  //cp5.getController("next").hide();
+  //cp5.getController("save").hide();
+  //cp5.getController("Return").hide();
+  ////cp5.getController("prev").hide();
+  //world.remove(menu);
 }
 
 void disappear(ColorPalette palette)
 {
-  for(int i=0;i<6;i++) {
+  for (int i=0; i<6; i++) {
     world.remove(colorSwatch[i]);
   }
 }
 
 void addpalette() {
-  for(int j=0;j<10;j++) {
-     appear(palettes.get(j));
-   }
-   cp5.getController("prev").show();
-   cp5.getController("next").show();
-   cp5.getController("save").show();
-   cp5.getController("Return").show();
-   //cp5.getController("prev").hide();
-   world.add(menu);
+  for (int j=0; j<10; j++) {
+    appear(palettes.get(j));
+  }
+  cp5.getController("prev").show();
+  cp5.getController("next").show();
+  cp5.getController("save").show();
+  cp5.getController("Return").show();
+  //cp5.getController("prev").hide();
+  world.add(menu);
 }
 
 void appear(ColorPalette palette)
 {
-  for(int i=0;i<6;i++) {
+  for (int i=0; i<6; i++) {
     world.add(colorSwatch[i]);
   }
 }
